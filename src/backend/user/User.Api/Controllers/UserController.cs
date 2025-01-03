@@ -71,7 +71,7 @@ namespace User.Api.Controllers
             return Created(string.Empty, "We sent a e-mail confirmation to you");
         }
 
-        [HttpGet]
+        [HttpGet("confirm-email")]
         public async Task<IActionResult> ConfirmEmail([FromQuery]string email, [FromQuery]string token)
         {
             var user = await _uof.userReadOnly.UserByEmail(email);

@@ -12,6 +12,7 @@ using Sqids;
 using User.Api.Services.AutoMapper;
 using User.Api.DbContext;
 using Microsoft.Extensions.Options;
+using User.Api.Services.Security.Token;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,6 +27,7 @@ builder.Services.AddIdentity<UserModel, RoleModel>().AddEntityFrameworkStores<Us
 
 builder.Services.AddDbContext<UserDbContext>(opt => opt.UseSqlServer(builder.Configuration.GetConnectionString("sqlserver")));
 
+builder.Services.AddRouting(d => d.LowercaseUrls = true);
 
 builder.Services.AddScoped(d =>
 {
@@ -51,12 +53,16 @@ var email = builder.Configuration.GetValue<string>("services:gmail:email");
 var password = builder.Configuration.GetValue<string>("services:gmail:password");
 var name = builder.Configuration.GetValue<string>("services:gmail:password");
 
-builder.Services.AddSingleton<EmailService>(d => new EmailService(email, password, name));
+builder.Services.AddSingleton<EmailService>(d => new EmailService(email!, password!, name!));
+
+var signKey = builder.Configuration.GetValue<string>("jwt:signKey");
+
+builder.Services.AddSingleton<ITokenService, TokenService>();
 
 var tokenValidationParams = new TokenValidationParameters
 {
     ValidateIssuerSigningKey = true,
-    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(builder.Configuration.GetValue<string>("jwt:signKey"))!),
+    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(signKey!)),
     ValidateIssuer = false,
     ValidateAudience = false,
     ValidateLifetime = true,
