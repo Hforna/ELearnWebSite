@@ -72,10 +72,6 @@ namespace User.Api.Services.Security.Token
 
             var principal = tokenHandler.ValidateToken(token, validatorParameters, out var securityToken);
 
-            if(securityToken is not JwtSecurityToken jwtSecurityToken || !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256Signature, 
-            StringComparison.InvariantCultureIgnoreCase))
-                throw new SecurityTokenException("Invalid token");
-
             var uid = Guid.Parse(principal.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Sid)?.Value!);
 
             return (claimsPrincipal: principal, userGuid: uid);

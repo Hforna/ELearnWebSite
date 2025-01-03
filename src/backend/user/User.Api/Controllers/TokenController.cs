@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using User.Api.Attributes;
 using User.Api.DTOs;
 using User.Api.Models;
 using User.Api.Models.Repositories;
@@ -19,8 +20,16 @@ public class TokenController : ControllerBase
     private readonly IUserReadOnly _userRead;
     private readonly IConfiguration _configuration;
 
+    public TokenController(ITokenService tokenService, UserManager<UserModel> userManager, IUserReadOnly userRead, IConfiguration configuration)
+    {
+        _tokenService = tokenService;
+        _userManager = userManager;
+        _userRead = userRead;
+        _configuration = configuration;
+    }
 
-    [HttpGet("refresh-token")]
+    [AuthenticationUser]
+    [HttpPost("refresh-token")]
     public async Task<IActionResult> RefreshToken([FromBody]TokenDto request)
     {
         if(request is null)

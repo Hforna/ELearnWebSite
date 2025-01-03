@@ -35,7 +35,7 @@ namespace User.Api.Controllers
         {
             var user = await _userRead.UserByEmail(request.Email);
 
-            if (user is null || _bcrypt.IsKeyValid(request.Password, user.PasswordHash!))
+            if (user is null || !_bcrypt.IsKeyValid(request.Password, user.PasswordHash!))
                 throw new Exception("E-mail or password invalid");
 
             var roles = await _userManager.GetRolesAsync(user);
