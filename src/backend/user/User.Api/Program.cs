@@ -57,7 +57,7 @@ builder.Services.AddSingleton<EmailService>(d => new EmailService(email!, passwo
 
 var signKey = builder.Configuration.GetValue<string>("jwt:signKey");
 
-builder.Services.AddSingleton<ITokenService, TokenService>();
+builder.Services.AddScoped<ITokenService, TokenService>();
 
 var tokenValidationParams = new TokenValidationParameters
 {
