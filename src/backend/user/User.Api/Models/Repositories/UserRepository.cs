@@ -25,5 +25,10 @@ namespace User.Api.Models.Repositories
         {
             return await _dbContext.Users.SingleOrDefaultAsync(d => d.Email == email);
         }
+
+        public async Task<UserModel?> UserByUid(Guid? uid)
+        {
+            return await _dbContext.Users.SingleOrDefaultAsync(d => d.UserIdentifier == uid);
+        }
     }
 }
