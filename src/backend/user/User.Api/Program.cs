@@ -13,6 +13,9 @@ using User.Api.Services.AutoMapper;
 using User.Api.DbContext;
 using Microsoft.Extensions.Options;
 using User.Api.Services.Security.Token;
+using User.Api.Filters.Token;
+using Microsoft.OpenApi.Models;
+using User.Api.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,7 +24,38 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+    {
+        Description = @"JWT Authorization header using the Bearer scheme.
+                        Enter 'Bearer' [space] and then your token in the text input below.
+                        Example: 'Bearer 12345abcdef'",
+        Name = "Authorization",
+        In = Microsoft.OpenApi.Models.ParameterLocation.Header,
+        Type = Microsoft.OpenApi.Models.SecuritySchemeType.ApiKey,
+        Scheme = "Bearer"
+    });
+
+    options.AddSecurityRequirement(new Microsoft.OpenApi.Models.OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                },
+                Scheme = "oauth2",
+                Name = "Bearer",
+                In = ParameterLocation.Header
+            },
+            new List<string>()
+        }
+    });
+});
+builder.Services.AddMvc(d => d.Filters.Add(typeof(FilterException)));
 
 builder.Services.AddIdentity<UserModel, RoleModel>().AddEntityFrameworkStores<UserDbContext>().AddDefaultTokenProviders();
 
@@ -57,7 +91,8 @@ builder.Services.AddSingleton<EmailService>(d => new EmailService(email!, passwo
 
 var signKey = builder.Configuration.GetValue<string>("jwt:signKey");
 
-builder.Services.AddSingleton<ITokenService, TokenService>();
+builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<ITokenReceptor, TokenReceptor>();
 
 var tokenValidationParams = new TokenValidationParameters
 {
