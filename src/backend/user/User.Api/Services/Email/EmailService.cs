@@ -29,7 +29,7 @@ namespace User.Api.Services.Email
 
                     <div style=""max-width: 600px; margin: 0 auto; background-color: #ffffff; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);"">
                         <h2 style=""color: #4CAF50; text-align: center;"">Hi, {name}!</h2>
-                        <p style=""font-size: 16px;"">{text}.</p>
+                        <p style=""font-size: 16px;"">{text}</p>
                     </div>
                 </body>
                 </html>" };

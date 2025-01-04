@@ -153,9 +153,50 @@ namespace User.Api.Controllers
             return Ok();
         }
 
-        private void ValidateGenericRequest<V>(object request) where V : IValidator
+        [AuthenticationUser]
+        [HttpGet("2fa/request")]
+        public async Task<IActionResult> RequestTwoFactorAuthentication()
         {
-            var validator = Activator.CreateInstance<V>();
+            var user = await _tokenService.UserByToken(_tokenReceptor.GetToken());
+
+            if (user.TwoFactorEnabled)
+                throw new RequestException("Two factor already is enabled in this account");
+
+            var twofaCode = await _userManager.GenerateTwoFactorTokenAsync(user, "Email");
+
+            await _emailService.SendEmail(user.Email!, user.UserName!, "Enable two factor code", $"Your enable code is: {twofaCode}");
+
+            return NoContent();
+        }
+
+        [AuthenticationUser]
+        [HttpGet("2fa/enable")]
+        public async Task<IActionResult> EnableTwoFactorAuthentication([FromQuery]string code)
+        {
+            var user = await _tokenService.UserByToken(_tokenReceptor.GetToken());
+
+            var codeVerify = await _userManager.VerifyTwoFactorTokenAsync(user, "Email", code);
+
+            if (!codeVerify)
+                return BadRequest("Code is wrong");
+
+            user.TwoFactorEnabled = true;
+            await _userManager.UpdateAsync(user);
+
+            return Ok();
+        }
+
+        [AuthenticationUser]
+        [HttpGet("2fa/status")]
+        public async Task<IActionResult> GetTwoFactorAuthenticationStatus()
+        {
+            var user = await _tokenService.UserByToken(_tokenReceptor.GetToken());
+            return Ok(new { isEnabled = user.TwoFactorEnabled });
+        }
+
+        private static void ValidateGenericRequest<Validator>(object request) where Validator : IValidator
+        {
+            var validator = Activator.CreateInstance<Validator>();
             var result = validator.Validate(request);
 
             if(result.IsValid == false)

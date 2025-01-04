@@ -52,7 +52,7 @@ public class TokenController : ControllerBase
 
         await _userManager.UpdateAsync(user);
 
-        var response = new ResponseLogin() { Token = user.RefreshToken, RefreshToken = user.RefreshToken };
+        var response = new ResponseLogin() { AccessToken = user.RefreshToken, RefreshToken = user.RefreshToken };
 
         return Ok(response);
     }
