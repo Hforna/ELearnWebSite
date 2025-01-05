@@ -16,6 +16,7 @@ using User.Api.Services.Security.Token;
 using User.Api.Filters.Token;
 using Microsoft.OpenApi.Models;
 using User.Api.Filters;
+using User.Api.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -76,6 +77,9 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IUserReadOnly, UserRepository>();
 builder.Services.AddScoped<IUserWriteOnly, UserRepository>();
 
+builder.Services.AddScoped<IProfileReadOnly, ProfileRepository>();
+builder.Services.AddScoped<IProfileWriteOnly, ProfileRepository>();
+
 builder.Services.AddScoped<IBcryptCryptography, BcryptCryptography>();
 
 builder.Services.AddSingleton(d => new SqidsEncoder<long>(new() {
@@ -88,6 +92,7 @@ var password = builder.Configuration.GetValue<string>("services:gmail:password")
 var name = builder.Configuration.GetValue<string>("services:gmail:password");
 
 builder.Services.AddSingleton<EmailService>(d => new EmailService(email!, password!, name!));
+builder.Services.AddSingleton<ImageService>(d => new ImageService());
 
 var signKey = builder.Configuration.GetValue<string>("jwt:signKey");
 

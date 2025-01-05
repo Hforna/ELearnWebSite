@@ -30,12 +30,11 @@ namespace User.Api.Controllers
         private readonly IConfiguration _configuration;
         private readonly ITokenService _tokenService;
         private readonly ITokenReceptor _tokenReceptor;
-        private readonly IUserReadOnly _userRead;
 
         public UserController(IUnitOfWork uof, IBcryptCryptography cryptography, 
             EmailService emailService, IMapper mapper, 
             UserManager<UserModel> userManager, IConfiguration configuration, 
-            ITokenService tokenService, ITokenReceptor tokenReceptor, IUserReadOnly userRead)
+            ITokenService tokenService, ITokenReceptor tokenReceptor)
         {
             _uof = uof;
             _cryptography = cryptography;
@@ -45,7 +44,6 @@ namespace User.Api.Controllers
             _configuration = configuration;
             _tokenService = tokenService;
             _tokenReceptor = tokenReceptor;
-            _userRead = userRead;
         }
 
         [HttpPost]
@@ -117,7 +115,7 @@ namespace User.Api.Controllers
         [HttpGet("forgot-password")]
         public async Task<IActionResult> ForgotPassword([FromQuery]string email)
         {
-            var user = await _userRead.UserByEmail(email);
+            var user = await _uof.userReadOnly.UserByEmail(email);
 
             if (user is null)
                 throw new BadHttpRequestException("E-mail doesn't exists");
@@ -137,7 +135,7 @@ namespace User.Api.Controllers
         {
             ValidateGenericRequest<ResetPasswordValidator>(request);
 
-            var user = await _userRead.UserByEmail(email);
+            var user = await _uof.userReadOnly.UserByEmail(email);
 
             if (user is null)
                 throw new BadHttpRequestException("E-mail doesn't exists");
