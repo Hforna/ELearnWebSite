@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Azure;
 using Microsoft.Identity.Client;
 using Sqids;
 using User.Api.DTOs;
@@ -25,7 +26,8 @@ namespace User.Api.Services.AutoMapper
                 .ForMember(d => d.ProfilePicture, d => d.Ignore());
 
             CreateMap<ProfileModel, ResponseProfile>()
-                .ForMember(d => d.UserId, d => d.MapFrom(d => _sqids.Encode(d.UserId)));
+                .ForMember(response => response.UserId, d => d.MapFrom(d => _sqids.Encode(d.UserId)))
+                .ForMember(response => response.Id, d => d.MapFrom(d => _sqids.Encode(d.Id)));
         }
     }
 }

@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 using User.Api.Attributes;
+using User.Api.Binder;
 using User.Api.DTOs;
 using User.Api.Filters.Token;
 using User.Api.Models;
@@ -18,7 +20,7 @@ namespace User.Api.Controllers
     public class ProfileController : ControllerBase
     {
         private readonly ITokenService _tokenService;
-        private readonly ITokenReceptor tokenReceptor;
+        private readonly ITokenReceptor _tokenReceptor;
         private readonly ImageService _imageService;
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _uof;
@@ -27,7 +29,7 @@ namespace User.Api.Controllers
             ImageService imageService, IMapper mapper, IUnitOfWork uof)
         {
             _tokenService = tokenService;
-            this.tokenReceptor = tokenReceptor;
+            _tokenReceptor = tokenReceptor;
             _imageService = imageService;
             _mapper = mapper;
             _uof = uof;
@@ -36,7 +38,10 @@ namespace User.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateProfile([FromForm] CreateProfileDto request)
         {
-            var user = await _tokenService.UserByToken(tokenReceptor.GetToken());
+            var user = await _tokenService.UserByToken(_tokenReceptor.GetToken());
+
+            if (await _uof.profileReadOnly.ProfileByUserId(user.Id) is not null)
+                return BadRequest("User already has a profile");
 
             var userProfile = _mapper.Map<ProfileModel>(request);
 
@@ -56,6 +61,37 @@ namespace User.Api.Controllers
             var response = _mapper.Map<ResponseProfile>(userProfile);
 
             return Created(string.Empty, response);
+        }
+
+        [HttpGet("{userId}")]
+        [ProducesResponseType(typeof(BadRequestObjectResult), statusCode: (int)HttpStatusCode.NotFound)]
+        public async Task<IActionResult> GetProfile([FromRoute][ModelBinder(typeof(BinderId))]long userId)
+        {
+            var profile = await _uof.profileReadOnly.ProfileByUserId(userId);
+
+            if (profile is null)
+                return BadRequest("Profile doesn't exists");
+
+            var response = _mapper.Map<ResponseProfile>(profile);
+
+            return Ok(response);
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> UpdateProfile([FromForm]CreateProfileDto request)
+        {
+            var user = await _tokenService.UserByToken(_tokenReceptor.GetToken());
+
+            var profile = await _uof.profileReadOnly.ProfileByUserId(user.Id);
+
+            if (profile is null)
+                return BadRequest("User doesn't have a profile");
+
+            profile = _mapper.Map<ProfileModel>(request);
+
+            var response = _mapper.Map<ResponseProfile>(profile);
+
+            return Ok(response);
         }
     }
 }

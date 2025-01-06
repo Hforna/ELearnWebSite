@@ -1,4 +1,5 @@
-﻿using User.Api.DbContext;
+﻿using Microsoft.EntityFrameworkCore;
+using User.Api.DbContext;
 
 namespace User.Api.Models.Repositories
 {
@@ -8,6 +9,11 @@ namespace User.Api.Models.Repositories
 
         public ProfileRepository(UserDbContext dbContext) => _dbContext = dbContext;
 
-        public async Task AddProfile(ProfileModel profile) => await _dbContext.Profiles.AddAsync(profile);    
+        public async Task AddProfile(ProfileModel profile) => await _dbContext.Profiles.AddAsync(profile);
+
+        public async Task<ProfileModel?> ProfileByUserId(long id)
+        {
+            return await _dbContext.Profiles.SingleOrDefaultAsync(d => d.UserId == id);
+        }
     }
 }

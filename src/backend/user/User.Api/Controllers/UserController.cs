@@ -11,6 +11,7 @@ using User.Api.Excpetions;
 using User.Api.Filters.Token;
 using User.Api.Models;
 using User.Api.Models.Repositories;
+using User.Api.Responses;
 using User.Api.Services.Email;
 using User.Api.Services.RequestValidators;
 using User.Api.Services.Security.Cryptography;
@@ -149,6 +150,16 @@ namespace User.Api.Controllers
             await _userManager.UpdateAsync(user);
 
             return Ok();
+        }
+
+        [HttpGet("user-infos")]
+        public async Task<IActionResult> UserInfos()
+        {
+            var user = await _tokenService.UserByToken(_tokenReceptor.GetToken());
+
+            var response = _mapper.Map<UserResponse>(user);
+
+            return Ok(response);
         }
 
         [AuthenticationUser]

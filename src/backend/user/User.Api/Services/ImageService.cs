@@ -13,10 +13,10 @@ namespace User.Api.Services
 
             if (file.Is<JointPhotographicExpertsGroup>())
             {
-                (isImage, ext) = (true, JointPhotographicExpertsGroup.TypeExtension);
+                (isImage, ext) = (true, GetExtension(JointPhotographicExpertsGroup.TypeExtension));
             } else if(file.Is<PortableNetworkGraphic>())
             {
-                (isImage, ext) = (true, PortableNetworkGraphic.TypeExtension);
+                (isImage, ext) = (true, GetExtension(PortableNetworkGraphic.TypeExtension));
             }
 
             file.Position = 0;
