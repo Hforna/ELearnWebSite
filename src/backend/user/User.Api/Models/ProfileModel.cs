@@ -12,5 +12,8 @@ namespace User.Api.Models
         public long UserId { get; set; }
         public UserModel User { get; set; }
         public string ProfilePicture { get; set; }
+        public string Country { get; set; }
+        public string Bio { get; set; }
+        public string FullName { get; set; }
     }
 }
