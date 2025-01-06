@@ -17,14 +17,14 @@ public class TokenController : ControllerBase
 {
     private readonly ITokenService _tokenService;
     private readonly UserManager<UserModel> _userManager;
-    private readonly IUserReadOnly _userRead;
+    private readonly IUnitOfWork _uof;
     private readonly IConfiguration _configuration;
 
-    public TokenController(ITokenService tokenService, UserManager<UserModel> userManager, IUserReadOnly userRead, IConfiguration configuration)
+    public TokenController(ITokenService tokenService, UserManager<UserModel> userManager, IUnitOfWork uof, IConfiguration configuration)
     {
         _tokenService = tokenService;
         _userManager = userManager;
-        _userRead = userRead;
+        _uof = uof;
         _configuration = configuration;
     }
 
@@ -40,7 +40,7 @@ public class TokenController : ControllerBase
         if(validator.userGuid is null)
             return BadRequest("Invalid Access Token or Refresh Token");
 
-        var user = await _userRead.UserByUid(validator.userGuid);
+        var user = await _uof.userReadOnly.UserByUid(validator.userGuid);
 
         if (user is null || user.RefreshToken != request.RefreshToken || user.RefreshTokenExpiration <= DateTime.UtcNow)
             return BadRequest("Invalid access token or refresh token");

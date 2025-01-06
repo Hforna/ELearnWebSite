@@ -3,6 +3,7 @@ using Microsoft.Identity.Client;
 using Sqids;
 using User.Api.DTOs;
 using User.Api.Models;
+using User.Api.Responses;
 
 namespace User.Api.Services.AutoMapper
 {
@@ -19,6 +20,12 @@ namespace User.Api.Services.AutoMapper
 
             CreateMap<UserModel, UserResponse>()
                 .ForMember(d => d.Id, f => f.MapFrom(d => _sqids.Encode(d.Id)));
+
+            CreateMap<CreateProfileDto, ProfileModel>()
+                .ForMember(d => d.ProfilePicture, d => d.Ignore());
+
+            CreateMap<ProfileModel, ResponseProfile>()
+                .ForMember(d => d.UserId, d => d.MapFrom(d => _sqids.Encode(d.UserId)));
         }
     }
 }

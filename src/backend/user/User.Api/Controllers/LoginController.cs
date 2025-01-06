@@ -16,18 +16,18 @@ namespace User.Api.Controllers
     public class LoginController : ControllerBase
     {
         private readonly ITokenService _tokenService;
-        private readonly IUserReadOnly _userRead;
+        private readonly IUnitOfWork _uof;
         private readonly IBcryptCryptography _bcrypt;
         private readonly UserManager<UserModel> _userManager;
         private readonly IConfiguration _configuration;
         private readonly EmailService _emailService;
 
-        public LoginController(ITokenService tokenService, IUserReadOnly userRead, 
+        public LoginController(ITokenService tokenService, IUnitOfWork uof, 
         IBcryptCryptography bcrypt, UserManager<UserModel> userManager, 
         IConfiguration configuration, EmailService emailService)
         {
             _tokenService = tokenService;
-            _userRead = userRead;
+            _uof = uof;
             _bcrypt = bcrypt;
             _userManager = userManager;
             _configuration = configuration;
@@ -37,7 +37,7 @@ namespace User.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> LoginByApp([FromBody]LoginDto request)
         {
-            var user = await _userRead.UserByEmail(request.Email);
+            var user = await _uof.userReadOnly.UserByEmail(request.Email);
 
             if (user is null || !_bcrypt.IsKeyValid(request.Password, user.PasswordHash!))
                 throw new Exception("E-mail or password invalid");
@@ -73,7 +73,7 @@ namespace User.Api.Controllers
         [HttpGet("2fa/verify")]
         public async Task<IActionResult> VerfiyTwoFactorAuthentication([FromQuery]string code, [FromQuery]string email)
         {
-            var user = await _userRead.UserByEmail(email);
+            var user = await _uof.userReadOnly.UserByEmail(email);
 
             if (user is null)
                 return BadRequest("user e-mail is wrong");

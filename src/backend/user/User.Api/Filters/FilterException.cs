@@ -12,10 +12,6 @@ namespace User.Api.Filters
             {
                 context.HttpContext.Response.StatusCode = baseProjectException.GetStatusCode();
                 context.Result = new BadRequestObjectResult(baseProjectException.GetErrorMessage());
-            } else
-            {
-                context.HttpContext.Response.StatusCode = StatusCodes.Status500InternalServerError;
-                context.Result = new BadRequestObjectResult("Unknown error");
             }
         }
     }
