@@ -9,7 +9,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "backend", "backend", "{543A
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "user", "user", "{4921AA7F-5EC8-4004-913D-118519812110}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "User.Api", "src\backend\user\User.Api\User.Api.csproj", "{F6E46885-1710-43A0-85D4-24AD276EC258}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "User.Api", "src\backend\user\User.Api\User.Api.csproj", "{F6E46885-1710-43A0-85D4-24AD276EC258}"
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{CDE715B0-214B-428A-90CD-11D43054D597}"
 EndProject
