@@ -47,6 +47,7 @@ namespace User.Api.Controllers
             _tokenReceptor = tokenReceptor;
         }
 
+
         [HttpPost]
         public async Task<IActionResult> CreateUser([FromBody]CreateUserDto request)
         {
@@ -77,20 +78,34 @@ namespace User.Api.Controllers
             return Created(string.Empty, "We sent a e-mail confirmation to you");
         }
 
+        [Authorize(Policy = "StaffOnly")]
+        [HttpPost("add-user-role")]
+        public async Task<IActionResult> AddUserToRole([FromBody]AddUserToRole request)
+        {
+            var user = await _uof.userReadOnly.UserByEmail(request.email);
+
+            if (user is null)
+                return BadRequest("Email user doesn't exists");
+
+            await _userManager.AddToRoleAsync(user, request.role);
+
+            return NoContent();
+        }
+
         [HttpGet("confirm-email")]
         public async Task<IActionResult> ConfirmEmail([FromQuery]string email, [FromQuery]string token)
         {
             var user = await _uof.userReadOnly.UserByEmail(email);
 
             if(user is null)
-                throw new Exception();
+                throw new Exception("User doesn't exists");
 
             user.Active = true;
 
             var confirm = await _userManager.ConfirmEmailAsync(user, token);
 
             if (!confirm.Succeeded)
-                throw new Exception();
+                throw new Exception("Wrong token for email confirmation");
 
             return Ok("E-mail confirmed");
         }

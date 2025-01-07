@@ -62,6 +62,12 @@ builder.Services.AddMvc(d => d.Filters.Add(typeof(FilterException)));
 
 builder.Services.AddIdentity<UserModel, RoleModel>().AddEntityFrameworkStores<UserDbContext>().AddDefaultTokenProviders();
 
+builder.Services.AddAuthorization(auth =>
+{
+    auth.AddPolicy("AdminOnly", d => d.RequireRole("admin"));
+    auth.AddPolicy("CreateEmployeeAccounts", d => d.RequireRole("admin", "staff"));
+});
+
 builder.Services.AddDbContext<UserDbContext>(opt => opt.UseSqlServer(builder.Configuration.GetConnectionString("sqlserver")));
 
 builder.Services.AddRouting(d => d.LowercaseUrls = true);

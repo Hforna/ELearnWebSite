@@ -15,6 +15,12 @@ namespace User.Api.DbContext
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            builder.Entity<RoleModel>().HasData(
+                new RoleModel("admin"),
+                new RoleModel("customer"),
+                new RoleModel("teacher")
+            );
+
             base.OnModelCreating(builder);
         }
     }
