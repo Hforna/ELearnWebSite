@@ -39,7 +39,7 @@ namespace User.Api.Controllers
         {
             var user = await _uof.userReadOnly.UserByEmail(request.Email);
 
-            if (user is null || !_bcrypt.IsKeyValid(request.Password, user.PasswordHash!))
+            if (user is null || !_bcrypt.IsKeyValid(request.Password, user.PasswordHash!) || !user.Active)
                 throw new Exception("E-mail or password invalid");
 
             if(user.TwoFactorEnabled)

@@ -205,6 +205,7 @@ namespace User.Api.Controllers
                 return BadRequest("Code is wrong");
 
             user.TwoFactorEnabled = true;
+            user.EmailConfirmed = true;
             await _userManager.UpdateAsync(user);
 
             return Ok();
@@ -216,6 +217,31 @@ namespace User.Api.Controllers
         {
             var user = await _tokenService.UserByToken(_tokenReceptor.GetToken());
             return Ok(new { isEnabled = user.TwoFactorEnabled });
+        }
+
+        //[AuthenticationUser]
+        //HttpDelete]
+        //ublic async Task<IActionResult> DeleteAccount()
+        //
+        //   var user = await _tokenService.UserByToken(_tokenReceptor.GetToken());
+        //
+        //   user.Active = false;
+        //   await _userManager.UpdateAsync(user);
+        //
+        //   await _emailService.SendEmail(user.Email, user.UserName, "You account is disabled");
+        //
+
+        [AuthenticationUser]
+        [HttpGet("revoke")]
+        public async Task<IActionResult> Revoke()
+        {
+            var user = await _tokenService.UserByToken(_tokenReceptor.GetToken());
+
+            user.RefreshToken = null;
+            user.RefreshTokenExpiration = DateTime.UtcNow;
+            await _userManager.UpdateAsync(user);
+
+            return NoContent();
         }
 
         private static void ValidateGenericRequest<Validator>(object request) where Validator : IValidator
