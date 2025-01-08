@@ -219,17 +219,44 @@ namespace User.Api.Controllers
             return Ok(new { isEnabled = user.TwoFactorEnabled });
         }
 
-        //[AuthenticationUser]
-        //HttpDelete]
-        //ublic async Task<IActionResult> DeleteAccount()
-        //
-        //   var user = await _tokenService.UserByToken(_tokenReceptor.GetToken());
-        //
-        //   user.Active = false;
-        //   await _userManager.UpdateAsync(user);
-        //
-        //   await _emailService.SendEmail(user.Email, user.UserName, "You account is disabled");
-        //
+        [AuthenticationUser]
+        [HttpDelete]
+        public async Task<IActionResult> DeleteAccount()
+        {
+
+            var user = await _tokenService.UserByToken(_tokenReceptor.GetToken());
+
+            user.Active = false;
+            user.TimeDisabled = DateTime.UtcNow.AddDays(30);
+
+            var token = await _userManager.GenerateUserTokenAsync(user, "Email", "ReactivateAccount");
+
+            await _userManager.UpdateAsync(user);
+
+            var appUrl = _configuration.GetValue<string>("appUrl");
+
+            await _emailService.SendEmail(user.Email, user.UserName, "You account is disabled", 
+                $"you have 30 days for active your account again otherwise it will be deleted, " +
+                $"click here to reactivate your account: {appUrl}/user/reactivate-account?email={user.Email}&token={token}");
+
+            return NoContent();
+        }
+
+        [HttpGet("reactivate-account")]
+        public async Task<IActionResult> ReactivateAccount([FromQuery]string email, [FromQuery]string token)
+        {
+            var user = await _uof.userReadOnly.UserByEmail(email);
+
+            if (user is null || await _userManager.VerifyUserTokenAsync(user, "Email", "ReactivateAccount", token))
+                return BadRequest("Invalid request");
+
+            user.Active = true;
+            user.TimeDisabled = null;
+
+            await _userManager.UpdateAsync(user);
+
+            return NoContent();
+        }
 
         [AuthenticationUser]
         [HttpGet("revoke")]

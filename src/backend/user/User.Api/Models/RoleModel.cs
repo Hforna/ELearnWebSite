@@ -6,6 +6,6 @@ namespace User.Api.Models
     [Table("roles")]
     public class RoleModel : IdentityRole<long>
     {
-        public RoleModel(string name) => Name = name;
+        
     }
 }
