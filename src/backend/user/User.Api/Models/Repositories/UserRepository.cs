@@ -14,12 +14,19 @@ namespace User.Api.Models.Repositories
             await _dbContext.Users.AddAsync(user);
         }
 
+        public void DeleteUser(UserModel user)
+        {
+            _dbContext.Users.Remove(user);
+        }
+
         public async Task<bool> EmailExists(string email)
         {
             var exists = await _dbContext.Users.FirstOrDefaultAsync(d =>  d.Email == email);
 
             return exists != null;
         }
+
+        public async Task<IList<UserModel>> GetUsersNotActive() =>  await _dbContext.Users.Where(d => d.Active == false && d.TimeDisabled != null).ToListAsync();
 
         public async Task<UserModel?> UserByEmail(string email)
         {

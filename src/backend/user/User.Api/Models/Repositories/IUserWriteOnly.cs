@@ -3,5 +3,6 @@
     public interface IUserWriteOnly
     {
         public Task CreateUser(UserModel user);
+        public void DeleteUser(UserModel user);
     }
 }

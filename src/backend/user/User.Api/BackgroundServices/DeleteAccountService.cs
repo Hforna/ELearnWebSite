@@ -15,7 +15,7 @@ namespace User.Api.BackgroundServices
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            _logger.LogInformation("DeleteAccountService iniciado em {Time}.", DateTime.UtcNow);
+            _logger.LogInformation("DeleteAccountService started on {Time}.", DateTime.UtcNow);
 
             while (!stoppingToken.IsCancellationRequested)
             {

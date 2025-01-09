@@ -20,7 +20,7 @@ namespace User.Api.DbContext
                 new RoleModel() { Id = 2, Name = "customer", NormalizedName = "CUSTOMER"},
                 new RoleModel() { Id = 3, Name = "teacher", NormalizedName = "TEACHER"}
             );
-
+            
             base.OnModelCreating(builder);
         }
     }

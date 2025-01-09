@@ -17,6 +17,7 @@ using User.Api.Filters.Token;
 using Microsoft.OpenApi.Models;
 using User.Api.Filters;
 using User.Api.Services;
+using User.Api.BackgroundServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -127,6 +128,8 @@ builder.Services.AddAuthentication(options =>
     jwt.SaveToken = true;
     jwt.TokenValidationParameters = tokenValidationParams;
 });
+
+builder.Services.AddHostedService<DeleteAccountService>();
 
 var app = builder.Build();
 
