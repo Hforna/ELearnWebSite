@@ -1,5 +1,7 @@
 ﻿using Course.Domain.Repositories;
+using Course.Domain.Services.Rest;
 using Course.Infrastructure.Data;
+using Course.Infrastructure.Services.Rest;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -18,6 +20,7 @@ namespace Course.Infrastructure
         {
             AddDbContext(services, configuration);
             AddRepositories(services);
+            AddServices(services);
         }
 
         private static void AddDbContext(IServiceCollection services, IConfiguration configuration)
@@ -31,6 +34,11 @@ namespace Course.Infrastructure
             services.AddScoped<ICourseReadOnly, CourseRepository>();
             services.AddScoped<ICourseWriteOnly, CourseRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+        }
+
+        private static void AddServices(IServiceCollection services)
+        {
+            services.AddScoped<IUserService, UserService>();
         }
     }
 }

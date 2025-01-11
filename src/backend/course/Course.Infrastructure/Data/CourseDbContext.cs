@@ -16,6 +16,8 @@ namespace Course.Infrastructure.Data
         public DbSet<Lesson> Lessons { get; set; }
         public DbSet<Enrollment> Enrollments { get; set; }
         public DbSet<Module> Modules { get; set; }
+        public DbSet<Review> Reviews { get; set; }
+        public DbSet<CourseTopicsEntity> CourseTopics { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
