@@ -25,6 +25,22 @@ services:
     networks:
      - backend
     environment:
-     - MSSQL_SA_PASSWORD=hG5rzck2vy3cHai
+     - MSSQL_SA_PASSWORD=
      - ACCEPT_EULA=Y
  
+  course.api:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_HTTP_PORTS=8082
+      - ASPNETCORE_HTTPS_PORTS=8083
+    ports:
+      - "8082"
+      - "8083"
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
+    networks:
+      - backend
+    depends_on:
+      - sqlserver
+
