@@ -78,6 +78,20 @@ namespace User.Api.Controllers
             return Created(string.Empty, "We sent a e-mail confirmation to you");
         }
 
+        [AuthenticationUser]
+        [HttpGet("get-user-roles/{uid}")]
+        public async Task<IActionResult> GetUserRoles([FromRoute]string uid)
+        {
+            var user = await _uof.userReadOnly.UserByUid(Guid.Parse(uid));
+
+            if (user is null)
+                return BadRequest("User doesn't exists");
+
+            var roles = await _userManager.GetRolesAsync(user);
+
+            return Ok(roles);
+        }
+
         [Authorize(Policy = "StaffOnly")]
         [HttpPost("add-user-role")]
         public async Task<IActionResult> AddUserToRole([FromBody]AddUserToRole request)
@@ -167,6 +181,7 @@ namespace User.Api.Controllers
             return Ok();
         }
 
+        [AuthenticationUser]
         [HttpGet("user-infos")]
         public async Task<IActionResult> UserInfos()
         {

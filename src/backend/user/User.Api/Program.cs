@@ -67,6 +67,7 @@ builder.Services.AddAuthorization(auth =>
 {
     auth.AddPolicy("AdminOnly", d => d.RequireRole("admin"));
     auth.AddPolicy("CreateEmployeeAccounts", d => d.RequireRole("admin", "staff"));
+    auth.AddPolicy("OnlyTeacher", d => d.RequireRole("teacher"));
 });
 
 builder.Services.AddDbContext<UserDbContext>(opt => opt.UseSqlServer(builder.Configuration.GetConnectionString("sqlserver")));
