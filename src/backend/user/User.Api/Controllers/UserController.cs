@@ -67,7 +67,9 @@ namespace User.Api.Controllers
             await _uof.userWriteOnly.CreateUser(user);
             await _uof.Commit();
 
-            await _userManager.AddToRoleAsync(user, "customer");
+            var userRole = request.isTeacher ? "teacher" : "customer";
+
+            await _userManager.AddToRoleAsync(user, userRole);
             var tokenEmail = await _userManager.GenerateEmailConfirmationTokenAsync(user);
 
             var appUrl = _configuration.GetValue<string>("appUrl");
