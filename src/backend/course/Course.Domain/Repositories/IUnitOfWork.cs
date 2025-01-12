@@ -8,5 +8,8 @@ namespace Course.Domain.Repositories
 {
     public interface IUnitOfWork
     {
+        public ICourseReadOnly courseRead { get; set; }
+        public ICourseWriteOnly courseWrite { get; set; }
+        public Task Commit();
     }
 }

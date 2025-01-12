@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace Course.Domain.Entitites
 {
     [Table("modules")]
-    public class Module : BaseEntitie
+    public class Module : BaseEntity
     {
         [ForeignKey("Course")]
         public long CourseId { get; set; }
@@ -17,5 +17,6 @@ namespace Course.Domain.Entitites
         [MaxLength(100, ErrorMessage = "Name field length must be less than 100")]
         public string Name { get; set; }
         public int LessonsNumber { get; set; }
+        public double Duration { get; set; }
     }
 }

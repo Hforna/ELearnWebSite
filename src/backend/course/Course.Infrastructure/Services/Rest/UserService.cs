@@ -25,14 +25,12 @@ namespace Course.Infrastructure.Services.Rest
             _token = _tokenReceptor.GetToken();
         }
 
-        public UserService(IHttpClientFactory httpClient) => _httpClient = httpClient;
-
         public async Task<UserInfosDto> GetUserInfos()
         {
-            var client = _httpClient.CreateClient();
+            var client = _httpClient.CreateClient("user.api");
             client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _token);
 
-            var response = await client.GetAsync("https://user.api:8081/api/user/user-infos");
+            var response = await client.GetAsync("api/user/user-infos");
 
             if(response.IsSuccessStatusCode)
             {
@@ -42,8 +40,7 @@ namespace Course.Infrastructure.Services.Rest
 
                 return userInfosFormat!;
             }
-            throw new RestException(response.Content.ToString());
-            
+            throw new RestException(response.Content.ToString());    
         }
 
         public async Task<List<string>> GetUserRoles(Guid uid)

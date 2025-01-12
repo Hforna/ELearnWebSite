@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Course.Domain.Entitites
 {
-    public class Enrollment : BaseEntitie
+    public class Enrollment : BaseEntity
     {
         public long CustomerId { get; set; }
         public long CourseId { get; set; }

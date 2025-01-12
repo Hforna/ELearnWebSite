@@ -1,6 +1,8 @@
 ﻿using Course.Domain.Repositories;
+using Course.Domain.Services.Azure;
 using Course.Domain.Services.Rest;
 using Course.Infrastructure.Data;
+using Course.Infrastructure.Services.Azure;
 using Course.Infrastructure.Services.Rest;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -21,6 +23,7 @@ namespace Course.Infrastructure
             AddDbContext(services, configuration);
             AddRepositories(services);
             AddServices(services);
+            AddAzureStorage(services, configuration);
         }
 
         private static void AddDbContext(IServiceCollection services, IConfiguration configuration)
@@ -34,6 +37,12 @@ namespace Course.Infrastructure
             services.AddScoped<ICourseReadOnly, CourseRepository>();
             services.AddScoped<ICourseWriteOnly, CourseRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+        }
+
+        private static void AddAzureStorage(IServiceCollection services, IConfiguration configuration)
+        {
+            var connectionString = configuration.GetValue<string>("services:azure:storage:blobClient");
+            services.AddScoped<IStorageService>(d => new StorageService(new Azure.Storage.Blobs.BlobServiceClient(connectionString)));
         }
 
         private static void AddServices(IServiceCollection services)

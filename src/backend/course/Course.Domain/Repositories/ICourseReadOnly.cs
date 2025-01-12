@@ -8,5 +8,6 @@ namespace Course.Domain.Repositories
 {
     public interface ICourseReadOnly
     {
+
     }
 }

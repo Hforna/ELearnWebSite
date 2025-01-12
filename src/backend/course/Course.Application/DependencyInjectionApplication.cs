@@ -1,5 +1,8 @@
 ﻿using AutoMapper;
 using Course.Application.Services;
+using Course.Application.Services.AutoMapper;
+using Course.Application.UseCases.Course;
+using Course.Application.UseCases.Repositories.Course;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Sqids;
@@ -18,6 +21,7 @@ namespace Course.Application
         {
             AddSqids(services, configuration);
             ConfigureAutoMapper(services);
+            AddRepositories(services);
         }
 
         private static void AddSqids(IServiceCollection services, IConfiguration configuration)
@@ -26,6 +30,11 @@ namespace Course.Application
             var alphabet = configuration.GetSection("services:sqids:alphabet").Value;
 
             services.AddSingleton(d => new SqidsEncoder<long>(new SqidsOptions() { Alphabet = alphabet, MinLength = minLength}));
+        }
+
+        private static void AddRepositories(IServiceCollection services)
+        {
+            services.AddScoped<ICreateCourse, CreateCourse>();
         }
 
         private static void ConfigureAutoMapper(IServiceCollection services)

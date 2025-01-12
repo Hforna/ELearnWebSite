@@ -10,14 +10,14 @@ namespace Course.Infrastructure.Data
     public class UnitOfWork : IUnitOfWork
     {
         private readonly CourseDbContext _dbContext;
-        private readonly ICourseReadOnly _courseRead;
-        private readonly ICourseWriteOnly _courseWrite;
+        public ICourseReadOnly courseRead { get; set; }
+        public ICourseWriteOnly courseWrite { get; set; }
 
         public UnitOfWork(CourseDbContext dbContext, ICourseReadOnly courseRead, ICourseWriteOnly courseWrite)
         {
             _dbContext = dbContext;
-            _courseRead = courseRead;
-            _courseWrite = courseWrite;
+            this.courseRead = courseRead;
+            this.courseWrite = courseWrite;
         }
 
         public async Task Commit()
