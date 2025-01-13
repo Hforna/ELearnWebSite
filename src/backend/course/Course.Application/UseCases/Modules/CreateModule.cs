@@ -41,40 +41,26 @@ namespace Course.Application.UseCases.Modules
             if (course is null)
                 throw new CourseException(ResourceExceptMessages.COURSE_DOESNT_EXISTS);
 
-            if (request.Position is not null && (request.Position < 1 || request.Position > course.Modules.Count + 1))
+            if (request.Position is not null && (request.Position < 1 || (request.Position > course.Modules.Count + 1)))
                 throw new CourseException(ResourceExceptMessages.MODULE_POSITION_OUT_RANGE);
 
             var module = _mapper.Map<Module>(request);
             module.CourseId = course.Id;
 
-            if(request.moveToFront is not null && request.Position is not null)
+            if (request.Position is not null)
             {
                 if (course.Modules.Any(d => d.Position == module.Position))
                 {
-                    if ((bool)request.moveToFront)
+                    var moduleFilter = course.Modules.Where(d => d.Position >= request.Position).OrderBy(d => d.Position).Select(m =>
                     {
-                        var moduleFilter = course.Modules.Where(d => d.Position <= request.Position).OrderBy(d => d.Position).Select(m =>
-                        {
-                            m.Position -= 1;
+                        m.Position += 1;
 
-                            return m;
-                        }).ToList();
+                        return m;
+                    }).ToList();
 
-                        _uof.moduleWrite.UpdateModules(moduleFilter);
-                    }
-                    else if ((bool)!request.moveToFront)
-                    {
-                        var moduleFilter = course.Modules.Where(d => d.Position >= request.Position).OrderBy(d => d.Position).Select(m =>
-                        {
-                            m.Position += 1;
-
-                            return m;
-                        }).ToList();
-
-                        _uof.moduleWrite.UpdateModules(moduleFilter);
-                    }
+                    _uof.moduleWrite.UpdateModules(moduleFilter);
                 }
-            }
+            }          
 
             if (request.Position is null)
                 module.Position = course.Modules.Count + 1;

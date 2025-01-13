@@ -48,6 +48,7 @@ namespace Course.Application.UseCases.Course
 
             var course = _mapper.Map<CourseEntity>(request);
             course.TeacherId = _sqids.Decode(userInfos.id).Single();
+            course.Active = false;
 
             if(request.ThumbnailImage is not null)
             {
