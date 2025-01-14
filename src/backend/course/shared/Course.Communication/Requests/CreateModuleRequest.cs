@@ -9,9 +9,8 @@ namespace Course.Communication.Requests
 {
     public class CreateModuleRequest
     {
-        public string Title { get; set; }
+        public string Name { get; set; }
         public int? Position { get; set; }
-        public bool? moveToFront { get; set; }
         public string Description { get; set; }
     }
 }

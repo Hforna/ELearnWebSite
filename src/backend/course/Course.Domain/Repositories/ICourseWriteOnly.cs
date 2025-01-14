@@ -10,6 +10,7 @@ namespace Course.Domain.Repositories
     public interface ICourseWriteOnly
     {
         public void AddCourse(CourseEntity course);
+        public void UpdateCourse(CourseEntity course);
         public void AddCourseTopics(IList<CourseTopicsEntity> topics);
     }
 }

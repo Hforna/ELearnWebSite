@@ -16,5 +16,6 @@ namespace Course.Domain.Entitites
         public string VideoUrl { get; set; }
         public int TimeInMinutes { get; set; }
         public int Order { get; set; }
+        public bool isFree { get; set; }
     }
 }

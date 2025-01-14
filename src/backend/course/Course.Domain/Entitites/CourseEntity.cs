@@ -22,8 +22,8 @@ namespace Course.Domain.Entitites
         public double Price { get; set; }
         public int? Enrollments { get; set; }
         public LanguagesEnum CourseLanguage { get; set; }
-        public CourseRatingEnum Rating { get; set; }
         public double? Duration { get; set; }
+        public int ModulesNumber { get; set; }       
         public Collection<Module> Modules { get; set; }
         public Guid courseIdentifier { get; set; } = Guid.NewGuid();
     }

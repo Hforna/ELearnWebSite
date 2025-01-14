@@ -16,6 +16,8 @@ namespace Course.Domain.Entitites
         public CourseEntity Course { get; set; }
         [MaxLength(100, ErrorMessage = "Name field length must be less than 100")]
         public string Name { get; set; }
+        public string Description { get; set; }
+        public int Position { get; set; }
         public int LessonsNumber { get; set; }
         public double Duration { get; set; }
     }

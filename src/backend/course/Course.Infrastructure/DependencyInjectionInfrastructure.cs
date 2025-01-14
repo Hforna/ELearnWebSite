@@ -37,6 +37,8 @@ namespace Course.Infrastructure
             services.AddScoped<ICourseReadOnly, CourseRepository>();
             services.AddScoped<ICourseWriteOnly, CourseRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<IModuleReadOnly, ModuleRepository>();
+            services.AddScoped<IModuleWriteOnly, ModuleRepository>();
         }
 
         private static void AddAzureStorage(IServiceCollection services, IConfiguration configuration)

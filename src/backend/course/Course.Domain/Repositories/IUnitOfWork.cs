@@ -10,6 +10,8 @@ namespace Course.Domain.Repositories
     {
         public ICourseReadOnly courseRead { get; set; }
         public ICourseWriteOnly courseWrite { get; set; }
+        public IModuleWriteOnly moduleWrite { get; set; }
+        public IModuleReadOnly moduleRead { get; set; }
         public Task Commit();
     }
 }

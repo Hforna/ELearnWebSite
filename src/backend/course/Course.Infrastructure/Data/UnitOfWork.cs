@@ -12,12 +12,17 @@ namespace Course.Infrastructure.Data
         private readonly CourseDbContext _dbContext;
         public ICourseReadOnly courseRead { get; set; }
         public ICourseWriteOnly courseWrite { get; set; }
+        public IModuleWriteOnly moduleWrite { get; set; }
+        public IModuleReadOnly moduleRead { get; set; }
 
-        public UnitOfWork(CourseDbContext dbContext, ICourseReadOnly courseRead, ICourseWriteOnly courseWrite)
+        public UnitOfWork(CourseDbContext dbContext, ICourseReadOnly courseRead, ICourseWriteOnly courseWrite,
+            IModuleReadOnly moduleReadOnly, IModuleWriteOnly moduleWriteOnly)
         {
             _dbContext = dbContext;
             this.courseRead = courseRead;
             this.courseWrite = courseWrite;
+            moduleRead = moduleReadOnly;
+            moduleWrite = moduleWriteOnly;
         }
 
         public async Task Commit()

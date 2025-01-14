@@ -23,6 +23,8 @@ namespace Course.Infrastructure.Data
         {
             base.OnModelCreating(modelBuilder);
 
+            modelBuilder.Entity<CourseEntity>().HasMany(d => d.Modules).WithOne(d => d.Course);
+
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(CourseDbContext).Assembly);
         }
     }
