@@ -14,7 +14,7 @@ namespace Course.Exception
         public UserException(List<string> errors) => Errors = errors;
         public UserException(string error) => Errors.Add(error);
 
-        public override IList<string> GetMessage() => [Message];
+        public override string GetMessage() => Message;
 
         public override HttpStatusCode GetStatusCode() => HttpStatusCode.NotFound;
     }

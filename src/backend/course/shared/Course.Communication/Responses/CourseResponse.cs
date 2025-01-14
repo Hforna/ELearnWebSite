@@ -11,7 +11,8 @@ namespace Course.Communication.Responses
     {
         public string Id { get; set; }
         public string TeacherId { get; set; }
-        public int Enrollments { get; set; }
+        public int? Enrollments { get; set; }
+        public double? Duration { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
         public double Price { get; set; }

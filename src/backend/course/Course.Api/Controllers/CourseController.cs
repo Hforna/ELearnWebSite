@@ -3,6 +3,7 @@ using Course.Application.UseCases.Modules;
 using Course.Application.UseCases.Repositories.Course;
 using Course.Communication.Requests;
 using Course.Communication.Responses;
+using Course.Exception;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -32,6 +33,8 @@ namespace Course.Api.Controllers
         }
 
         [HttpGet("{id}")]
+        [ProducesResponseType(typeof(CourseResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(CourseException), StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetCourse([FromRoute][ModelBinder(typeof(BinderId))]long id, [FromServices]IGetCourse useCase)
         {
             var result = await useCase.Execute(id);

@@ -32,7 +32,6 @@ namespace Course.Application.UseCases.Course
         public async Task<CourseResponse> Execute(long id)
         {
             var course = await _uof.courseRead.CourseById(id);
-
             if (course is null)
                 throw new CourseException(ResourceExceptMessages.COURSE_DOESNT_EXISTS);
 

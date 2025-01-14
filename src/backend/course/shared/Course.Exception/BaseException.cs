@@ -13,6 +13,6 @@ namespace Course.Exception
         public abstract List<string> Errors { get; set; }
 
         public abstract HttpStatusCode GetStatusCode();
-        public abstract IList<string> GetMessage();
+        public abstract string GetMessage();
     }
 }

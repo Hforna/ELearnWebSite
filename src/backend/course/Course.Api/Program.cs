@@ -49,8 +49,9 @@ builder.Services.AddSwaggerGen(options =>
         }
     });
 });
-
 builder.Services.AddRouting(d => d.LowercaseUrls = true);
+
+builder.Services.AddMvc(d => d.Filters.Add(typeof(FilterException)));
 
 builder.Services.AddAuthorization(auth =>
 {
