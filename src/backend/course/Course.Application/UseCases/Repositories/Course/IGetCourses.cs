@@ -8,8 +8,8 @@ using System.Threading.Tasks;
 
 namespace Course.Application.UseCases.Repositories.Course
 {
-    public interface ICreateCourse
+    public interface IGetCourses
     {
-        public Task<CourseShortResponse> Execute(CreateCourseRequest request);
+        public Task<CoursesResponse> Execute(GetCoursesRequest request, int page, int itemsQuantity);
     }
 }

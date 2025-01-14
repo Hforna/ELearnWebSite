@@ -70,6 +70,15 @@ namespace Course.Exception {
         }
         
         /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Course doesn&apos;t exists.
+        /// </summary>
+        public static string COURSE_DOESNT_EXISTS {
+            get {
+                return ResourceManager.GetString("COURSE_DOESNT_EXISTS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a Course language must be within enum.
         /// </summary>
         public static string COURSE_LANGUAGE_OUT_ENUM {
@@ -84,6 +93,33 @@ namespace Course.Exception {
         public static string COURSE_TITLE_LENGTH_LESS_THAN_256 {
             get {
                 return ResourceManager.GetString("COURSE_TITLE_LENGTH_LESS_THAN_256", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Invalid image name.
+        /// </summary>
+        public static string INAVLID_IMAGE_NAME {
+            get {
+                return ResourceManager.GetString("INAVLID_IMAGE_NAME", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Invalid course container.
+        /// </summary>
+        public static string INVALID_COURSE_CONTAINER {
+            get {
+                return ResourceManager.GetString("INVALID_COURSE_CONTAINER", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Module postion is out of range.
+        /// </summary>
+        public static string MODULE_POSITION_OUT_RANGE {
+            get {
+                return ResourceManager.GetString("MODULE_POSITION_OUT_RANGE", resourceCulture);
             }
         }
         

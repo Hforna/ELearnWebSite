@@ -37,7 +37,7 @@ namespace Course.Application.UseCases.Course
             _storageService = storageService;
         }
 
-        public async Task<CourseResponse> Execute(CreateCourseRequest request)
+        public async Task<CourseShortResponse> Execute(CreateCourseRequest request)
         {
             Validate(request);
 
@@ -69,9 +69,9 @@ namespace Course.Application.UseCases.Course
 
             await _uof.Commit();
 
-            var response = _mapper.Map<CourseResponse>(course);
+            var response = _mapper.Map<CourseShortResponse>(course);
             response.CourseId = _sqids.Encode(course.Id);
-            response.TeacherId = _sqids.Encode(course.Id);
+            response.TeacherId = _sqids.Encode(course.TeacherId);
 
             return response;
         }

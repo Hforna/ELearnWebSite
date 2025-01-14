@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Course.Domain.Services.Token;
 using Course.Api.Filters;
 using Microsoft.OpenApi.Models;
+using Course.Domain.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -94,6 +95,16 @@ builder.Services.AddHttpClient("user.api", client =>
 }).ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
 {
     ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true
+});
+
+
+builder.Services.AddDistributedMemoryCache();
+
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30); 
+    options.Cookie.HttpOnly = true; 
+    options.Cookie.IsEssential = true;
 });
 
 var app = builder.Build();

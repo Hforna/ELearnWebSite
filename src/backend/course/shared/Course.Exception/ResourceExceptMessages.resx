@@ -129,4 +129,16 @@
   <data name="USER_INFOS_DOESNT_EXISTS" xml:space="preserve">
     <value>User infos doesn't exists</value>
   </data>
+  <data name="COURSE_DOESNT_EXISTS" xml:space="preserve">
+    <value>Course doesn't exists</value>
+  </data>
+  <data name="MODULE_POSITION_OUT_RANGE" xml:space="preserve">
+    <value>Module postion is out of range</value>
+  </data>
+  <data name="INVALID_COURSE_CONTAINER" xml:space="preserve">
+    <value>Invalid course container</value>
+  </data>
+  <data name="INAVLID_IMAGE_NAME" xml:space="preserve">
+    <value>Invalid image name</value>
+  </data>
 </root>

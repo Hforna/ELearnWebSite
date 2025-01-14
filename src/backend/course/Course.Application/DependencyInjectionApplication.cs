@@ -2,6 +2,7 @@
 using Course.Application.Services;
 using Course.Application.Services.AutoMapper;
 using Course.Application.UseCases.Course;
+using Course.Application.UseCases.Modules;
 using Course.Application.UseCases.Repositories.Course;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -35,13 +36,17 @@ namespace Course.Application
         private static void AddRepositories(IServiceCollection services)
         {
             services.AddScoped<ICreateCourse, CreateCourse>();
+            services.AddScoped<CreateModule, CreateModule>();
+            services.AddScoped<IGetCourses, GetCourses>();
+            services.AddScoped<IGetCourse, GetCourse>();
         }
 
         private static void ConfigureAutoMapper(IServiceCollection services)
         {
             services.AddScoped(mapper =>
             {
-                var config = new MapperConfiguration(d => d.AddProfile(new MapperService()));
+                var sqid = mapper.GetRequiredService<SqidsEncoder<long>>();
+                var config = new MapperConfiguration(d => d.AddProfile(new MapperService(sqid)));
 
                 return config.CreateMapper();
             });
