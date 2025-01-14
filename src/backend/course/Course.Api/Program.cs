@@ -17,6 +17,8 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
+    options.OperationFilter<FilterBindId>();
+
     options.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
     {
         Description = @"JWT Authorization header using the Bearer scheme.
@@ -46,6 +48,8 @@ builder.Services.AddSwaggerGen(options =>
         }
     });
 });
+
+builder.Services.AddRouting(d => d.LowercaseUrls = true);
 
 builder.Services.AddAuthorization(auth =>
 {
