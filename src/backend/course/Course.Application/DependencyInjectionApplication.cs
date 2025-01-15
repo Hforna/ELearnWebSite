@@ -23,6 +23,7 @@ namespace Course.Application
             AddSqids(services, configuration);
             ConfigureAutoMapper(services);
             AddRepositories(services);
+            AddEmailSerice(services, configuration);
         }
 
         private static void AddSqids(IServiceCollection services, IConfiguration configuration)
@@ -39,6 +40,15 @@ namespace Course.Application
             services.AddScoped<CreateModule, CreateModule>();
             services.AddScoped<IGetCourses, GetCourses>();
             services.AddScoped<IGetCourse, GetCourse>();
+            services.AddScoped<IDeleteCourse, DeleteCourse>();
+        }
+
+        private static void AddEmailSerice(IServiceCollection services, IConfiguration configuration)
+        {
+            var userName = configuration.GetValue<string>("services:email:userName");
+            var password = configuration.GetValue<string>("services:email:password");
+            var email = configuration.GetValue<string>("services:email:email");
+            services.AddSingleton(new EmailService(userName, email, password));
         }
 
         private static void ConfigureAutoMapper(IServiceCollection services)

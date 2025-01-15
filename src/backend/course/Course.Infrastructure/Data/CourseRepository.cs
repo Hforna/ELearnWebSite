@@ -41,7 +41,7 @@ namespace Course.Infrastructure.Data
 
         public IPagedList<CourseEntity> GetCourses(int page, GetCoursesFilterDto dto, int itemsQuantity = 6)
         {
-            var courses = _dbContext.Courses.Where(d => d.Active);
+            var courses = _dbContext.Courses.Where(d => d.IsPublish);
 
             if (!string.IsNullOrEmpty(dto.Text))
                 courses = courses.Where(d => dto.Text.Contains(d.Title));

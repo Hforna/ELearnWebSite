@@ -141,4 +141,7 @@
   <data name="INAVLID_IMAGE_NAME" xml:space="preserve">
     <value>Invalid image name</value>
   </data>
+  <data name="COURSE_NOT_OF_USER" xml:space="preserve">
+    <value>The course must be of user</value>
+  </data>
 </root>

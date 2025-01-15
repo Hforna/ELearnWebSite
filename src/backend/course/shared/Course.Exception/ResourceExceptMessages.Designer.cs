@@ -88,6 +88,15 @@ namespace Course.Exception {
         }
         
         /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a The course must be of user.
+        /// </summary>
+        public static string COURSE_NOT_OF_USER {
+            get {
+                return ResourceManager.GetString("COURSE_NOT_OF_USER", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a Course description length must be less or equal 256.
         /// </summary>
         public static string COURSE_TITLE_LENGTH_LESS_THAN_256 {
