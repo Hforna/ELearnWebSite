@@ -20,5 +20,6 @@ namespace Course.Domain.Entitites
         public int Position { get; set; }
         public int LessonsNumber { get; set; }
         public double Duration { get; set; }
+        public IList<Lesson> Lessons { get; set; }
     }
 }

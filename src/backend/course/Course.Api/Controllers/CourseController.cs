@@ -51,6 +51,5 @@ namespace Course.Api.Controllers
 
             return NoContent();
         }
-
     }
 }

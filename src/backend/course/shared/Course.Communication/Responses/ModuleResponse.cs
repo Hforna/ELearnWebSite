@@ -12,5 +12,6 @@ namespace Course.Communication.Responses
         public string CourseId { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
+        public IList<LessonResponse> Lessons { get; set; }
     }
 }

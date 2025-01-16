@@ -47,6 +47,10 @@ namespace Course.Application.Services.AutoMapper
 
             CreateMap<CourseTopicsEntity, CourseTopicsResponse>();
 
+            CreateMap<Lesson, LessonResponse>()
+                .ForMember(d => d.Id, f => f.MapFrom(d => _sqids.Encode(d.Id)))
+                .ForMember(d => d.ModuleId, f => f.MapFrom(d => _sqids.Encode(d.ModuleId)));
+
             CreateMap<IPagedList<CourseEntity>, CoursesResponse>();
 
             CreateMap<Module, ModuleResponse>()

@@ -36,7 +36,7 @@ namespace Course.Application.UseCases.Course
                 throw new CourseException(ResourceExceptMessages.COURSE_DOESNT_EXISTS);
 
             var response = _mapper.Map<CourseResponse>(course);
-            response.ThumbnailUrl = await _storage.GetCourseImage(course.courseIdentifier, course.Thumbnail);
+            //response.ThumbnailUrl = await _storage.GetCourseImage(course.courseIdentifier, course.Thumbnail);
 
             return response;
         }
