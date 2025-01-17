@@ -124,6 +124,24 @@ namespace Course.Exception {
         }
         
         /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Module doesn&apos;t exists.
+        /// </summary>
+        public static string MODULE_DOESNT_EXISTS {
+            get {
+                return ResourceManager.GetString("MODULE_DOESNT_EXISTS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a User is not owner&apos;s course module .
+        /// </summary>
+        public static string MODULE_NOT_OF_USER {
+            get {
+                return ResourceManager.GetString("MODULE_NOT_OF_USER", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a Module postion is out of range.
         /// </summary>
         public static string MODULE_POSITION_OUT_RANGE {

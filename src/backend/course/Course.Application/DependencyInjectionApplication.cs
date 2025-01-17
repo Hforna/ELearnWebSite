@@ -4,6 +4,7 @@ using Course.Application.Services.AutoMapper;
 using Course.Application.UseCases.Course;
 using Course.Application.UseCases.Modules;
 using Course.Application.UseCases.Repositories.Course;
+using Course.Application.UseCases.Repositories.Modules;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Sqids;
@@ -41,6 +42,7 @@ namespace Course.Application
             services.AddScoped<IGetCourses, GetCourses>();
             services.AddScoped<IGetCourse, GetCourse>();
             services.AddScoped<IDeleteCourse, DeleteCourse>();
+            services.AddScoped<IDeleteModule, DeleteModule>();
         }
 
         private static void AddEmailSerice(IServiceCollection services, IConfiguration configuration)

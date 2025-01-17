@@ -1,5 +1,6 @@
 ﻿using Course.Domain.Entitites;
 using Course.Domain.Repositories;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,6 +18,16 @@ namespace Course.Infrastructure.Data
         public void AddModule(Module module)
         {
             _dbContext.Modules.Add(module);
+        }
+
+        public void DeleteModule(Module module)
+        {
+            _dbContext.Modules.Remove(module);
+        }
+
+        public async Task<Module?> ModuleById(long id)
+        {
+            return await _dbContext.Modules.Include(d => d.Course).SingleOrDefaultAsync(d => d.Id == id && d.Active);
         }
 
         public void UpdateModule(Module module)

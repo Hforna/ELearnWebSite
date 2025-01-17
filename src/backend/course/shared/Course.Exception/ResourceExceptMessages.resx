@@ -144,4 +144,10 @@
   <data name="COURSE_NOT_OF_USER" xml:space="preserve">
     <value>The course must be of user</value>
   </data>
+  <data name="MODULE_DOESNT_EXISTS" xml:space="preserve">
+    <value>Module doesn't exists</value>
+  </data>
+  <data name="MODULE_NOT_OF_USER" xml:space="preserve">
+    <value>User is not owner's course module </value>
+  </data>
 </root>

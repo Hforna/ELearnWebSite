@@ -1,5 +1,6 @@
 ﻿using Course.Api.Binders;
 using Course.Application.UseCases.Modules;
+using Course.Application.UseCases.Repositories.Modules;
 using Course.Communication.Requests;
 using Course.Communication.Responses;
 using Microsoft.AspNetCore.Authorization;
@@ -21,6 +22,15 @@ namespace Course.Api.Controllers
             var result = await useCase.Execute(request, id);
 
             return Created(string.Empty, result);
+        }
+
+        [Authorize(Policy = "TeacherOnly")]
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteModule([FromRoute][ModelBinder(typeof(BinderId))]long id, [FromServices]IDeleteModule useCase)
+        {
+            await useCase.Execute(id);
+
+            return NoContent();
         }
 
         

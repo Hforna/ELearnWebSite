@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace Course.Domain.Repositories
 {
-    public interface IModuleReadOnly
+    public interface ILessonWriteOnly
     {
-        public Task<Module?> ModuleById(long id);
+        public void DeleteLessonRange(IList<Lesson> lessons);
     }
 }

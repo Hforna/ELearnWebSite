@@ -12,5 +12,6 @@ namespace Course.Domain.Repositories
         public void AddModule(Module module);
         public void UpdateModule(Module module);
         public void UpdateModules(List<Module> modules);
+        public void DeleteModule(Module module);
     }
 }
