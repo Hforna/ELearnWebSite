@@ -123,7 +123,7 @@
   <data name="EMAIL_NULL" xml:space="preserve">
     <value>E-mail field can't be null</value>
   </data>
-  <data name="Username null" xml:space="preserve">
+  <data name="USERNAME_NULL" xml:space="preserve">
     <value>Username can't be null
 </value>
   </data>

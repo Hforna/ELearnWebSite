@@ -2,6 +2,8 @@
 using Course.Domain.Services.Azure;
 using Course.Domain.Services.Rest;
 using Course.Infrastructure.Data;
+using Course.Infrastructure.Data.Course;
+using Course.Infrastructure.Data.VideoD;
 using Course.Infrastructure.Services.Azure;
 using Course.Infrastructure.Services.Rest;
 using Microsoft.EntityFrameworkCore;
@@ -30,6 +32,8 @@ namespace Course.Infrastructure
         {
             var sqlconnection = configuration.GetConnectionString("sqlserver");
             services.AddDbContext<CourseDbContext>(d => d.UseSqlServer(sqlconnection));
+
+            services.AddScoped<VideoDbContext>(d => new VideoDbContext(configuration));
         }
 
         private static void AddRepositories(IServiceCollection services)
