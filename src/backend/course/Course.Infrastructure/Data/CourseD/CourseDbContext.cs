@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Course.Infrastructure.Data
+namespace Course.Infrastructure.Data.Course
 {
     public class CourseDbContext : DbContext
     {

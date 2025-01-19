@@ -1,49 +1,57 @@
-﻿
-using Course.Domain.Repositories;
+﻿using Course.Domain.Repositories;
 using Course.Domain.Services.Azure;
 using Course.Infrastructure.Data;
+using Course.Infrastructure.Services.Azure;
 
 namespace Course.Api.BackgroundServices
 {
     public class DeleteModuleService : BackgroundService
     {
-        private readonly IStorageService _storageService;
-        private readonly IUnitOfWork _uof;
+        private readonly IServiceProvider _provider;
 
-        public DeleteModuleService(IStorageService storageService, IUnitOfWork uof)
+        public DeleteModuleService(IServiceProvider provider)
         {
-            _storageService = storageService;
-            _uof = uof;
+            _provider = provider;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             while(!stoppingToken.IsCancellationRequested)
             {
-                var modules = await _uof.moduleRead.GetNotActiveModules();
-
-                if(modules.Count != 0 || modules is not null)
+                try
                 {
-                    foreach (var module in modules)
+                    using var scope = _provider.CreateScope();
+                    var storageService = scope.ServiceProvider.GetRequiredService<IStorageService>();
+                    var uof = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
+
+                    var modules = await uof.moduleRead.GetNotActiveModules();
+
+                    if (modules.Count != 0 && modules is not null)
                     {
-                        if (module.Lessons.Count != 0)
+                        foreach (var module in modules)
                         {
-                            foreach (var lesson in module.Lessons)
+                            if (module.Lessons.Count != 0)
                             {
-                                var video = await _uof.videoRead.VideoById(lesson.VideoId);
+                                foreach (var lesson in module.Lessons)
+                                {
+                                    var video = await uof.videoRead.VideoById(lesson.VideoId);
 
-                                await _storageService.DeleteVideo(module.Course.courseIdentifier, video.Id);
-                                await _storageService.DeleteThumbnailVideo(video.Id);
+                                    await storageService.DeleteVideo(module.Course.courseIdentifier, video.Id);
+                                    await storageService.DeleteThumbnailVideo(video.Id);
 
-                                await _uof.videoWrite.DeleteVideo(video.Id);
+                                    await uof.videoWrite.DeleteVideo(video.Id);
+                                }
+                                uof.lessonWrite.DeleteLessonRange(module.Lessons);
                             }
-                            _uof.lessonWrite.DeleteLessonRange(module.Lessons);
+                            uof.moduleWrite.DeleteModule(module);
                         }
-                        _uof.moduleWrite.DeleteModule(module);
+                        await uof.Commit();
                     }
-                    await _uof.Commit();
                 }
-
+                catch(System.Exception ex)
+                {
+                    Console.WriteLine($"Error on delete module process: {ex}");
+                }
                 await Task.Delay(TimeSpan.FromDays(1));
             }
         }

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Course.Domain.Entitites
 {
-    public class VideoEntity
+    public class Video
     {
         [BsonId]
         [BsonRepresentation(MongoDB.Bson.BsonType.ObjectId)]

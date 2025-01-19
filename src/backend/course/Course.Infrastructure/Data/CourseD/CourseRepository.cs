@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 using X.PagedList;
 using X.PagedList.Extensions;
 
-namespace Course.Infrastructure.Data
+namespace Course.Infrastructure.Data.Course
 {
     public class CourseRepository : ICourseReadOnly, ICourseWriteOnly
     {
@@ -50,16 +50,18 @@ namespace Course.Infrastructure.Data
                 courses = courses.Where(d => dto.Languages.Contains(d.CourseLanguage));
             if (dto.Price is not null)
             {
-                if((int)dto.Price == 0)
+                if ((int)dto.Price == 0)
                 {
                     courses = courses.Where(d => d.Price <= 50);
-                } else if((int)dto.Price == 1)
+                }
+                else if ((int)dto.Price == 1)
                 {
                     courses = courses.Where(d => d.Price >= 50 && d.Price <= 200);
-                } else
+                }
+                else
                 {
                     courses = courses.Where(d => d.Price >= 200);
-                }               
+                }
             }
 
             return courses.Skip(page * itemsQuantity).Take(6).OrderByDescending(d => d.Enrollments).ToPagedList();
