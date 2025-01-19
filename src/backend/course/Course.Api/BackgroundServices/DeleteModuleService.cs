@@ -18,28 +18,31 @@ namespace Course.Api.BackgroundServices
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            if(!stoppingToken.IsCancellationRequested)
+            while(!stoppingToken.IsCancellationRequested)
             {
                 var modules = await _uof.moduleRead.GetNotActiveModules();
 
-                foreach(var module in modules)
+                if(modules.Count != 0 || modules is not null)
                 {
-                    if(module.Lessons.Count != 0)
+                    foreach (var module in modules)
                     {
-                        foreach(var lesson in module.Lessons)
+                        if (module.Lessons.Count != 0)
                         {
-                            var video = await _uof.videoRead.VideoById(lesson.VideoId);
+                            foreach (var lesson in module.Lessons)
+                            {
+                                var video = await _uof.videoRead.VideoById(lesson.VideoId);
 
-                            await _storageService.DeleteVideo(module.Course.courseIdentifier, video.Id);
-                            await _storageService.DeleteThumbnailVideo(video.Id);
+                                await _storageService.DeleteVideo(module.Course.courseIdentifier, video.Id);
+                                await _storageService.DeleteThumbnailVideo(video.Id);
 
-                            await _uof.videoWrite.DeleteVideo(video.Id);
+                                await _uof.videoWrite.DeleteVideo(video.Id);
+                            }
+                            _uof.lessonWrite.DeleteLessonRange(module.Lessons);
                         }
-                        _uof.lessonWrite.DeleteLessonRange(module.Lessons);
+                        _uof.moduleWrite.DeleteModule(module);
                     }
-                    _uof.moduleWrite.DeleteModule(module);
+                    await _uof.Commit();
                 }
-                await _uof.Commit();
 
                 await Task.Delay(TimeSpan.FromDays(1));
             }

@@ -9,6 +9,7 @@ using Microsoft.OpenApi.Models;
 using Course.Domain.Repositories;
 using Course.Api.Controllers;
 using Course.Api.BackgroundServices;
+using Microsoft.AspNetCore.RateLimiting;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -69,6 +70,17 @@ builder.Services.AddHostedService<DeleteModuleService>();
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddApplication(builder.Configuration);
 
+builder.Services.AddRateLimiter(d =>
+{
+    d.AddFixedWindowLimiter(policyName: "createCourseLimiter", d =>
+    {
+        d.PermitLimit = 3;
+        d.Window = TimeSpan.FromMinutes(2);
+        d.QueueProcessingOrder = System.Threading.RateLimiting.QueueProcessingOrder.OldestFirst;
+        d.QueueLimit = 4;
+    });
+});
+
 builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddScoped<ITokenReceptor, TokenReceptor>();
@@ -113,6 +125,8 @@ builder.Services.AddSession(options =>
 });
 
 var app = builder.Build();
+
+app.UseRateLimiter();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

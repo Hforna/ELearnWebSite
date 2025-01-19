@@ -7,12 +7,14 @@ using Course.Exception;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace Course.Api.Controllers
 {
     public class CourseController : ProjectBaseController
     {
         [Authorize(Policy = "TeacherOnly")]
+        [EnableRateLimiting("createCourseLimiter")]
         [HttpPost]
         [ProducesResponseType(typeof(CourseShortResponse), StatusCodes.Status201Created)]
         public async Task<IActionResult> CreateCourse([FromServices] ICreateCourse useCase, [FromForm] CreateCourseRequest request)
