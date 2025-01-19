@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Course.Infrastructure.Data
+namespace Course.Infrastructure.Data.Course
 {
     public class ModuleRepository : IModuleReadOnly, IModuleWriteOnly
     {
@@ -23,6 +23,11 @@ namespace Course.Infrastructure.Data
         public void DeleteModule(Module module)
         {
             _dbContext.Modules.Remove(module);
+        }
+
+        public async Task<IList<Module>> GetNotActiveModules()
+        {
+            return await _dbContext.Modules.Include(d => d.Course).Include(d => d.Lessons).Where(d => d.Active == false).ToListAsync();
         }
 
         public async Task<Module?> ModuleById(long id)

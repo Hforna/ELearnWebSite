@@ -1,5 +1,6 @@
 ﻿using Course.Application.UseCases.Repositories.Modules;
 using Course.Domain.Repositories;
+using Course.Domain.Services.Azure;
 using Course.Domain.Services.Rest;
 using Course.Exception;
 using Sqids;
@@ -16,12 +17,15 @@ namespace Course.Application.UseCases.Modules
         private readonly IUnitOfWork _uof;
         private readonly IUserService _userService;
         private readonly SqidsEncoder<long> _sqids;
+        private readonly IStorageService _storage;
 
-        public DeleteModule(IUnitOfWork uof, IUserService userService, SqidsEncoder<long> sqids)
+        public DeleteModule(IUnitOfWork uof, IUserService userService, 
+            SqidsEncoder<long> sqids, IStorageService storage)
         {
             _uof = uof;
             _userService = userService;
             _sqids = sqids;
+            _storage = storage;
         }
 
         public async Task Execute(long id)
@@ -37,13 +41,10 @@ namespace Course.Application.UseCases.Modules
             if (userId != module.Course.TeacherId)
                 throw new CourseException(ResourceExceptMessages.MODULE_NOT_OF_USER);
 
-            _uof.moduleWrite.DeleteModule(module);
+            module.Active = false;
 
-            var lessonsModule = module.Lessons;
-
-            _uof.lessonWrite.DeleteLessonRange(lessonsModule);
-
-            await _uof.Commit();
+            _uof.moduleWrite.UpdateModule(module);
+            await _uof.Commit();            
         }
     }
 }

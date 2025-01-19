@@ -17,6 +17,32 @@ namespace Course.Infrastructure.Services.Azure
 
         public StorageService(BlobServiceClient blobClient) => _blobClient = blobClient;
 
+        public async Task DeleteCourseImage(Guid courseIdentifier, string image)
+        {
+            var container = _blobClient.GetBlobContainerClient(courseIdentifier.ToString());
+
+            if (await container.ExistsAsync())
+                throw new CourseException(ResourceExceptMessages.INVALID_COURSE_CONTAINER);
+
+            var blob = container.GetBlobClient(image);
+            await blob.DeleteIfExistsAsync();
+        }
+
+        public async Task DeleteThumbnailVideo(string videoId)
+        {
+            await _blobClient.DeleteBlobContainerAsync(videoId);
+        }
+
+        public async Task DeleteVideo(Guid courseIdentifier, string videoId)
+        {
+            var container = _blobClient.GetBlobContainerClient(courseIdentifier.ToString());
+
+            if (await container.ExistsAsync())
+                throw new CourseException(ResourceExceptMessages.INVALID_COURSE_CONTAINER);
+
+            await container.DeleteBlobIfExistsAsync(videoId);
+        }
+
         public async Task<string> GetCourseImage(Guid courseIdentifier, string image)
         {
             var container = _blobClient.GetBlobContainerClient(courseIdentifier.ToString());

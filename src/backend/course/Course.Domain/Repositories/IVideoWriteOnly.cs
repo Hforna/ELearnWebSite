@@ -7,9 +7,8 @@ using System.Threading.Tasks;
 
 namespace Course.Domain.Repositories
 {
-    public interface ILessonWriteOnly
+    public interface IVideoWriteOnly
     {
-        public void DeleteLessonRange(IList<Lesson> lessons);
-        public void DeleteLesson(Lesson lesson);
+        public Task DeleteVideo(string id);
     }
 }

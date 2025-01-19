@@ -150,4 +150,7 @@
   <data name="MODULE_NOT_OF_USER" xml:space="preserve">
     <value>User is not owner's course module </value>
   </data>
+  <data name="VIDEO_DOESNT_EXISTS" xml:space="preserve">
+    <value>Video doesn't exists</value>
+  </data>
 </root>

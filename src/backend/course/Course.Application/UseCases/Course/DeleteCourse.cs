@@ -2,6 +2,7 @@
 using Course.Application.UseCases.Repositories.Course;
 using Course.Domain.DTOs;
 using Course.Domain.Repositories;
+using Course.Domain.Services.Azure;
 using Course.Domain.Services.Rest;
 using Course.Exception;
 using Sqids;
@@ -19,13 +20,16 @@ namespace Course.Application.UseCases.Course
         private readonly IUnitOfWork _uof;
         private readonly SqidsEncoder<long> _sqids;
         private readonly EmailService _emailService;
+        private readonly IStorageService _storageService;
 
-        public DeleteCourse(IUserService userService, IUnitOfWork uof, SqidsEncoder<long> sqids, EmailService emailService)
+        public DeleteCourse(IUserService userService, IUnitOfWork uof, SqidsEncoder<long> sqids, 
+            EmailService emailService, IStorageService storageService)
         {
             _userService = userService;
             _uof = uof;
             _sqids = sqids;
             _emailService = emailService;
+            _storageService = storageService;
         }
 
         public async Task Execute(long id)
@@ -43,6 +47,8 @@ namespace Course.Application.UseCases.Course
 
             course.Active = false;
             course.IsPublish = false;
+
+            if(!string.IsNullOrEmpty(course.Thumbnail)) await _storageService.DeleteCourseImage(course.courseIdentifier, course.Thumbnail);
 
             _uof.courseWrite.UpdateCourse(course);
             await _uof.Commit();

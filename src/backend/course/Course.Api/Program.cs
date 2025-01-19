@@ -7,6 +7,8 @@ using Course.Domain.Services.Token;
 using Course.Api.Filters;
 using Microsoft.OpenApi.Models;
 using Course.Domain.Repositories;
+using Course.Api.Controllers;
+using Course.Api.BackgroundServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -61,6 +63,8 @@ builder.Services.AddAuthorization(auth =>
 });
 
 var signKey = builder.Configuration.GetValue<string>("jwt:signKey");
+
+builder.Services.AddHostedService<DeleteModuleService>();
 
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddApplication(builder.Configuration);

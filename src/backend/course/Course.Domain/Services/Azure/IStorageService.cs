@@ -10,5 +10,8 @@ namespace Course.Domain.Services.Azure
     {
         public Task UploadCourseImage(Stream image, string imageName, Guid courseIdentifier);
         public Task<string> GetCourseImage(Guid courseIdentifier, string image);
+        public Task DeleteVideo(Guid courseIdentifier, string videoId);
+        public Task DeleteThumbnailVideo(string videoId);
+        public Task DeleteCourseImage(Guid courseIdentifier, string image);
     }
 }

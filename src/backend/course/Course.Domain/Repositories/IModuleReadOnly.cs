@@ -10,5 +10,6 @@ namespace Course.Domain.Repositories
     public interface IModuleReadOnly
     {
         public Task<Module?> ModuleById(long id);
+        public Task<IList<Module>> GetNotActiveModules();
     }
 }

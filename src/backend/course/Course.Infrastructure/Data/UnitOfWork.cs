@@ -1,4 +1,5 @@
 ﻿using Course.Domain.Repositories;
+using Course.Infrastructure.Data.Course;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,9 +17,13 @@ namespace Course.Infrastructure.Data
         public IModuleReadOnly moduleRead { get; set; }
         public ILessonReadOnly lessonRead { get; set; }
         public ILessonWriteOnly lessonWrite { get; set; }
+        public IVideoReadOnly videoRead { get; set; }
+        public IVideoWriteOnly videoWrite { get; set; }
 
         public UnitOfWork(CourseDbContext dbContext, ICourseReadOnly courseRead, ICourseWriteOnly courseWrite,
-            IModuleReadOnly moduleReadOnly, IModuleWriteOnly moduleWriteOnly, ILessonReadOnly lessonRead, ILessonWriteOnly lessonWrite)
+            IModuleReadOnly moduleReadOnly, IModuleWriteOnly moduleWriteOnly, 
+            ILessonReadOnly lessonRead, ILessonWriteOnly lessonWrite,
+            IVideoReadOnly videoRead, IVideoWriteOnly videoWriteOnly)
         {
             _dbContext = dbContext;
             this.courseRead = courseRead;
@@ -27,6 +32,8 @@ namespace Course.Infrastructure.Data
             moduleWrite = moduleWriteOnly;
             this.lessonRead = lessonRead;
             this.lessonWrite = lessonWrite;
+            this.videoRead = videoRead;
+            videoWrite = videoWriteOnly;
         }
 
         public async Task Commit()
