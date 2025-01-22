@@ -7,10 +7,26 @@
     <UserSecretsId>cb09aa5e-e329-41e4-8fca-63c4b7552df3</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     <DockerfileContext>..\..\..\..</DockerfileContext>
+    <DockerComposeProjectPath>..\..\..\..\docker-compose.dcproj</DockerComposeProjectPath>
   </PropertyGroup>
 
+	<ItemGroup>
+		<ProjectReference Include="..\shared\Course.Communication\Course.Communication.csproj" />
+		<ProjectReference Include="..\shared\Course.Exception\Course.Exception.csproj" />
+		<ProjectReference Include="..\Course.Application\Course.Application.csproj" />
+		<ProjectReference Include="..\Course.Domain\Course.Domain.csproj" />
+		<ProjectReference Include="..\Course.Infrastructure\Course.Infrastructure.csproj" />
+	</ItemGroup>
+
   <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="13.0.1" />
+    <PackageReference Include="FluentValidation" Version="11.11.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.11" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="9.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="9.0.0" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.21.0" />
+    <PackageReference Include="Sqids" Version="3.1.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
   </ItemGroup>
 

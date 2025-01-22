@@ -1,0 +1,13 @@
+backend/user/User.Api/[Bb]in/
+backend/user/User.Api/[Oo]bj/
+[Oo]bj/
+[Bb]in/
+.vs/
+*.env
+.env
+.env.local
+sqlserver_data/
+**/appsettings.Development.json
+**/appsettings.Production.json
+
+.fake

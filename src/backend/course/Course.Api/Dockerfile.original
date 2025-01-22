@@ -13,10 +13,6 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["src/backend/course/Course.Api/Course.Api.csproj", "src/backend/course/Course.Api/"]
-COPY ["src/backend/course/shared/Course.Communication/Course.Communication.csproj", "src/backend/course/shared/Course.Communication/"]
-COPY ["src/backend/course/Course.Domain/Course.Domain.csproj", "src/backend/course/Course.Domain/"]
-COPY ["src/backend/course/Course.Application/Course.Application.csproj", "src/backend/course/Course.Application/"]
-COPY ["src/backend/course/shared/Course.Exception/Course.Exception.csproj", "src/backend/course/shared/Course.Exception/"]
 RUN dotnet restore "./src/backend/course/Course.Api/Course.Api.csproj"
 COPY . .
 WORKDIR "/src/src/backend/course/Course.Api"

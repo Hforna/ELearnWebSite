@@ -1,0 +1,46 @@
+services:
+  user.api:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_HTTP_PORTS=8080
+      - ASPNETCORE_HTTPS_PORTS=8081
+    ports:
+      - "8080"
+      - "8081"
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
+    networks:
+     - backend
+    depends_on:
+     - sqlserver
+   
+  sqlserver:
+    container_name: sqlserver
+    ports:
+      - 1433:1433
+    restart: always
+    volumes: 
+     - sqlserver_data:/var/opt/mssql
+    networks:
+     - backend
+    environment:
+     - MSSQL_SA_PASSWORD=
+     - ACCEPT_EULA=Y
+ 
+  course.api:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_HTTP_PORTS=8082
+      - ASPNETCORE_HTTPS_PORTS=8083
+    ports:
+      - "8082"
+      - "8083"
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
+    networks:
+      - backend
+    depends_on:
+      - sqlserver
+
