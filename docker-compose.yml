@@ -8,8 +8,12 @@ services:
   sqlserver:
     image: mcr.microsoft.com/mssql/server:2019-latest
 
+  mongoserver:
+    image: mongo
+
 networks:
   backend:
 
 volumes:
   sqlserver_data:
+  mongoserver_data:  

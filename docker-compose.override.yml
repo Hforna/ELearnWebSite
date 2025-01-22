@@ -43,4 +43,16 @@ services:
       - backend
     depends_on:
       - sqlserver
+      - mongoserver
+  
+  mongoserver:
+      environment:
+        MONGO_INITDB_ROOT_USERNAME: ''
+        MONGO_INITDB_ROOT_PASSWORD: ''
+      ports:
+        - 27017:271017
+      volumes:
+        - mongoserver_data:/data/db
+      networks:
+         - backend
 
