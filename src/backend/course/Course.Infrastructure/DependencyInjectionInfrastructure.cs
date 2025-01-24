@@ -55,6 +55,19 @@ namespace Course.Infrastructure
             services.AddScoped<IStorageService>(d => new StorageService(new Azure.Storage.Blobs.BlobServiceClient(connectionString)));
         }
 
+        private static void AddServiceBus(IStorageService service, IConfiguration configuration)
+        {
+            var serviceConnection = configuration.GetValue<string>("services:azure:serviceBus");
+
+            var serviceBus = new ServiceBusClient(serviceConnection, new ServiceBusClientOptions({
+                TransportType = TransportType.Amqp
+            }));
+
+            var sender = new DeleteSender(serviceBus.CreateSender("delete"));
+
+            service.AddScoped(sender);
+        }
+
         private static void AddServices(IServiceCollection services)
         {
             services.AddScoped<IUserService, UserService>();

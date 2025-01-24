@@ -25,7 +25,7 @@ services:
     networks:
      - backend
     environment:
-     - MSSQL_SA_PASSWORD=
+     - MSSQL_SA_PASSWORD=hG5rzck2vy3cHai
      - ACCEPT_EULA=Y
  
   course.api:
@@ -46,9 +46,6 @@ services:
       - mongoserver
   
   mongoserver:
-      environment:
-        MONGO_INITDB_ROOT_USERNAME: ''
-        MONGO_INITDB_ROOT_PASSWORD: ''
       ports:
         - 27017:271017
       volumes:
