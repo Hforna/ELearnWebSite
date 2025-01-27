@@ -43,6 +43,7 @@ namespace Course.Application
             services.AddScoped<IGetCourse, GetCourse>();
             services.AddScoped<IDeleteCourse, DeleteCourse>();
             services.AddScoped<IDeleteModule, DeleteModule>();
+            services.AddScoped<IUpdateCourse, UpdateCourse>();
         }
 
         private static void AddEmailSerice(IServiceCollection services, IConfiguration configuration)
