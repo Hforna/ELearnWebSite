@@ -33,6 +33,8 @@ namespace Course.Application.UseCases.Course
         public async Task<CoursesResponse> Execute(GetCoursesRequest request, int page, int itemsQuantity)
         {
             var filterDto = _mapper.Map<GetCoursesFilterDto>(request);
+
+
             var courses = _uof.courseRead.GetCourses(page, filterDto, itemsQuantity);
 
             var coursesToResponse = courses.Select(async course =>

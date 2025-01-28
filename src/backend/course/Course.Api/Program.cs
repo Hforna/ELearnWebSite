@@ -10,6 +10,8 @@ using Course.Domain.Repositories;
 using Course.Api.Controllers;
 using Course.Api.BackgroundServices;
 using Microsoft.AspNetCore.RateLimiting;
+using Course.Domain.Sessions;
+using Course.Api.Sessions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -64,6 +66,8 @@ builder.Services.AddAuthorization(auth =>
 });
 
 var signKey = builder.Configuration.GetValue<string>("jwt:signKey");
+
+builder.Services.AddScoped<ICoursesSession, CoursesSession>();
 
 builder.Services.AddHostedService<DeleteModuleService>();
 builder.Services.AddHostedService<DeleteCourseService>();
