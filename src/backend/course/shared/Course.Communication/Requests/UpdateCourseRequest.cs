@@ -13,6 +13,7 @@ namespace Course.Communication.Requests
         public string Title { get; set; }
         public IFormFile? Thumbnail { get; set; }
         public string Description { get; set; }
+        public TypeCourseEnum TypeCourse { get; set; }
         public IList<CreateCourseTopicsRequest> TopicsCovered { get; set; }
         public double Price { get; set; }
         public LanguagesEnum CourseLanguage { get; set; }

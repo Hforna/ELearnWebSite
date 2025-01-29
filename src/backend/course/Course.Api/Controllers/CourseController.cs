@@ -25,7 +25,6 @@ namespace Course.Api.Controllers
             return Created(string.Empty, result);
         }
 
-        [HttpPut("{id}")]
         public async Task<IActionResult> UpdateCourse([FromServices]UpdateCourse useCase, 
             [FromForm]UpdateCourseRequest request, [FromQuery][ModelBinder(typeof(BinderId))]long id)
         {

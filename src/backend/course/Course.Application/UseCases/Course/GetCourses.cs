@@ -6,6 +6,7 @@ using Course.Domain.DTOs;
 using Course.Domain.Entitites;
 using Course.Domain.Repositories;
 using Course.Domain.Services.Azure;
+using Course.Domain.Sessions;
 using Sqids;
 using System;
 using System.Collections.Generic;
@@ -21,13 +22,16 @@ namespace Course.Application.UseCases.Course
         private readonly IMapper _mapper;
         private readonly IStorageService _storageService;
         private readonly SqidsEncoder<long> _sqids;
+        private readonly ICoursesSession _coursesSession;
 
-        public GetCourses(IUnitOfWork uof, IMapper mapper, IStorageService storageService, SqidsEncoder<long> sqids)
+        public GetCourses(IUnitOfWork uof, IMapper mapper, 
+            IStorageService storageService, SqidsEncoder<long> sqids, ICoursesSession coursesSession)
         {
             _uof = uof;
             _mapper = mapper;
             _storageService = storageService;
             _sqids = sqids;
+            _coursesSession = coursesSession;
         }
 
         public async Task<CoursesResponse> Execute(GetCoursesRequest request, int page, int itemsQuantity)
@@ -37,7 +41,29 @@ namespace Course.Application.UseCases.Course
 
             var courses = _uof.courseRead.GetCourses(page, filterDto, itemsQuantity);
 
-            var coursesToResponse = courses.Select(async course =>
+            var getCoursesList = _coursesSession.GetCoursesVisited();
+
+            var quantityCourseType = new Dictionary<string, int>();
+
+            foreach(var id in getCoursesList)
+            {
+                var course = await _uof.courseRead.CourseById(id);
+
+                quantityCourseType[course.CourseType.ToString()] = 
+                    quantityCourseType.GetValueOrDefault(course.CourseType.ToString(), 0) + 1;
+            }
+
+            var quantityTypeOrdered = quantityCourseType.OrderByDescending(d => d.Value);
+
+            var coursesOrder = new List<CourseEntity>();
+
+            foreach(var type in quantityTypeOrdered)
+            {
+                coursesOrder.AddRange(courses.Where(d => d.CourseType.ToString() == type.Key));
+            }
+            coursesOrder.AddRange(courses.Where(d => quantityCourseType.ContainsKey(d.CourseType.ToString()) == false));
+
+            var coursesToResponse = coursesOrder.Select(async course =>
             {
                 var response = _mapper.Map<CourseShortResponse>(course);
                 //response.ThumbnailUrl = await _storageService.GetCourseImage(course.courseIdentifier, course.Thumbnail);

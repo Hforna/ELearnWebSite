@@ -64,7 +64,7 @@ namespace Course.Infrastructure.Data.Course
                 }
             }
 
-            return courses.Skip(page * itemsQuantity).Take(6).OrderByDescending(d => d.Enrollments).ToPagedList();
+            return courses.Skip(page * itemsQuantity).Take(6).OrderByDescending(d => d.totalVisits).ToPagedList();
         }
 
         public async Task<IList<CourseEntity>?> GetNotActiveCourses()

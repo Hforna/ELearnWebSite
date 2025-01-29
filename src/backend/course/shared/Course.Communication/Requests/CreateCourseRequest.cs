@@ -12,6 +12,7 @@ namespace Course.Communication.Requests
     {
         public string Title { get; set; }
         public string Description { get; set; }
+        public TypeCourseEnum TypeCourse { get; set; }
         public IFormFile? ThumbnailImage { get; set; }
         public LanguagesEnum CourseLanguage { get; set; }
         public double Price { get; set; }
