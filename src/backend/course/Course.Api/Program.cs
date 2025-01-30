@@ -12,6 +12,7 @@ using Course.Api.BackgroundServices;
 using Microsoft.AspNetCore.RateLimiting;
 using Course.Domain.Sessions;
 using Course.Api.Sessions;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -139,6 +140,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseHealthChecks("HealthCheck");
 
 app.UseHttpsRedirection();
 
