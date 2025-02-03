@@ -153,4 +153,7 @@
   <data name="VIDEO_DOESNT_EXISTS" xml:space="preserve">
     <value>Video doesn't exists</value>
   </data>
+  <data name="INVALID_FORMAT_IMAGE" xml:space="preserve">
+    <value>Only format image is png and jpg</value>
+  </data>
 </root>

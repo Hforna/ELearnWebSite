@@ -124,6 +124,15 @@ namespace Course.Exception {
         }
         
         /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Only format image is png and jpg.
+        /// </summary>
+        public static string INVALID_FORMAT_IMAGE {
+            get {
+                return ResourceManager.GetString("INVALID_FORMAT_IMAGE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a Module doesn&apos;t exists.
         /// </summary>
         public static string MODULE_DOESNT_EXISTS {

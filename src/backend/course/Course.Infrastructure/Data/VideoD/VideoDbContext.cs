@@ -19,7 +19,7 @@ namespace Course.Infrastructure.Data.VideoD
 
             var url = MongoUrl.Create(connectionString);
             var client = new MongoClient(connectionString);
-            _database = client.GetDatabase(url.DatabaseName);
+            _database = "VideoDb";
         }
 
         public IMongoCollection<Video> Videos => _database.GetCollection<Video>("videos");

@@ -25,7 +25,7 @@ services:
     networks:
      - backend
     environment:
-     - MSSQL_SA_PASSWORD=
+     - MSSQL_SA_PASSWORD=hG5rzck2vy3cHai
      - ACCEPT_EULA=Y
  
   course.api:
@@ -43,4 +43,13 @@ services:
       - backend
     depends_on:
       - sqlserver
+      - mongoserver
+  
+  mongoserver:
+      ports:
+        - 27017:271017
+      volumes:
+        - mongoserver_data:/data/db
+      networks:
+         - backend
 

@@ -14,7 +14,7 @@ namespace Course.Api.Controllers
     public class ModuleController : ProjectBaseController
     {
         [Authorize(Policy = "TeacherOnly")]
-        [HttpPost("module/{id}")]
+        [HttpPost("{id}")]
         [ProducesResponseType(typeof(ModuleResponse), StatusCodes.Status201Created)]
         public async Task<IActionResult> CreateModule([FromRoute][ModelBinder(typeof(BinderId))] long id, [FromBody] CreateModuleRequest request,
         [FromServices] CreateModule useCase)

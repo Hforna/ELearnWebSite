@@ -14,6 +14,7 @@ namespace Course.Domain.Repositories
         public Task<CourseEntity?> CourseById(long id);
         public Task<IList<CourseEntity>?> CoursesByTeacher(long userId);
         public Task<CourseEntity?> CourseByTeacherAndId(long userId, long id);
+        public Task<IList<CourseEntity>?> GetNotActiveCourses();
         public IPagedList<CourseEntity> GetCourses(int page, GetCoursesFilterDto dto, int itemsQuantity = 6);
     }
 }

@@ -21,7 +21,9 @@ namespace Course.Domain.Entitites
         public IList<CourseTopicsEntity> TopicsCovered { get; set; }
         public double Price { get; set; }
         public int? Enrollments { get; set; }
+        public long totalVisits { get; set; } = 0;
         public LanguagesEnum CourseLanguage { get; set; }
+        public TypeCourseEnum CourseType { get; set; }
         public double? Duration { get; set; }
         public int ModulesNumber { get; set; }
         public bool IsPublish { get; set; } = false;

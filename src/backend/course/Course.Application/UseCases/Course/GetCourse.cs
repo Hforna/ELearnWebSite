@@ -3,6 +3,8 @@ using Course.Application.UseCases.Repositories.Course;
 using Course.Communication.Responses;
 using Course.Domain.Repositories;
 using Course.Domain.Services.Azure;
+using Course.Domain.Services.Rest;
+using Course.Domain.Sessions;
 using Course.Exception;
 using Microsoft.Extensions.Configuration;
 using Sqids;
@@ -20,22 +22,41 @@ namespace Course.Application.UseCases.Course
         private readonly IMapper _mapper;
         private readonly SqidsEncoder<long> _sqids;
         private readonly IStorageService _storage;
+        private readonly ICoursesSession _coursesSession;
+        private readonly IConfiguration _configuration;
 
-        public GetCourse(IUnitOfWork uof, IMapper mapper, SqidsEncoder<long> sqids, IStorageService storage)
+        public GetCourse(IUnitOfWork uof, IMapper mapper, 
+            SqidsEncoder<long> sqids, IStorageService storage, 
+            ICoursesSession coursesSession, IConfiguration configuration)
         {
             _uof = uof;
             _mapper = mapper;
             _sqids = sqids;
             _storage = storage;
+            _configuration = configuration;
+            _coursesSession = coursesSession;
         }
 
         public async Task<CourseResponse> Execute(long id)
         {
             var course = await _uof.courseRead.CourseById(id);
+
             if (course is null)
                 throw new CourseException(ResourceExceptMessages.COURSE_DOESNT_EXISTS);
 
+            var getCoursesList = _coursesSession.GetCoursesVisited();
+
+            var courseInList = getCoursesList.Contains(course.Id);
+
+            course.totalVisits +=  courseInList == false ? 1 : 0;
+            _uof.courseWrite.UpdateCourse(course);
+            await _uof.Commit();
+
+            if(!getCoursesList.Contains(course.Id))
+                await _coursesSession.AddCourseVisited(course.Id);
+
             var response = _mapper.Map<CourseResponse>(course);
+            response.TeacherProfile = $"{_configuration.GetValue<string>("appUrl")!}profile/{course.TeacherId}";
             //response.ThumbnailUrl = await _storage.GetCourseImage(course.courseIdentifier, course.Thumbnail);
 
             return response;

@@ -11,6 +11,8 @@ namespace Course.Domain.Repositories
     {
         public void AddCourse(CourseEntity course);
         public void UpdateCourse(CourseEntity course);
+        public void DeleteCourse(CourseEntity course);
+        public void DeleteCourseRange(IList<CourseEntity> courses);
         public void AddCourseTopics(IList<CourseTopicsEntity> topics);
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Course.Api.Binders;
+using Course.Application.UseCases.Course;
 using Course.Application.UseCases.Modules;
 using Course.Application.UseCases.Repositories.Course;
 using Course.Communication.Requests;
@@ -22,6 +23,14 @@ namespace Course.Api.Controllers
             var result = await useCase.Execute(request);
 
             return Created(string.Empty, result);
+        }
+
+        public async Task<IActionResult> UpdateCourse([FromServices]UpdateCourse useCase, 
+            [FromForm]UpdateCourseRequest request, [FromQuery][ModelBinder(typeof(BinderId))]long id)
+        {
+            var result = await useCase.Execute(id, request);
+
+            return Ok(result);
         }
 
         [HttpPost("filter")]

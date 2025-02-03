@@ -14,9 +14,13 @@ services:
       context: .
       dockerfile: src/backend/course/Course.Api/Dockerfile
 
+  mongoserver:
+    image: mongo
+
 networks:
   backend:
     driver: bridge
 
 volumes:
   sqlserver_data:
+  mongoserver_data:  
