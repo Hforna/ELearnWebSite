@@ -8,8 +8,15 @@ services:
   sqlserver:
     image: mcr.microsoft.com/mssql/server:2019-latest
 
+  course.api:
+    image: ${DOCKER_REGISTRY-}courseapi
+    build:
+      context: .
+      dockerfile: src/backend/course/Course.Api/Dockerfile
+
 networks:
   backend:
+    driver: bridge
 
 volumes:
   sqlserver_data:
