@@ -141,7 +141,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHealthChecks("HealthCheck");
+app.UseHealthChecks("/HealthCheck");
 
 app.UseHttpsRedirection();
 

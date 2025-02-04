@@ -1,9 +1,11 @@
+using Azure.Messaging.ServiceBus;
+
 namespace Course.Infrastructure.Services.Azure
 {
     public class DeleteSender
     {
-        private readonly ServiceBusClient _busClient;
+        private readonly ServiceBusSender _busSender;
          
-        public DeleteSender(ServiceBusClient busClient) => _busClient = busClient;
+        public DeleteSender(ServiceBusSender busSender) => _busSender = busSender;
     }
 }

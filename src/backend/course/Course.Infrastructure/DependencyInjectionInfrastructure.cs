@@ -1,4 +1,5 @@
-﻿using Course.Domain.Repositories;
+﻿using Azure.Messaging.ServiceBus;
+using Course.Domain.Repositories;
 using Course.Domain.Services.Azure;
 using Course.Domain.Services.Rest;
 using Course.Infrastructure.Data;
@@ -6,6 +7,7 @@ using Course.Infrastructure.Data.Course;
 using Course.Infrastructure.Data.VideoD;
 using Course.Infrastructure.Services.Azure;
 using Course.Infrastructure.Services.Rest;
+using Microsoft.Azure.ServiceBus;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -55,17 +57,17 @@ namespace Course.Infrastructure
             services.AddScoped<IStorageService>(d => new StorageService(new Azure.Storage.Blobs.BlobServiceClient(connectionString)));
         }
 
-        private static void AddServiceBus(IStorageService service, IConfiguration configuration)
+        private static void AddServiceBus(IServiceCollection service, IConfiguration configuration)
         {
             var serviceConnection = configuration.GetValue<string>("services:azure:serviceBus");
 
-            var serviceBus = new ServiceBusClient(serviceConnection, new ServiceBusClientOptions({
-                TransportType = TransportType.Amqp
-            }));
+            var serviceBus = new ServiceBusClient(serviceConnection, new ServiceBusClientOptions {
+                TransportType = ServiceBusTransportType.AmqpWebSockets
+            });
 
             var sender = new DeleteSender(serviceBus.CreateSender("delete"));
 
-            service.AddScoped(sender);
+            service.AddScoped<DeleteSender>(d => sender);
         }
 
         private static void AddServices(IServiceCollection services)

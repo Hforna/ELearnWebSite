@@ -54,7 +54,7 @@ namespace Course.Application.UseCases.Course
             {
                 var thumbnail = request.ThumbnailImage.OpenReadStream();
 
-                var imageValidator = ImageValidator.ValidateImage(thumbnail);
+                var imageValidator = FileService.ValidateImage(thumbnail);
 
                 if (imageValidator.isValid)
                 {

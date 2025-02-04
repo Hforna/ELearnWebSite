@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Course.Application.UseCases.Repositories.Course;
 using Course.Communication.Responses;
+using Course.Domain.Consts;
 using Course.Domain.Repositories;
 using Course.Domain.Services.Azure;
 using Course.Domain.Services.Rest;
@@ -23,17 +24,15 @@ namespace Course.Application.UseCases.Course
         private readonly SqidsEncoder<long> _sqids;
         private readonly IStorageService _storage;
         private readonly ICoursesSession _coursesSession;
-        private readonly IConfiguration _configuration;
 
         public GetCourse(IUnitOfWork uof, IMapper mapper, 
             SqidsEncoder<long> sqids, IStorageService storage, 
-            ICoursesSession coursesSession, IConfiguration configuration)
+            ICoursesSession coursesSession)
         {
             _uof = uof;
             _mapper = mapper;
             _sqids = sqids;
             _storage = storage;
-            _configuration = configuration;
             _coursesSession = coursesSession;
         }
 
@@ -56,7 +55,7 @@ namespace Course.Application.UseCases.Course
                 await _coursesSession.AddCourseVisited(course.Id);
 
             var response = _mapper.Map<CourseResponse>(course);
-            response.TeacherProfile = $"{_configuration.GetValue<string>("appUrl")!}profile/{course.TeacherId}";
+            response.TeacherProfile = $"{AppUrl.Url}profile/{course.TeacherId}";
             //response.ThumbnailUrl = await _storage.GetCourseImage(course.courseIdentifier, course.Thumbnail);
 
             return response;

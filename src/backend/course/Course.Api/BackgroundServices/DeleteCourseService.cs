@@ -1,5 +1,4 @@
-﻿
-using Course.Domain.Repositories;
+﻿using Course.Domain.Repositories;
 using Course.Domain.Services.Azure;
 
 namespace Course.Api.BackgroundServices
@@ -34,7 +33,7 @@ namespace Course.Api.BackgroundServices
                         uof.courseWrite.DeleteCourseRange(courses);
                         await uof.Commit();
                     }
-                } catch(Exception ex)
+                } catch(System.Exception ex)
                 {
                     Console.WriteLine(ex.ToString());
                 }

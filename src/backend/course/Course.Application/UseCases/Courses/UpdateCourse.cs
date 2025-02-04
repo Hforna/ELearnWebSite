@@ -51,7 +51,7 @@ namespace Course.Application.UseCases.Course
             {
                 var image = request.Thumbnail.OpenReadStream();
 
-                (bool isValid, string ext) = ImageValidator.ValidateImage(image);
+                (bool isValid, string ext) = FileService.ValidateImage(image);
 
                 if(!isValid)
                     throw new CourseException(ResourceExceptMessages.INVALID_FORMAT_IMAGE);
