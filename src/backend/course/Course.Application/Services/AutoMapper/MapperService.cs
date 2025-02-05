@@ -35,6 +35,8 @@ namespace Course.Application.Services.AutoMapper
 
             CreateMap<CreateCourseTopicsRequest, CourseTopicsEntity>();
 
+            CreateMap<CreateLessonRequest, Lesson>();
+
             CreateMap<UpdateCourseRequest, CourseEntity>()
                 .ForMember(d => d.Thumbnail, f => f.Ignore());
 

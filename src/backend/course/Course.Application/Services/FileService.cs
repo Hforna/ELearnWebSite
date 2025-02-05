@@ -31,6 +31,33 @@ namespace Course.Application.Services
             return (isValid, ext);
         }
 
+        public static async Task<(FileStream, string fileName, string intput, string output)> TranscodeVideo(Stream video)
+        {
+            var tempInput = Path.GetTempFileName();
+            var tempOutput = Path.ChangeExtension(tempInput, ".mp4");
+
+            using(var fileStream = new FileStream(tempInput, FileMode.Create, FileAccess.Write))
+            {
+                await video.CopyToAsync(fileStream);
+            }
+
+            var getMediaInfo = await FFmpeg.GetMediaInfo(tempInput);
+
+            var conversion = FFmpeg.Conversions.New()
+            .AddStream(getMediaInfo.VideoStreams.FirstOrDefault())
+            .AddStream(getMediaInfo.AudioStreams.FirstOrDefault())
+            .SetOutput(tempOutput)
+            .AddParameter("-preset medium")
+            .AddParameter("-c:v libx264");
+
+            await conversion.Start();
+
+            await using var outputFileStream = File.OpenRead(tempOutput);
+            var fileName = Path.GetFileName(tempOutput);
+
+            return (outputFileStream, fileName, tempInput, tempOutput);
+        }
+
         private static string GetExtension(string ext)
         {
             return ext.StartsWith(".") ? ext : $".{ext}";
