@@ -99,7 +99,7 @@ builder.Services.AddSingleton(d => new SqidsEncoder<long>(new() {
 
 var email = builder.Configuration.GetValue<string>("services:gmail:email");
 var password = builder.Configuration.GetValue<string>("services:gmail:password");
-var name = builder.Configuration.GetValue<string>("services:gmail:password");
+var name = builder.Configuration.GetValue<string>("services:gmail:name");
 
 builder.Services.AddSingleton<EmailService>(d => new EmailService(email!, password!, name!));
 builder.Services.AddSingleton<ImageService>(d => new ImageService());

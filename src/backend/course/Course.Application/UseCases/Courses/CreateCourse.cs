@@ -26,11 +26,14 @@ namespace Course.Application.UseCases.Course
         private readonly IUserService _userService;
         private readonly SqidsEncoder<long> _sqids;
         private readonly IStorageService _storageService;
+        private readonly FileService _fileService;
 
         public CreateCourse(IUnitOfWork uof, IMapper mapper, 
-            IUserService userService, SqidsEncoder<long> sqids, IStorageService storageService)
+            IUserService userService, SqidsEncoder<long> sqids, 
+            IStorageService storageService, FileService fileService)
         {
             _uof = uof;
+            _fileService = fileService;
             _mapper = mapper;
             _userService = userService;
             _sqids = sqids;
@@ -54,7 +57,7 @@ namespace Course.Application.UseCases.Course
             {
                 var thumbnail = request.ThumbnailImage.OpenReadStream();
 
-                var imageValidator = FileService.ValidateImage(thumbnail);
+                var imageValidator = _fileService.ValidateImage(thumbnail);
 
                 if (imageValidator.isValid)
                 {

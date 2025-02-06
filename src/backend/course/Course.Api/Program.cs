@@ -130,6 +130,8 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true;
 });
 
+builder.Services.AddHealthChecks();
+
 var app = builder.Build();
 
 app.UseRateLimiter();

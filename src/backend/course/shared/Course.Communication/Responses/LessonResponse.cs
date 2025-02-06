@@ -11,8 +11,9 @@ namespace Course.Communication.Responses
         public string ModuleId { get; set; }
         public string Id { get; set; }
         public string Title { get; set; }
+        public string VideoId { get; set; }
         public string VideoUrl { get; set; }
-        public int TimeInMinutes { get; set; }
+        public int Duration { get; set; }
         public int Order { get; set; }
         public bool isFree { get; set; }
     }

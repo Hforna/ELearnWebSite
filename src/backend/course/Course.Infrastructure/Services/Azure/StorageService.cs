@@ -8,6 +8,7 @@ using System.Linq;
 using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Course.Infrastructure.Services.Azure
 {
@@ -65,6 +66,28 @@ namespace Course.Infrastructure.Services.Azure
             return blob.GenerateSasUri(sasBuilder).ToString();
         }
 
+        public async Task<string> GetVideo(Guid courseIdentifier, string videoId)
+        {
+            var container = _blobClient.GetBlobContainerClient(courseIdentifier.ToString());
+
+            if (await container.ExistsAsync() == false) return "";
+
+            var blob = container.GetBlobClient(videoId);
+
+            if (await container.ExistsAsync() == false) return "";
+
+            var sasBuilder = new BlobSasBuilder()
+            {
+                BlobName = videoId,
+                BlobContainerName = courseIdentifier.ToString(),
+                ExpiresOn = DateTime.UtcNow.AddMinutes(40),
+                Resource = "b"
+            };
+            sasBuilder.SetPermissions(BlobSasPermissions.Read);
+
+            return blob.GenerateSasUri(sasBuilder).ToString();
+        }
+
         public async Task UploadCourseImage(Stream image, string imageName, Guid courseIdentifier)
         {
             var container = _blobClient.GetBlobContainerClient(courseIdentifier.ToString());
@@ -73,6 +96,24 @@ namespace Course.Infrastructure.Services.Azure
 
             var blobClient = container.GetBlobClient(imageName);
             await blobClient.UploadAsync(image, overwrite: true);
+        }
+
+        public async Task UploadThumbnailVideo(string videoId, string thumbnailName, Stream image)
+        {
+            var container = _blobClient.GetBlobContainerClient(videoId);
+            await container.CreateIfNotExistsAsync();
+
+            var blobClient = container.GetBlobClient(thumbnailName);
+            await blobClient.UploadAsync(image, overwrite: true);
+        }
+
+        public async Task UploadVideo(Guid courseIdentifier, Stream video, string videoId)
+        {
+            var container = _blobClient.GetBlobContainerClient(courseIdentifier.ToString());
+            await container.CreateIfNotExistsAsync();
+
+            var blobClient = container.GetBlobClient(videoId);
+            await blobClient.UploadAsync(video, overwrite: true);
         }
     }
 }

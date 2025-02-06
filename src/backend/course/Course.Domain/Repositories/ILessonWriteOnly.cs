@@ -9,6 +9,7 @@ namespace Course.Domain.Repositories
 {
     public interface ILessonWriteOnly
     {
+        public void AddLesson(Lesson lesson);
         public void DeleteLessonRange(IList<Lesson> lessons);
         public void DeleteLesson(Lesson lesson);
     }

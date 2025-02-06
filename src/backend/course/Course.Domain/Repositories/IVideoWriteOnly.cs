@@ -10,5 +10,6 @@ namespace Course.Domain.Repositories
     public interface IVideoWriteOnly
     {
         public Task DeleteVideo(string id);
+        public Task AddVideo(Video video);
     }
 }

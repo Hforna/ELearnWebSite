@@ -15,6 +15,11 @@ namespace Course.Infrastructure.Data.Course
 
         public LessonRepository(CourseDbContext dbContext) => _dbContext = dbContext;
 
+        public void AddLesson(Lesson lesson)
+        {
+            _dbContext.Lessons.Add(lesson);
+        }
+
         public void DeleteLesson(Lesson lesson)
         {
             _dbContext.Lessons.Remove(lesson);

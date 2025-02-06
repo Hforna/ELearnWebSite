@@ -47,6 +47,8 @@ namespace Course.Application
             services.AddScoped<IDeleteModule, DeleteModule>();
             services.AddScoped<IUpdateCourse, UpdateCourse>();
             services.AddScoped<ICreateLesson, CreateLesson>();
+
+            services.AddSingleton(new FileService());
         }
 
         private static void AddEmailSerice(IServiceCollection services, IConfiguration configuration)

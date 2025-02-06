@@ -12,10 +12,8 @@ namespace Course.Domain.Entitites
         [BsonId]
         [BsonRepresentation(MongoDB.Bson.BsonType.ObjectId)]
         public string Id { get; set; }
-        [BsonElement("video")]
-        public string? videoUrl { get; set; }
-        [BsonElement("thumbnailUrl")]
-        public string? thumbnailUrl { get; set; }
+        [BsonElement("thumbnailName")]
+        public string? thumbnailName { get; set; }
         [BsonElement("isTranscoded")]
         public bool IsTranscoded { get; set; } = false;
         [BsonElement("createdOn")]

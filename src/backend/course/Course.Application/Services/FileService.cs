@@ -1,5 +1,6 @@
 ﻿using FileTypeChecker.Extensions;
 using FileTypeChecker.Types;
+using MediaInfo.DotNetWrapper;
 using Microsoft.AspNetCore.Http;
 using Org.BouncyCastle.Utilities.Zlib;
 using System;
@@ -12,9 +13,9 @@ using Xabe.FFmpeg;
 
 namespace Course.Application.Services
 {
-    public static class FileService
+    public class FileService
     {
-        public static (bool isValid, string ext) ValidateImage(Stream file)
+        public (bool isValid, string ext) ValidateImage(Stream file)
         {
             (bool isValid, string ext) = (false, "");
 
@@ -31,7 +32,24 @@ namespace Course.Application.Services
             return (isValid, ext);
         }
 
-        public static async Task<(FileStream, string fileName, string intput, string output)> TranscodeVideo(Stream video)
+        public async Task<double> GetFileDuration(Stream file, string fileExtension)
+        {
+            string tempFilePath = Path.Combine(Path.GetTempPath(), $"{Guid.NewGuid()}{fileExtension}");
+
+            using(var fileStream = new FileStream(tempFilePath, FileMode.Create, FileAccess.Write))
+            {
+                await file.CopyToAsync(fileStream);
+            }
+
+            var input = new MediaInfoWrapper(tempFilePath);
+            var duration = Math.Ceiling(TimeSpan.FromMilliseconds(input.Duration).TotalMinutes);
+
+            File.Delete(tempFilePath);
+
+            return duration;
+        }
+
+        public async Task<(FileStream, string fileName, string intput, string output)> TranscodeVideo(Stream video)
         {
             var tempInput = Path.GetTempFileName();
             var tempOutput = Path.ChangeExtension(tempInput, ".mp4");
@@ -58,7 +76,7 @@ namespace Course.Application.Services
             return (outputFileStream, fileName, tempInput, tempOutput);
         }
 
-        private static string GetExtension(string ext)
+        private string GetExtension(string ext)
         {
             return ext.StartsWith(".") ? ext : $".{ext}";
         }

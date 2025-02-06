@@ -16,6 +16,11 @@ namespace Course.Infrastructure.Data.VideoD
 
         public VideoRepository(VideoDbContext dbContext) => _dbContext = dbContext;
 
+        public async Task AddVideo(Video video)
+        {
+            await _dbContext.Videos.InsertOneAsync(video);
+        }
+
         public async Task DeleteVideo(string id)
         {
             await GetVideo(id);

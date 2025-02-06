@@ -13,5 +13,6 @@ namespace Course.Communication.Requests
         public bool isFree { get; set; }
         public int Order { get; set; }
         public IFormFile Video { get; set; }
+        public IFormFile? Thumbnail { get; set; }
     }
 }

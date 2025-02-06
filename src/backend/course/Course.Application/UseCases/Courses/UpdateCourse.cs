@@ -23,11 +23,13 @@ namespace Course.Application.UseCases.Course
         private readonly IStorageService _storageService;
         private readonly IUserService _userService;
         private readonly SqidsEncoder<long> _sqidsEncoder;
+        private readonly FileService _fileService;
 
         public UpdateCourse(IUnitOfWork uof, IMapper mapper, 
             IStorageService storageService, IUserService userService, 
-            SqidsEncoder<long> sqidsEncoder)
+            SqidsEncoder<long> sqidsEncoder, FileService fileService)
         {
+            _fileService = fileService;
             _uof = uof;
             _mapper = mapper;
             _storageService = storageService;
@@ -51,7 +53,7 @@ namespace Course.Application.UseCases.Course
             {
                 var image = request.Thumbnail.OpenReadStream();
 
-                (bool isValid, string ext) = FileService.ValidateImage(image);
+                (bool isValid, string ext) = _fileService.ValidateImage(image);
 
                 if(!isValid)
                     throw new CourseException(ResourceExceptMessages.INVALID_FORMAT_IMAGE);
