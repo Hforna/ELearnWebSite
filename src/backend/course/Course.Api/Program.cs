@@ -143,6 +143,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseSession();
+
 app.UseHealthChecks("/HealthCheck");
 
 app.UseHttpsRedirection();

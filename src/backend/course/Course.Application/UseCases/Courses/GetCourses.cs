@@ -38,32 +38,23 @@ namespace Course.Application.UseCases.Course
         {
             var filterDto = _mapper.Map<GetCoursesFilterDto>(request);
 
-
-            var courses = _uof.courseRead.GetCourses(page, filterDto, itemsQuantity);
-
             var getCoursesList = _coursesSession.GetCoursesVisited();
 
-            var quantityCourseType = new Dictionary<string, int>();
+            List<string>? coursesTypes = null;
 
-            foreach(var id in getCoursesList)
+            if(getCoursesList is not null)
             {
-                var course = await _uof.courseRead.CourseById(id);
-
-                quantityCourseType[course.CourseType.ToString()] = 
-                    quantityCourseType.GetValueOrDefault(course.CourseType.ToString(), 0) + 1;
+                var visitedCourses = await _uof.courseRead.CourseByIds(getCoursesList);
+                coursesTypes = visitedCourses!
+                    .GroupBy(d => d.CourseType)
+                    .ToDictionary(d => d.Key.ToString(), g => g.Count())
+                    .OrderByDescending(d => d.Value)
+                    .Select(d => d.Key).ToList();
             }
 
-            var quantityTypeOrdered = quantityCourseType.OrderByDescending(d => d.Value);
+            var courses = _uof.courseRead.GetCourses(page, filterDto, coursesTypes, itemsQuantity);
 
-            var coursesOrder = new List<CourseEntity>();
-
-            foreach(var type in quantityTypeOrdered)
-            {
-                coursesOrder.AddRange(courses.Where(d => d.CourseType.ToString() == type.Key));
-            }
-            coursesOrder.AddRange(courses.Where(d => quantityCourseType.ContainsKey(d.CourseType.ToString()) == false));
-
-            var coursesToResponse = coursesOrder.Select(async course =>
+            var coursesToResponse = courses.Select(async course =>
             {
                 var response = _mapper.Map<CourseShortResponse>(course);
                 //response.ThumbnailUrl = await _storageService.GetCourseImage(course.courseIdentifier, course.Thumbnail);

@@ -12,9 +12,10 @@ namespace Course.Domain.Repositories
     public interface ICourseReadOnly
     {
         public Task<CourseEntity?> CourseById(long id);
+        public Task<IList<CourseEntity>?> CourseByIds(List<long> ids);
         public Task<IList<CourseEntity>?> CoursesByTeacher(long userId);
         public Task<CourseEntity?> CourseByTeacherAndId(long userId, long id);
         public Task<IList<CourseEntity>?> GetNotActiveCourses();
-        public IPagedList<CourseEntity> GetCourses(int page, GetCoursesFilterDto dto, int itemsQuantity = 6);
+        public IPagedList<CourseEntity> GetCourses(int page, GetCoursesFilterDto dto, List<string>? recommendedCourses = null, int itemsQuantity = 6);
     }
 }

@@ -8,8 +8,10 @@ namespace Course.Api.Filters
     {
         public void Apply(OpenApiOperation operation, OperationFilterContext context)
         {
-            var encryptedIds = context.ApiDescription.ParameterDescriptions.Where(x => x.ModelMetadata.BinderType == typeof(BinderId)).ToDictionary(d => d.Name, d => d);
-
+            var encryptedIds = context.ApiDescription.ParameterDescriptions
+            .Where(x => x.ModelMetadata != null && x.ModelMetadata.BinderType == typeof(BinderId))
+            .ToDictionary(d => d.Name, d => d);
+ 
             foreach (var parameter in operation.Parameters)
             {
                 if (encryptedIds.TryGetValue(parameter.Name, out var apiParameter))

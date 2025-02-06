@@ -25,8 +25,10 @@ namespace Course.Api.Controllers
             return Created(string.Empty, result);
         }
 
+        [HttpPut]
+        [Route("{id}")]
         public async Task<IActionResult> UpdateCourse([FromServices]UpdateCourse useCase, 
-            [FromForm]UpdateCourseRequest request, [FromQuery][ModelBinder(typeof(BinderId))]long id)
+            [FromForm]UpdateCourseRequest request, [FromRoute][ModelBinder(typeof(BinderId))]long id)
         {
             var result = await useCase.Execute(id, request);
 

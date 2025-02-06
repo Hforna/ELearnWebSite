@@ -39,9 +39,14 @@ namespace Course.Infrastructure.Data.Course
             _dbContext.Courses.Update(course);
         }
 
-        public IPagedList<CourseEntity> GetCourses(int page, GetCoursesFilterDto dto, int itemsQuantity = 6)
+        public IPagedList<CourseEntity> GetCourses(int page, GetCoursesFilterDto dto, List<string>? recommendedCourses, int itemsQuantity = 6)
         {
-            var courses = _dbContext.Courses.Where(d => d.IsPublish);
+            var publishedCourses = _dbContext.Courses.Where(d => d.IsPublish);
+
+            var reccomended = _dbContext.Courses.Where(d => recommendedCourses != null && recommendedCourses.Contains(d.CourseType.ToString()))
+                .OrderByDescending(d => d.totalVisits);
+
+            var courses = reccomended.Union(publishedCourses.Except(reccomended));
 
             if (!string.IsNullOrEmpty(dto.Text))
                 courses = courses.Where(d => dto.Text.Contains(d.Title));
@@ -64,7 +69,10 @@ namespace Course.Infrastructure.Data.Course
                 }
             }
 
-            return courses.Skip(page * itemsQuantity).Take(6).OrderByDescending(d => d.totalVisits).ToPagedList();
+            return courses
+                .OrderByDescending(d => recommendedCourses.Contains(d.CourseType.ToString()))
+                .ThenByDescending(d => d.totalVisits)
+                .ToPagedList(page, itemsQuantity);
         }
 
         public async Task<IList<CourseEntity>?> GetNotActiveCourses()
@@ -78,5 +86,7 @@ namespace Course.Infrastructure.Data.Course
         }
 
         public void DeleteCourseRange(IList<CourseEntity> courses) => _dbContext.Courses.RemoveRange(courses);
+
+        public async Task<IList<CourseEntity>?> CourseByIds(List<long> ids) => await _dbContext.Courses.Where(d => ids.Contains(d.Id)).ToListAsync();
     }
 }
