@@ -22,6 +22,8 @@ COPY . .
 WORKDIR "/src/src/backend/course/Course.Api"
 RUN dotnet build "./Course.Api.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
+RUN apt-get update && apt-get install -y ffmpeg
+
 # Esta fase é usada para publicar o projeto de serviço a ser copiado para a fase final
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release

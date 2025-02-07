@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.RateLimiting;
 using Course.Domain.Sessions;
 using Course.Api.Sessions;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Xabe.FFmpeg;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -58,6 +59,9 @@ builder.Services.AddSwaggerGen(options =>
 builder.Services.AddRouting(d => d.LowercaseUrls = true);
 
 builder.Services.AddMvc(d => d.Filters.Add(typeof(FilterException)));
+
+var pathFFmpeg = $@"{builder.Configuration.GetValue<string>("app:ffmpegPath")}";
+FFmpeg.SetExecutablesPath(pathFFmpeg);
 
 builder.Services.AddAuthorization(auth =>
 {

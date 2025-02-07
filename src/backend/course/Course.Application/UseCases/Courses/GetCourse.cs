@@ -43,7 +43,7 @@ namespace Course.Application.UseCases.Course
             if (course is null)
                 throw new CourseException(ResourceExceptMessages.COURSE_DOESNT_EXISTS);
 
-            var getCoursesList = _coursesSession.GetCoursesVisited();
+            var getCoursesList = _coursesSession.GetCoursesVisited() ?? [];
 
             var courseInList = getCoursesList.Contains(course.Id);
 

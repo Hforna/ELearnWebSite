@@ -11,7 +11,7 @@ namespace Course.Api.Controllers
         [HttpPost]
         [Route("{id}")]
         public async Task<IActionResult> CreateLesson([FromServices]ICreateLesson useCase, [FromForm]CreateLessonRequest request, 
-            [FromBody][ModelBinder(typeof(BinderId))]long id)
+            [FromRoute][ModelBinder(typeof(BinderId))]long id)
         {
             var result = await useCase.Execute(request, id);
 
