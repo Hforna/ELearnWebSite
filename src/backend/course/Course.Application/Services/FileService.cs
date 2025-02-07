@@ -70,7 +70,7 @@ namespace Course.Application.Services
 
             await conversion.Start();
 
-            await using var outputFileStream = File.OpenRead(tempOutput);
+            var outputFileStream = File.OpenRead(tempOutput);
             var fileName = Path.GetFileName(tempOutput);
 
             return (outputFileStream, fileName, tempInput, tempOutput);
