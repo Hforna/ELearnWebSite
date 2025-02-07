@@ -2,7 +2,7 @@
 
 # Esta fase é usada durante a execução no VS no modo rápido (Padrão para a configuração de Depuração)
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
-USER app
+USER root
 WORKDIR /app
 EXPOSE 8080
 EXPOSE 8081
@@ -22,8 +22,6 @@ COPY . .
 WORKDIR "/src/src/backend/course/Course.Api"
 RUN dotnet build "./Course.Api.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
-RUN apt-get update && apt-get install -y ffmpeg
-
 # Esta fase é usada para publicar o projeto de serviço a ser copiado para a fase final
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
@@ -32,5 +30,20 @@ RUN dotnet publish "./Course.Api.csproj" -c $BUILD_CONFIGURATION -o /app/publish
 # Esta fase é usada na produção ou quando executada no VS no modo normal (padrão quando não está usando a configuração de Depuração)
 FROM base AS final
 WORKDIR /app
+
+USER root
+RUN echo "Types: deb" > /etc/apt/sources.list.d/debian.sources && \
+    echo "URIs: http://deb.debian.org/debian" >> /etc/apt/sources.list.d/debian.sources && \
+    echo "Suites: bookworm bookworm-updates bookworm-security" >> /etc/apt/sources.list.d/debian.sources && \
+    echo "Components: main non-free non-free-firmware" >> /etc/apt/sources.list.d/debian.sources && \
+    echo "Signed-By: /usr/share/keyrings/debian-archive-keyring.gpg" >> /etc/apt/sources.list.d/debian.sources && \
+    echo "deb http://deb.debian.org/debian bookworm main non-free non-free-firmware" > /etc/apt/sources.list.d/non-free.list && \
+    echo "deb http://deb.debian.org/debian bookworm-updates main non-free non-free-firmware" >> /etc/apt/sources.list.d/non-free.list && \
+    echo "deb http://security.debian.org/debian-security bookworm-security main non-free non-free-firmware" >> /etc/apt/sources.list.d/non-free.list && \
+    apt-get update -y && \
+    apt-get install -y --no-install-recommends ffmpeg && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+USER app
 COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "Course.Api.dll"]
