@@ -30,7 +30,18 @@ namespace Course.Infrastructure.Data.Course
 
         public async Task<IList<CourseEntity>?> CoursesByTeacher(long userId) => await _dbContext.Courses.Where(d => d.TeacherId == userId).ToListAsync();
 
-        public async Task<CourseEntity?> CourseById(long id) => await _dbContext.Courses.Include(d => d.Modules).ThenInclude(d => d.Lessons).SingleOrDefaultAsync(d => d.Id == id);
+        public async Task<CourseEntity?> CourseById(long id, bool asNoTracking = false)
+        {
+            var course = _dbContext.Courses
+                .Include(d => d.Modules)
+                .ThenInclude(d => d.Lessons)
+                .Where(d => d.Id == id);
+
+            if (asNoTracking)
+                course = course.AsNoTracking();
+
+            return await course.SingleOrDefaultAsync(d => d.Id == id);
+        }
 
         public async Task<CourseEntity?> CourseByTeacherAndId(long userId, long id) => await _dbContext.Courses.Include(d => d.Modules).SingleOrDefaultAsync(d => d.TeacherId == userId && d.Id == id);
 

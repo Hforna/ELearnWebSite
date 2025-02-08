@@ -7,6 +7,7 @@ using Course.Application.UseCases.Modules;
 using Course.Application.UseCases.Repositories.Course;
 using Course.Application.UseCases.Repositories.Lessons;
 using Course.Application.UseCases.Repositories.Modules;
+using Course.Domain.Repositories;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Sqids;
@@ -47,6 +48,8 @@ namespace Course.Application
             services.AddScoped<IDeleteModule, DeleteModule>();
             services.AddScoped<IUpdateCourse, UpdateCourse>();
             services.AddScoped<ICreateLesson, CreateLesson>();
+            services.AddScoped<IGetModules, GetModules>();
+            services.AddScoped<IGetLessons, GetLessons>();
 
             services.AddSingleton(new FileService());
         }

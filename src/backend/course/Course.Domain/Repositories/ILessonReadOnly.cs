@@ -10,5 +10,6 @@ namespace Course.Domain.Repositories
     public interface ILessonReadOnly
     {
         public Task<Lesson?> LessonById(long id);
+        public Task<List<Lesson>?> LessonByModuleId(long moduleId);
     }
 }

@@ -4,6 +4,7 @@ using Course.Application.UseCases.Modules;
 using Course.Application.UseCases.Repositories.Course;
 using Course.Communication.Requests;
 using Course.Communication.Responses;
+using Course.Domain.Repositories;
 using Course.Exception;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;

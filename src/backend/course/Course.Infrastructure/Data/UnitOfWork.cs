@@ -19,11 +19,14 @@ namespace Course.Infrastructure.Data
         public ILessonWriteOnly lessonWrite { get; set; }
         public IVideoReadOnly videoRead { get; set; }
         public IVideoWriteOnly videoWrite { get; set; }
+        public IEnrollmentReadOnly enrollmentRead { get; set; }
+        public IEnrollmentWriteOnly enrollmentWrite { get; set; }
 
         public UnitOfWork(CourseDbContext dbContext, ICourseReadOnly courseRead, ICourseWriteOnly courseWrite,
             IModuleReadOnly moduleReadOnly, IModuleWriteOnly moduleWriteOnly, 
             ILessonReadOnly lessonRead, ILessonWriteOnly lessonWrite,
-            IVideoReadOnly videoRead, IVideoWriteOnly videoWriteOnly)
+            IVideoReadOnly videoRead, IVideoWriteOnly videoWriteOnly,
+            IEnrollmentReadOnly enrollmentRead, IEnrollmentWriteOnly enrollmentWrite)
         {
             _dbContext = dbContext;
             this.courseRead = courseRead;
@@ -33,6 +36,8 @@ namespace Course.Infrastructure.Data
             this.lessonRead = lessonRead;
             this.lessonWrite = lessonWrite;
             this.videoRead = videoRead;
+            this.enrollmentRead = enrollmentRead;
+            this.enrollmentWrite = enrollmentWrite;
             videoWrite = videoWriteOnly;
         }
 

@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Course.Domain.Services.Token
+namespace Course.Domain.Repositories
 {
-    public interface ITokenReceptor
+    public interface IEnrollmentWriteOnly
     {
-        public string? GetToken();
     }
 }

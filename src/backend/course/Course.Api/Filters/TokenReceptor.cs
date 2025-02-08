@@ -8,9 +8,12 @@ namespace Course.Api.Filters
 
         public TokenReceptor(IHttpContextAccessor httpContext) => _httpContext = httpContext;
 
-        public string GetToken()
+        public string? GetToken()
         {
             var token = _httpContext.HttpContext!.Request.Headers.Authorization.ToString();
+
+            if (string.IsNullOrEmpty(token))
+                return null;
 
             return token["Bearer ".Length..].Trim();
         }

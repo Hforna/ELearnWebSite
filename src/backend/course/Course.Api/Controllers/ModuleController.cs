@@ -3,6 +3,7 @@ using Course.Application.UseCases.Modules;
 using Course.Application.UseCases.Repositories.Modules;
 using Course.Communication.Requests;
 using Course.Communication.Responses;
+using Course.Domain.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -22,6 +23,14 @@ namespace Course.Api.Controllers
             var result = await useCase.Execute(request, id);
 
             return Created(string.Empty, result);
+        }
+
+        [HttpGet("{id}", Name = "GetModules")]
+        public async Task<IActionResult> GetModules([FromRoute][ModelBinder(typeof(BinderId))] long id, [FromServices] IGetModules useCase)
+        {
+            var result = await useCase.Execute(id);
+
+            return Ok(result);
         }
 
         [Authorize(Policy = "TeacherOnly")]

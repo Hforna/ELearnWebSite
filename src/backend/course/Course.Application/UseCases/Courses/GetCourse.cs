@@ -16,7 +16,7 @@ using System.Threading.Tasks;
 
 namespace Course.Application.UseCases.Course
 {
-    public class GetCourse : IGetCourse
+    public class GetCourse : IGetCourse 
     {
         private readonly IUnitOfWork _uof;
         private readonly IMapper _mapper;
@@ -48,7 +48,7 @@ namespace Course.Application.UseCases.Course
 
             var courseInList = getCoursesList.Contains(course.Id);
 
-            course.totalVisits +=  courseInList == false ? 1 : 0;
+            course.totalVisits += courseInList == false ? 1 : 0;
             _uof.courseWrite.UpdateCourse(course);
             await _uof.Commit();
 

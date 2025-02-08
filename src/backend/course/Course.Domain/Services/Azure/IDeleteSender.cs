@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Course.Domain.Services.Token
+namespace Course.Domain.Services.Azure
 {
-    public interface ITokenReceptor
+    public interface IDeleteSender
     {
-        public string? GetToken();
+        public Task SendMessage(long courseId);
     }
 }

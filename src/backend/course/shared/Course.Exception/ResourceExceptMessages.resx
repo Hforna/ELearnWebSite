@@ -156,4 +156,7 @@
   <data name="INVALID_FORMAT_IMAGE" xml:space="preserve">
     <value>Only format image is png and jpg</value>
   </data>
+  <data name="USER__NOT_HAVE_LESSON" xml:space="preserve">
+    <value>User not have permission for access this content</value>
+  </data>
 </root>

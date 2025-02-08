@@ -17,5 +17,14 @@ namespace Course.Api.Controllers
 
             return Created(string.Empty, result);
         }
+
+
+        [HttpGet("{id}", Name = "GetLessons")]
+        public async Task<IActionResult> GetLessons([FromServices]IGetLessons useCase, [FromRoute][ModelBinder(typeof(BinderId))]long id)
+        {
+            var result = await useCase.Execute(id);
+
+            return Ok(result);
+        }
     }
 }

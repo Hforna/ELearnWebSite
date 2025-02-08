@@ -4,6 +4,7 @@ using Course.Domain.Services.Azure;
 using Course.Domain.Services.Rest;
 using Course.Infrastructure.Data;
 using Course.Infrastructure.Data.Course;
+using Course.Infrastructure.Data.CourseD;
 using Course.Infrastructure.Data.VideoD;
 using Course.Infrastructure.Services.Azure;
 using Course.Infrastructure.Services.Rest;
@@ -49,6 +50,8 @@ namespace Course.Infrastructure
             services.AddScoped<ILessonWriteOnly, LessonRepository>();
             services.AddScoped<IVideoReadOnly, VideoRepository>();
             services.AddScoped<IVideoWriteOnly, VideoRepository>();
+            services.AddScoped<IEnrollmentReadOnly, EnrollmentRepository>();
+            services.AddScoped<IEnrollmentWriteOnly, EnrollmentRepository>();
         }
 
         private static void AddAzureStorage(IServiceCollection services, IConfiguration configuration)

@@ -22,11 +22,14 @@ namespace Course.Infrastructure.Services.Rest
         {
             _tokenReceptor = tokenReceptor;
             _httpClient = httpClient;
-            _token = _tokenReceptor.GetToken();
+            _token = _tokenReceptor.GetToken()!;
         }
 
-        public async Task<UserInfosDto> GetUserInfos()
+        public async Task<UserInfosDto?> GetUserInfos()
         {
+            if (string.IsNullOrEmpty(_token))
+                return null;
+
             var client = _httpClient.CreateClient("user.api");
             client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _token);
 
@@ -43,8 +46,11 @@ namespace Course.Infrastructure.Services.Rest
             throw new RestException(response.Content.ToString());    
         }
 
-        public async Task<List<string>> GetUserRoles(Guid uid)
+        public async Task<List<string>?> GetUserRoles(Guid uid)
         {
+            if (string.IsNullOrEmpty(_token))
+                return null;
+
             var client = _httpClient.CreateClient();
             client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _token);
 

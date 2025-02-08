@@ -9,7 +9,7 @@ namespace Course.Domain.Services.Rest
 {
     public interface IUserService
     {
-        public Task<List<string>> GetUserRoles(Guid uid);
-        public Task<UserInfosDto> GetUserInfos();
+        public Task<List<string>?> GetUserRoles(Guid uid);
+        public Task<UserInfosDto?> GetUserInfos();
     }
 }
