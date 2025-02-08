@@ -35,15 +35,16 @@ namespace Course.Api.Sessions
 
             if(session.TryGetValue("coursesVisited", out var value))
             {
-                var deserializeValue = JsonSerializer.Deserialize<string>(value);
+                var deserializeValue = JsonSerializer.Deserialize<List<long>>(value);
 
-                var valueAsList = deserializeValue!.Split(",").ToList();
+                if(!deserializeValue.Contains(courseId))
+                {
+                    deserializeValue.Add(courseId);
 
-                valueAsList.Add($"{courseId}, ");
+                    var serializeList = JsonSerializer.Serialize(deserializeValue);
 
-                var serializeList = JsonSerializer.Serialize(valueAsList);
-
-                session.SetString("coursesVisited", serializeList);
+                    session.SetString("coursesVisited", serializeList);
+                }
             } else
             {
                 session.SetString("coursesVisited", $"{courseId}, ");

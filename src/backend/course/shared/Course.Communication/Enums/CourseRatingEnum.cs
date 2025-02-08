@@ -11,7 +11,7 @@ namespace Course.Communication.Enums
         VeryBad,
         Bad,
         Medium,
-        Excelent,
+        Good,
         Perfect
     }
 }

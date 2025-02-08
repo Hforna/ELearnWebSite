@@ -56,8 +56,7 @@ namespace Course.Api.Controllers
         }
 
         [Authorize(Policy = "TeacherOnly")]
-        [HttpDelete]
-        [Route("{id}")]
+        [HttpDelete("{id}", Name = "DeleteCourse")]
         public async Task<IActionResult> DeleteCourse([FromRoute][ModelBinder(typeof(BinderId))]long id, [FromServices]IDeleteCourse useCase)
         {
             await useCase.Execute(id);

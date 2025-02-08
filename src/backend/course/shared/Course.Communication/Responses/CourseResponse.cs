@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Course.Communication.Responses
 {
-    public class CourseResponse
+    public class CourseResponse : BaseResponse
     {
         public string Id { get; set; }
         public string TeacherId { get; set; }
@@ -19,7 +19,6 @@ namespace Course.Communication.Responses
         public double Price { get; set; }
         public LanguagesEnum CourseLanguage { get; set; }
         public string ThumbnailUrl { get; set; }
-        public List<ModuleResponse> Modules { get; set; }
         public IList<CourseTopicsResponse> CourseTopics { get; set; }
     }
 }

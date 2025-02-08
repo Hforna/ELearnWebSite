@@ -14,6 +14,9 @@ using Course.Domain.Sessions;
 using Course.Api.Sessions;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Xabe.FFmpeg;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Routing;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -132,6 +135,15 @@ builder.Services.AddSession(options =>
     options.IdleTimeout = TimeSpan.FromMinutes(30); 
     options.Cookie.HttpOnly = true; 
     options.Cookie.IsEssential = true;
+});
+
+builder.Services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
+
+builder.Services.AddScoped<IUrlHelper>(sp =>
+{
+    var actionContext = sp.GetRequiredService<IActionContextAccessor>().ActionContext;
+    var factory = sp.GetRequiredService<IUrlHelperFactory>();
+    return factory.GetUrlHelper(actionContext);
 });
 
 builder.Services.AddHealthChecks();

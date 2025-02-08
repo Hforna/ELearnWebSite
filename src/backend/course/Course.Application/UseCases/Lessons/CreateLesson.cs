@@ -52,8 +52,8 @@ namespace Course.Application.UseCases.Lessons
             var lesson = _mapper.Map<Lesson>(request);
             lesson.ModuleId = module.Id;
 
-            var videoStream = request.Video.OpenReadStream();
-            (videoStream, string fileName, string tempIntput, string tempOutput) = await _fileService.TranscodeVideo(videoStream);
+            var notTranscodedStream = request.Video.OpenReadStream();
+            (Stream videoStream, string fileName, string tempIntput, string tempOutput) = await _fileService.TranscodeVideo(notTranscodedStream);
 
             var videoDuration = await _fileService.GetFileDuration(videoStream, ".mp4");
 

@@ -21,13 +21,16 @@ namespace Course.Application.UseCases.Modules
         private readonly IMapper _mapper;
         private readonly SqidsEncoder<long> _sqids;
         private readonly IUserService _userService;
+        private readonly ILinkService _linkService;
 
-        public CreateModule(IUnitOfWork uof, IMapper mapper, SqidsEncoder<long> sqids, IUserService userService)
+        public CreateModule(IUnitOfWork uof, IMapper mapper, 
+            SqidsEncoder<long> sqids, IUserService userService, ILinkService linkService)
         {
             _uof = uof;
             _mapper = mapper;
             _sqids = sqids;
             _userService = userService;
+            _linkService = linkService;
         }
 
 
@@ -75,7 +78,12 @@ namespace Course.Application.UseCases.Modules
 
             var response = _mapper.Map<IList<ModuleResponse>>(course.Modules);
 
-            return response;
+            return response.Select(module =>
+            {
+                module.AddLink("lessons", _linkService.GenerateResourceLink("GetLessons", new { id = module.Id } ), "GET");
+
+                return module;
+            }).ToList();
         }
     }
 }

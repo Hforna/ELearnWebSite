@@ -73,6 +73,7 @@ namespace Course.Infrastructure
         private static void AddServices(IServiceCollection services)
         {
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<ILinkService, LinkService>();
         }
     }
 }
