@@ -25,14 +25,6 @@ namespace Course.Api.Controllers
             return Created(string.Empty, result);
         }
 
-        [HttpGet("{id}", Name = "GetModules")]
-        public async Task<IActionResult> GetModules([FromRoute][ModelBinder(typeof(BinderId))] long id, [FromServices] IGetModules useCase)
-        {
-            var result = await useCase.Execute(id);
-
-            return Ok(result);
-        }
-
         [Authorize(Policy = "TeacherOnly")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteModule([FromRoute][ModelBinder(typeof(BinderId))]long id, [FromServices]IDeleteModule useCase)

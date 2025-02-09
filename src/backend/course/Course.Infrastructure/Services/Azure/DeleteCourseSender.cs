@@ -9,9 +9,9 @@ namespace Course.Infrastructure.Services.Azure
          
         public DeleteSender(ServiceBusSender busSender) => _busSender = busSender;
 
-        public Task SendMessage(long courseId)
+        public async Task SendMessage(long courseId)
         {
-            _busSender.SendMessagesAsync("deleteCourse", courseId.ToString());
+            await _busSender.SendMessageAsync(new ServiceBusMessage(courseId.ToString()));
         }
     }
 }

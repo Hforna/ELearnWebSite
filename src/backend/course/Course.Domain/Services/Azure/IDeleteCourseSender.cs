@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Course.Domain.Services.Azure
 {
-    public interface IDeleteSender
+    public interface IDeleteCourseSender
     {
         public Task SendMessage(long courseId);
     }

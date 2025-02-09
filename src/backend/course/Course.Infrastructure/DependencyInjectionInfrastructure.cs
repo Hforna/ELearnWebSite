@@ -68,9 +68,16 @@ namespace Course.Infrastructure
                 TransportType = ServiceBusTransportType.AmqpWebSockets
             });
 
-            var sender = new DeleteSender(serviceBus.CreateSender("delete"));
+            var sender = new DeleteCourseSender(serviceBus.CreateSender("delete"));
 
-            service.AddScoped<DeleteSender>(d => sender);
+            service.AddScoped<IDeleteCourseSender>(d => sender);
+
+            var processor = new DeleteCourseProcessor(serviceBus.CreateProcessor("delete", new ServiceBusProcessorOptions()
+            {
+                MaxConcurrentCalls = 1
+            }));
+
+            service.AddSingleton(processor);
         }
 
         private static void AddServices(IServiceCollection services)

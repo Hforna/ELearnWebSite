@@ -21,15 +21,17 @@ namespace Course.Application.UseCases.Course
         private readonly SqidsEncoder<long> _sqids;
         private readonly EmailService _emailService;
         private readonly IStorageService _storageService;
+        private readonly IDeleteSender _deleteSender;
 
         public DeleteCourse(IUserService userService, IUnitOfWork uof, SqidsEncoder<long> sqids, 
-            EmailService emailService, IStorageService storageService)
+            EmailService emailService, IStorageService storageService, IDeleteSender deleteSender)
         {
             _userService = userService;
             _uof = uof;
             _sqids = sqids;
             _emailService = emailService;
             _storageService = storageService;
+            _deleteSender = deleteSender;
         }
 
         public async Task Execute(long id)
@@ -52,6 +54,8 @@ namespace Course.Application.UseCases.Course
 
             _uof.courseWrite.UpdateCourse(course);
             await _uof.Commit();
+
+            await _deleteSender.SendMessage(course.Id);
 
             await _emailService.SendEmail(user.userName, user.email, "Are you sure you want to delete this course?",
                 "you have 2 months for get it back otherwise will be removed and only people that already bought will have access");

@@ -26,12 +26,21 @@ namespace Course.Api.Controllers
             return Created(string.Empty, result);
         }
 
+        [Authorize(Policy = "TeacherOnly")]
         [HttpPut]
         [Route("{id}")]
         public async Task<IActionResult> UpdateCourse([FromServices]UpdateCourse useCase, 
             [FromForm]UpdateCourseRequest request, [FromRoute][ModelBinder(typeof(BinderId))]long id)
         {
             var result = await useCase.Execute(id, request);
+
+            return Ok(result);
+        }
+
+        [HttpGet("modules/{id}", Name = "GetModules")]
+        public async Task<IActionResult> GetModules([FromRoute][ModelBinder(typeof(BinderId))] long id, [FromServices] IGetModules useCase)
+        {
+            var result = await useCase.Execute(id);
 
             return Ok(result);
         }
