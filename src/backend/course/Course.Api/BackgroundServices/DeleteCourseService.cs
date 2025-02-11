@@ -1,44 +1,63 @@
-﻿using Course.Domain.Repositories;
+﻿using Azure.Messaging.ServiceBus;
+using Course.Application.UseCases.Repositories.Course;
+using Course.Domain.Repositories;
 using Course.Domain.Services.Azure;
+using Course.Infrastructure.Services.Azure;
 
 namespace Course.Api.BackgroundServices
 {
     public class DeleteCourseService : BackgroundService
     {
         private readonly IServiceProvider _provider;
+        private readonly ServiceBusProcessor _processor;
 
-        public DeleteCourseService(IServiceProvider provider) => _provider = provider;
+        public DeleteCourseService(IServiceProvider provider, DeleteCourseProcessor processor)
+        {
+            _provider = provider;
+            _processor = processor.GetProcessor();
+        }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            while(!stoppingToken.IsCancellationRequested)
+            _processor.ProcessMessageAsync += ProcessMessageAsync;
+            _processor.ProcessErrorAsync += ProcessErrorAsync;
+
+            await _processor.StartProcessingAsync(stoppingToken);
+        }
+
+        public async Task ProcessMessageAsync(ProcessMessageEventArgs eventArgs)
+        {
+            var body = long.Parse(eventArgs.Message.Body);
+
+            var scope = _provider.CreateScope();
+            var uof = _provider.GetRequiredService<IUnitOfWork>();
+            var storage = _provider.GetRequiredService<IStorageService>();
+
+            var course = await uof.courseRead.CourseById(body);
+
+            await storage.DeleteCourseImage(course.courseIdentifier, course.Thumbnail);
+            uof.courseWrite.DeleteCourse(course);
+            foreach(var module in course.Modules)
             {
-                try
+                foreach(var lesson in module.Lessons)
                 {
-
-
-                    var scope = _provider.CreateScope();
-
-                    var uof = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
-                    var storage = scope.ServiceProvider.GetRequiredService<IStorageService>();
-
-                    var courses = await uof.courseRead.GetNotActiveCourses();
-
-                    if (courses.Count != 0)
-                    {
-                        foreach (var course in courses)
-                        {
-                            await storage.DeleteCourseImage(course.courseIdentifier, course.Thumbnail);    
-                        }
-                        uof.courseWrite.DeleteCourseRange(courses);
-                        await uof.Commit();
-                    }
-                } catch(System.Exception ex)
-                {
-                    Console.WriteLine(ex.ToString());
+                    await storage.DeleteVideo(course.courseIdentifier, lesson.VideoId);
+                    
                 }
-                await Task.Delay(TimeSpan.FromDays(1));
+                uof.lessonWrite.DeleteLessonRange(module.Lessons);
+                uof.moduleWrite.DeleteModule(module);
             }
+        }
+
+        public async Task ProcessErrorAsync(ProcessErrorEventArgs args) => await Task.CompletedTask;
+
+        ~DeleteCourseService() => Dispose();
+
+        public override void Dispose()
+        {
+            base.Dispose();
+
+            GC.SuppressFinalize(this);
         }
     }
 }

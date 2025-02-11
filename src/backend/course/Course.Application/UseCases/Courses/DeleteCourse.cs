@@ -21,10 +21,10 @@ namespace Course.Application.UseCases.Course
         private readonly SqidsEncoder<long> _sqids;
         private readonly EmailService _emailService;
         private readonly IStorageService _storageService;
-        private readonly IDeleteSender _deleteSender;
+        private readonly IDeleteCourseSender _deleteSender;
 
         public DeleteCourse(IUserService userService, IUnitOfWork uof, SqidsEncoder<long> sqids, 
-            EmailService emailService, IStorageService storageService, IDeleteSender deleteSender)
+            EmailService emailService, IStorageService storageService, IDeleteCourseSender deleteSender)
         {
             _userService = userService;
             _uof = uof;
