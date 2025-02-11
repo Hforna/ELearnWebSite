@@ -42,7 +42,7 @@ namespace Course.Api.BackgroundServices
                 foreach(var lesson in module.Lessons)
                 {
                     await storage.DeleteVideo(course.courseIdentifier, lesson.VideoId);
-                    
+                    await uof.videoWrite.DeleteVideo(lesson.VideoId);
                 }
                 uof.lessonWrite.DeleteLessonRange(module.Lessons);
                 uof.moduleWrite.DeleteModule(module);
