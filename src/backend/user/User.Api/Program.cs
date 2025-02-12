@@ -61,7 +61,9 @@ builder.Services.AddSwaggerGen(options =>
 });
 builder.Services.AddMvc(d => d.Filters.Add(typeof(FilterException)));
 
-builder.Services.AddIdentity<UserModel, RoleModel>().AddEntityFrameworkStores<UserDbContext>().AddDefaultTokenProviders();
+builder.Services.AddIdentity<UserModel, RoleModel>()
+    .AddEntityFrameworkStores<UserDbContext>()
+    .AddDefaultTokenProviders();
 
 builder.Services.AddAuthorization(auth =>
 {

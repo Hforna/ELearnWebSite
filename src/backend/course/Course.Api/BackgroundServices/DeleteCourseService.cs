@@ -8,13 +8,13 @@ namespace Course.Api.BackgroundServices
 {
     public class DeleteCourseService : BackgroundService
     {
-        private readonly IServiceProvider _provider;
         private readonly ServiceBusProcessor _processor;
+        private readonly IServiceProvider _provider;
 
         public DeleteCourseService(IServiceProvider provider, DeleteCourseProcessor processor)
         {
-            _provider = provider;
             _processor = processor.GetProcessor();
+            _provider = provider;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)

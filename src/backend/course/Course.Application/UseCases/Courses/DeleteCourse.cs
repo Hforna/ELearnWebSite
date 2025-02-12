@@ -58,7 +58,7 @@ namespace Course.Application.UseCases.Course
             await _deleteSender.SendMessage(course.Id);
 
             await _emailService.SendEmail(user.userName, user.email, "Are you sure you want to delete this course?",
-                "you have 2 months for get it back otherwise will be removed and only people that already bought will have access");
+                "you have 2 months for get it back otherwise it will be removed and only people that already bought will have access");
         }
     }
 }

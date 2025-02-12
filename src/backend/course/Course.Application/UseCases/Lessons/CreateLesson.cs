@@ -39,7 +39,7 @@ namespace Course.Application.UseCases.Lessons
             _uof = uof;
         }
 
-        public async Task<LessonResponse> Execute(CreateLessonRequest request, long moduleId)
+        public async Task<LessonResponse> Execute(CreateLessonRequest request, long moduleId, long courseId)
         {
             var module = await _uof.moduleRead.ModuleById(moduleId);
         

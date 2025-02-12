@@ -29,6 +29,7 @@ namespace Course.Infrastructure
             AddRepositories(services);
             AddServices(services);
             AddAzureStorage(services, configuration);
+            AddServiceBus(services, configuration);
         }
 
         private static void AddDbContext(IServiceCollection services, IConfiguration configuration)

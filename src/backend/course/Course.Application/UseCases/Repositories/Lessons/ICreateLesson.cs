@@ -10,6 +10,6 @@ namespace Course.Application.UseCases.Repositories.Lessons
 {
     public interface ICreateLesson
     {
-        public Task<LessonResponse> Execute(CreateLessonRequest request, long id);
+        public Task<LessonResponse> Execute(CreateLessonRequest request, long moduleId, long courseId);
     }
 }

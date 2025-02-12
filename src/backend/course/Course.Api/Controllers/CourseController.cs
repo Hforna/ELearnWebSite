@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.RateLimiting;
 
 namespace Course.Api.Controllers
 {
+    [Route("api/[controller]")]
     public class CourseController : ProjectBaseController
     {
         [Authorize(Policy = "TeacherOnly")]
@@ -33,14 +34,6 @@ namespace Course.Api.Controllers
             [FromForm]UpdateCourseRequest request, [FromRoute][ModelBinder(typeof(BinderId))]long id)
         {
             var result = await useCase.Execute(id, request);
-
-            return Ok(result);
-        }
-
-        [HttpGet("modules/{id}", Name = "GetModules")]
-        public async Task<IActionResult> GetModules([FromRoute][ModelBinder(typeof(BinderId))] long id, [FromServices] IGetModules useCase)
-        {
-            var result = await useCase.Execute(id);
 
             return Ok(result);
         }
@@ -67,6 +60,8 @@ namespace Course.Api.Controllers
 
         [Authorize(Policy = "TeacherOnly")]
         [HttpDelete("{id}", Name = "DeleteCourse")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesDefaultResponseType]
         public async Task<IActionResult> DeleteCourse([FromRoute][ModelBinder(typeof(BinderId))]long id, [FromServices]IDeleteCourse useCase)
         {
             await useCase.Execute(id);

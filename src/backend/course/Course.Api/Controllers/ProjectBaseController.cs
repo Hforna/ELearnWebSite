@@ -3,8 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Course.Api.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [Produces("application/json")]
+    [ApiConventionType(typeof(DefaultApiConventions))]
     public class ProjectBaseController : ControllerBase
     {
     }

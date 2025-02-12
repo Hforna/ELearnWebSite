@@ -10,13 +10,12 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Course.Api.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/course/{id}/[controller]")]
     [ApiController]
     public class ModuleController : ProjectBaseController
     {
         [Authorize(Policy = "TeacherOnly")]
-        [HttpPost("{id}")]
-        [ProducesResponseType(typeof(ModuleResponse), StatusCodes.Status201Created)]
+        [HttpPost]
         public async Task<IActionResult> CreateModule([FromRoute][ModelBinder(typeof(BinderId))] long id, [FromBody] CreateModuleRequest request,
         [FromServices] CreateModule useCase)
         {
@@ -25,8 +24,16 @@ namespace Course.Api.Controllers
             return Created(string.Empty, result);
         }
 
+        [HttpGet(Name = "GetModules")]
+        public async Task<IActionResult> GetModules([FromRoute][ModelBinder(typeof(BinderId))] long id, [FromServices] IGetModules useCase)
+        {
+            var result = await useCase.Execute(id);
+
+            return Ok(result);
+        }
+
         [Authorize(Policy = "TeacherOnly")]
-        [HttpDelete("{id}")]
+        [HttpDelete]
         public async Task<IActionResult> DeleteModule([FromRoute][ModelBinder(typeof(BinderId))]long id, [FromServices]IDeleteModule useCase)
         {
             await useCase.Execute(id);
