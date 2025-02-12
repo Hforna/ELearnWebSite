@@ -17,6 +17,7 @@ using Xabe.FFmpeg;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -148,6 +149,17 @@ builder.Services.AddScoped<IUrlHelper>(sp =>
 
 builder.Services.AddHealthChecks();
 
+builder.Services.AddSwaggerGen(c => {
+    c.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "CourseServiceApi",
+        Description = "Course service for elearn project"
+    });
+
+    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    c.IncludeXmlComments($"{Path.Combine(AppContext.BaseDirectory, xmlFile)}");
+});
+
 var app = builder.Build();
 
 app.UseRateLimiter();
@@ -164,6 +176,8 @@ app.UseSession();
 app.UseHealthChecks("/HealthCheck");
 
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 
