@@ -39,5 +39,19 @@ namespace Course.Infrastructure.Data.Course
         {
             return await _dbContext.Lessons.Where(d => d.Active && d.ModuleId == moduleId).ToListAsync();
         }
+
+        public async Task<Lesson?> LessonByModuleIdAndCourseId(long moduleId, long courseId, long id) => await _dbContext.Lessons
+            .Include(d => d.Module)
+            .ThenInclude(d => d.Course)
+            .SingleOrDefaultAsync(d => d.ModuleId == moduleId 
+            && d.Module.CourseId == courseId 
+            && d.Id == id 
+            && d.Active);
+
+
+        public async Task<List<Lesson>?> LessonsByModuleIdAndCourseId(long moduleId, long courseId) => await _dbContext.Lessons
+            .Include(d => d.Module)
+            .ThenInclude(d => d.Course)
+            .Where(d => d.ModuleId == moduleId && d.Module.CourseId == courseId).ToListAsync();
     }
 }

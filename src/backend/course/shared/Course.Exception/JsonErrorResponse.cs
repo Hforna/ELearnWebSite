@@ -10,12 +10,23 @@ namespace Course.Exception
     public class JsonErrorResponse : BaseException
     {
         public override List<string> Errors { get; set; } = [];
+        public override HttpStatusCode StatusCode { get; set; } = HttpStatusCode.BadRequest;
 
-        public JsonErrorResponse(List<string> errors) => Errors = errors;
+        public JsonErrorResponse(List<string> errors, HttpStatusCode? statusCode = null)
+        {
+            Errors = errors;
+            if (statusCode.HasValue)
+                StatusCode = (HttpStatusCode)statusCode;
+        }
 
-        public JsonErrorResponse(string error) => Errors.Add(error);
+        public JsonErrorResponse(string error, HttpStatusCode? statusCode = null)
+        {
+            Errors.Add(error);
+            if (statusCode.HasValue)
+                statusCode = (HttpStatusCode)statusCode;
+        }
 
-        public override HttpStatusCode GetStatusCode() => HttpStatusCode.BadRequest;
+        public override HttpStatusCode GetStatusCode() => StatusCode;
 
         public override string GetMessage() => Message;
     }

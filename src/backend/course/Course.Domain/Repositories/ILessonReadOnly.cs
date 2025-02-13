@@ -11,5 +11,7 @@ namespace Course.Domain.Repositories
     {
         public Task<Lesson?> LessonById(long id);
         public Task<List<Lesson>?> LessonByModuleId(long moduleId);
+        public Task<List<Lesson>?> LessonsByModuleIdAndCourseId(long moduleId, long courseId);
+        public Task<Lesson?> LessonByModuleIdAndCourseId(long moduleId, long courseId, long id);
     }
 }

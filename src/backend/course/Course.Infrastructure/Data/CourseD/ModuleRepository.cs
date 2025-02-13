@@ -30,6 +30,11 @@ namespace Course.Infrastructure.Data.Course
             return await _dbContext.Modules.Include(d => d.Course).Include(d => d.Lessons).Where(d => d.Active == false).ToListAsync();
         }
 
+        public async Task<List<Module>?> ModuleByCourseId(long courseId)
+        {
+            return await _dbContext.Modules.Include(d => d.Course).Where(m => m.CourseId == courseId && m.Active).ToListAsync();
+        }
+
         public async Task<Module?> ModuleById(long id)
         {
             return await _dbContext.Modules.Include(d => d.Course).SingleOrDefaultAsync(d => d.Id == id && d.Active);

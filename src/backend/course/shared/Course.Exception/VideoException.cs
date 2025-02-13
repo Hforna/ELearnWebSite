@@ -10,13 +10,24 @@ namespace Course.Exception
     public class VideoException : BaseException
     {
         public override List<string> Errors { get; set; } = [];
+        public override HttpStatusCode StatusCode { get; set; } = HttpStatusCode.BadRequest;
 
-        public VideoException(string error) => Errors.Add(error);
+        public VideoException(List<string> errors, HttpStatusCode? statusCode = null)
+        {
+            Errors = errors;
+            if (statusCode.HasValue)
+                StatusCode = (HttpStatusCode)statusCode;
+        }
 
-        public VideoException(List<string> errors) => Errors = errors;
+        public VideoException(string error, HttpStatusCode? statusCode = null)
+        {
+            Errors.Add(error);
+            if (statusCode.HasValue)
+                statusCode = (HttpStatusCode)statusCode;
+        }
 
         public override string GetMessage() => Message;
 
-        public override HttpStatusCode GetStatusCode() => HttpStatusCode.BadRequest;
+        public override HttpStatusCode GetStatusCode() => StatusCode;
     }
 }

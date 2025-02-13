@@ -97,6 +97,15 @@ namespace Course.Exception {
         }
         
         /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Course or module ids doesn&apos;t exists.
+        /// </summary>
+        public static string COURSE_OR_MODULE {
+            get {
+                return ResourceManager.GetString("COURSE_OR_MODULE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a Course description length must be less or equal 256.
         /// </summary>
         public static string COURSE_TITLE_LENGTH_LESS_THAN_256 {
@@ -129,6 +138,24 @@ namespace Course.Exception {
         public static string INVALID_FORMAT_IMAGE {
             get {
                 return ResourceManager.GetString("INVALID_FORMAT_IMAGE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Lesson doesn&apos;t exists.
+        /// </summary>
+        public static string LESSON_DOESNT_EXISTS {
+            get {
+                return ResourceManager.GetString("LESSON_DOESNT_EXISTS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a User doesn&apos;t have permission for get lesson.
+        /// </summary>
+        public static string LESSON_UNAUTHORIZED {
+            get {
+                return ResourceManager.GetString("LESSON_UNAUTHORIZED", resourceCulture);
             }
         }
         

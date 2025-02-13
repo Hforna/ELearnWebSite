@@ -10,12 +10,24 @@ namespace Course.Exception
     public class UserException : BaseException
     {
         public override List<string> Errors { get; set; } = [];
+        public override HttpStatusCode StatusCode { get; set; } = HttpStatusCode.NotFound;
 
-        public UserException(List<string> errors) => Errors = errors;
-        public UserException(string error) => Errors.Add(error);
+        public UserException(List<string> errors, HttpStatusCode? statusCode = null)
+        {
+            Errors = errors;
+            if (statusCode.HasValue)
+                StatusCode = (HttpStatusCode)statusCode;
+        }
+
+        public UserException(string error, HttpStatusCode? statusCode = null)
+        {
+            Errors.Add(error);
+            if (statusCode.HasValue)
+                statusCode = (HttpStatusCode)statusCode;
+        }
 
         public override string GetMessage() => Message;
 
-        public override HttpStatusCode GetStatusCode() => HttpStatusCode.NotFound;
+        public override HttpStatusCode GetStatusCode() => StatusCode;
     }
 }

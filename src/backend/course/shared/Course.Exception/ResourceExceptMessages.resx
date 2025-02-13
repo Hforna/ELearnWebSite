@@ -159,4 +159,13 @@
   <data name="USER__NOT_HAVE_LESSON" xml:space="preserve">
     <value>User not have permission for access this content</value>
   </data>
+  <data name="LESSON_DOESNT_EXISTS" xml:space="preserve">
+    <value>Lesson doesn't exists</value>
+  </data>
+  <data name="COURSE_OR_MODULE" xml:space="preserve">
+    <value>Course or module ids doesn't exists</value>
+  </data>
+  <data name="LESSON_UNAUTHORIZED" xml:space="preserve">
+    <value>User doesn't have permission for get lesson</value>
+  </data>
 </root>

@@ -7,19 +7,19 @@ using System.Threading.Tasks;
 
 namespace Course.Exception
 {
-    public class LessonException : BaseException
+    public class ModuleException : BaseException
     {
         public override List<string> Errors { get; set; } = [];
-        public override HttpStatusCode StatusCode { get; set; } = HttpStatusCode.BadRequest;
+        public override HttpStatusCode StatusCode { get; set; } = HttpStatusCode.NotFound;
 
-        public LessonException(List<string> errors, HttpStatusCode? statusCode = null)
+        public ModuleException(List<string> errors, HttpStatusCode? statusCode = null)
         {
             Errors = errors;
             if (statusCode.HasValue)
                 StatusCode = (HttpStatusCode)statusCode;
         }
 
-        public LessonException(string error, HttpStatusCode? statusCode = null)
+        public ModuleException(string error, HttpStatusCode? statusCode = null)
         {
             Errors.Add(error);
             if (statusCode.HasValue)

@@ -36,12 +36,12 @@ namespace Course.Application.UseCases.Modules
                 throw new CourseException(ResourceExceptMessages.COURSE_DOESNT_EXISTS);
 
             var response = _mapper.Map<ModulesResponse>(course.Modules);
-            response.Modules.Select(module =>
+            response.Modules = response.Modules.Select(module =>
             {
                 module.AddLink("lessons", _linkService.GenerateResourceLink("GetLessons", new { id = module.Id }), "GET");
 
                 return module;
-            });
+            }).ToList();
             response.CourseId = _sqids.Encode(course.Id);
             return response;
         }

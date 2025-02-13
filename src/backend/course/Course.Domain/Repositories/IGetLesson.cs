@@ -5,10 +5,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Course.Application.UseCases.Repositories.Lessons
+namespace Course.Domain.Repositories
 {
-    public interface IGetLessons
+    public interface IGetLesson
     {
-        public Task<LessonsResponse> Execute(long moduleId, long courseId);
+        public Task<LessonResponse> Execute(long courseId, long moduleId, long id);
     }
 }

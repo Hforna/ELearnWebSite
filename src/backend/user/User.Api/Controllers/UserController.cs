@@ -116,12 +116,15 @@ namespace User.Api.Controllers
             if(user is null)
                 throw new Exception("User doesn't exists");
 
-            user.Active = true;
-
             var confirm = await _userManager.ConfirmEmailAsync(user, token);
 
             if (!confirm.Succeeded)
                 throw new Exception("Wrong token for email confirmation");
+
+            user.Active = true;
+            user.EmailConfirmed = true;
+
+            await _uof.Commit();
 
             return Ok("E-mail confirmed");
         }

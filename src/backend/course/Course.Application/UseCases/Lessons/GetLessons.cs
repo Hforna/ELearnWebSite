@@ -31,12 +31,14 @@ namespace Course.Application.UseCases.Lessons
             _storageService = storageService;
         }
 
-        public async Task<LessonsResponse> Execute(long moduleId)
+        public async Task<LessonsResponse> Execute(long moduleId, long courseId)
         {
-            var module = await _uof.moduleRead.ModuleById(moduleId);
+            var lesson = await _uof.lessonRead.LessonsByModuleIdAndCourseId(moduleId, courseId);
 
-            if (module is null)
+            if (lesson is null)
                 throw new LessonException(ResourceExceptMessages.MODULE_DOESNT_EXISTS);
+
+            var module = lesson.FirstOrDefault()!.Module;
 
             var lessons = module.Lessons;
             var user = await _userService.GetUserInfos();

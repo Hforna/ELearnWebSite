@@ -6,6 +6,7 @@ using Course.Domain.Entitites;
 using Sqids;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -61,6 +62,14 @@ namespace Course.Application.Services.AutoMapper
             CreateMap<Module, ModuleResponse>()
                 .ForMember(d => d.CourseId, d => d.MapFrom(d => _sqids.Encode(d.CourseId)))
                 .ForMember(d => d.Id, d => d.MapFrom(d => _sqids.Encode(d.Id)));
+
+            CreateMap<List<Module>, ModulesResponse>()
+                .ForMember(d => d.CourseId, f => f.MapFrom(m => _sqids.Encode(m.FirstOrDefault().CourseId)))
+                .ForMember(d => d.Modules, f => f.MapFrom(m => m));
+
+            CreateMap<Collection<Module>, ModulesResponse>()
+                .ForMember(d => d.CourseId, f => f.MapFrom(m => _sqids.Encode(m.FirstOrDefault().CourseId)))
+                .ForMember(d => d.Modules, f => f.MapFrom(m => m));
         }
     }
 }
