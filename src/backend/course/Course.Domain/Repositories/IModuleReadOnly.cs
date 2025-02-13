@@ -10,7 +10,8 @@ namespace Course.Domain.Repositories
     public interface IModuleReadOnly
     {
         public Task<Module?> ModuleById(long id);
-        public Task<List<Module>?> ModuleByCourseId(long courseId);
+        public Task<List<Module>?> ModulesByCourseId(long courseId);
+        public Task<Module?> ModuleByCourseAndModuleIds(long courseId, long moduleId);
         public Task<IList<Module>> GetNotActiveModules();
     }
 }

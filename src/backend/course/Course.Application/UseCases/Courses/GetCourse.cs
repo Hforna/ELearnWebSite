@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Course.Application.UseCases.Repositories.Course;
 using Course.Communication.Responses;
+using Course.Domain.Cache;
 using Course.Domain.Repositories;
 using Course.Domain.Services.Azure;
 using Course.Domain.Services.Rest;
@@ -25,14 +26,16 @@ namespace Course.Application.UseCases.Course
         private readonly IStorageService _storage;
         private readonly ICoursesSession _coursesSession;
         private readonly ILinkService _linkService;
+        private readonly ICourseCache _courseCache;
 
         public GetCourse(IUnitOfWork uof, IMapper mapper, 
             SqidsEncoder<long> sqids, IStorageService storage, 
-            ICoursesSession coursesSession, ILinkService linkService)
+            ICoursesSession coursesSession, ILinkService linkService, ICourseCache courseCache)
         {
             _uof = uof;
             _linkService = linkService;
             _mapper = mapper;
+            _courseCache = courseCache;
             _sqids = sqids;
             _storage = storage;
             _coursesSession = coursesSession;
@@ -48,6 +51,9 @@ namespace Course.Application.UseCases.Course
             var getCoursesList = _coursesSession.GetCoursesVisited() ?? [];
 
             var courseInList = getCoursesList.Contains(course.Id);
+
+            if (!courseInList)
+                await _courseCache.SetCourseOnMostVisited(course.Id);
 
             course.totalVisits += courseInList == false ? 1 : 0;
             _uof.courseWrite.UpdateCourse(course);

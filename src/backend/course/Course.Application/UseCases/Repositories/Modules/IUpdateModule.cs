@@ -1,4 +1,5 @@
-﻿using Course.Communication.Responses;
+﻿using Course.Communication.Requests;
+using Course.Communication.Responses;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,6 @@ namespace Course.Application.UseCases.Repositories.Modules
 {
     public interface IUpdateModule
     {
-        public Task<ModuleResponse> Execute(long courseId, long moduleId);
+        public Task<ModuleResponse> Execute(long courseId, long moduleId, UpdateModuleRequest request);
     }
 }

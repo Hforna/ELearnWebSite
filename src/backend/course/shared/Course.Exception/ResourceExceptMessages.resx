@@ -168,4 +168,16 @@
   <data name="LESSON_UNAUTHORIZED" xml:space="preserve">
     <value>User doesn't have permission for get lesson</value>
   </data>
+  <data name="INVALID_VIDEO_FORMAT" xml:space="preserve">
+    <value>File is not a video or an invalid format</value>
+  </data>
+  <data name="MODULE_NAME_LENGTH" xml:space="preserve">
+    <value>Module name must be less or equal 100</value>
+  </data>
+  <data name="MODULE_DESCRIPTION_LENGTH" xml:space="preserve">
+    <value>Module description length must be less or equal 600</value>
+  </data>
+  <data name="MODULE_POSITION_GREATHER_OR_EQUAL_ZERO" xml:space="preserve">
+    <value>Module position must be greater or equal zero</value>
+  </data>
 </root>
