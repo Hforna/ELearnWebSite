@@ -76,6 +76,8 @@ namespace Course.Application.Services
             return (outputFileStream, fileName, tempInput, tempOutput);
         }
 
+        public bool IsVideo(IFormFile file) => file.ContentType.StartsWith("video/");
+
         private string GetExtension(string ext)
         {
             return ext.StartsWith(".") ? ext : $".{ext}";

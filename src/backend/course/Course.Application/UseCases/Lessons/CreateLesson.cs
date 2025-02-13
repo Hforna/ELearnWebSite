@@ -52,6 +52,11 @@ namespace Course.Application.UseCases.Lessons
             var lesson = _mapper.Map<Lesson>(request);
             lesson.ModuleId = module.Id;
 
+            var isVideo = _fileService.IsVideo(request.Video);
+
+            if(!isVideo)
+                throw new VideoException(ResourceExceptMessages.INVALID_VIDEO_FORMAT, System.Net.HttpStatusCode.BadRequest);
+
             var notTranscodedStream = request.Video.OpenReadStream();
             (Stream videoStream, string fileName, string tempIntput, string tempOutput) = await _fileService.TranscodeVideo(notTranscodedStream);
 

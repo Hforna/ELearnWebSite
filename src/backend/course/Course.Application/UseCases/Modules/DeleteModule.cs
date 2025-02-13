@@ -28,9 +28,9 @@ namespace Course.Application.UseCases.Modules
             _storage = storage;
         }
 
-        public async Task Execute(long id)
+        public async Task Execute(long courseId, long id)
         {
-            var module = await _uof.moduleRead.ModuleById(id);
+            var module = await _uof.moduleRead.ModuleByCourseAndModuleIds(courseId, id);
 
             if (module is null)
                 throw new CourseException(ResourceExceptMessages.MODULE_DOESNT_EXISTS);
