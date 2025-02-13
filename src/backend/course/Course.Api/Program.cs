@@ -18,6 +18,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using System.Reflection;
+using Course.Domain.Cache;
+using Course.Api.Cache;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -84,6 +86,8 @@ builder.Services.AddHostedService<DeleteCourseService>();
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddApplication(builder.Configuration);
 
+builder.Services.AddScoped<ICourseCache, CourseCache>();
+
 builder.Services.AddRateLimiter(d =>
 {
     d.AddFixedWindowLimiter(policyName: "createCourseLimiter", d =>
@@ -127,9 +131,6 @@ builder.Services.AddHttpClient("user.api", client =>
 {
     ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true
 });
-
-
-builder.Services.AddDistributedMemoryCache();
 
 builder.Services.AddSession(options =>
 {

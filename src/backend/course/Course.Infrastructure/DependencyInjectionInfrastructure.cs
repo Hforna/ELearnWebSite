@@ -12,6 +12,7 @@ using Microsoft.Azure.ServiceBus;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,6 +31,7 @@ namespace Course.Infrastructure
             AddServices(services);
             AddAzureStorage(services, configuration);
             AddServiceBus(services, configuration);
+            AddRedis(services, configuration);
         }
 
         private static void AddDbContext(IServiceCollection services, IConfiguration configuration)
@@ -38,6 +40,14 @@ namespace Course.Infrastructure
             services.AddDbContext<CourseDbContext>(d => d.UseSqlServer(sqlconnection));
 
             services.AddScoped<VideoDbContext>(d => new VideoDbContext(configuration));
+        }
+
+        private static void AddRedis(IServiceCollection services, IConfiguration configuration)
+        {
+            services.AddStackExchangeRedisCache(opt =>
+            {
+                opt.Configuration = configuration.GetConnectionString("redis");
+            });
         }
 
         private static void AddRepositories(IServiceCollection services)
