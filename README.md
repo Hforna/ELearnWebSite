@@ -1,63 +1,52 @@
-# E-Learning Platform
+# E-Learning Platform 🎓
 
-Welcome to the **E-Learning Platform**, an online learning system that allows users to create, manage, and enroll in courses. This platform offers a seamless experience for both **instructors** and **students**, providing features such as course creation, video storage, course payment integration, and certificates of completion.
+[![ASP.NET Core](https://img.shields.io/badge/ASP.NET_Core-6.0+-blue.svg)](https://dotnet.microsoft.com/)
+[![MongoDB](https://img.shields.io/badge/MongoDB-7.0+-green.svg)](https://www.mongodb.com/)
+[![Azure](https://img.shields.io/badge/Azure_Storage-%230078D4.svg?logo=microsoft-azure)](https://azure.microsoft.com/)
 
-## Features
+A modern online learning platform built with **ASP.NET Core** that empowers instructors to create courses and students to learn seamlessly. Supports video content, payments, certifications, and real-time features.
 
-- **ASP.NET Identity Authentication**: Users can register and authenticate using ASP.NET Identity. They can choose their role (either **Instructor** or **Student**) during the registration process.
-  
-- **Instructor and Student Roles**: 
-  - **Instructors** can create courses, upload course materials (including videos), set course pricing, and manage student enrollments.
-  - **Students** can browse available courses, enroll, and access course content.
-  
-- **Stripe Integration for Payments**: 
-  - Secure and efficient payment processing using **Stripe**.
-  - Students can pay for courses with multiple payment options and instructors receive their earnings after the platform’s commission.
-  
-- **Azure Video Storage**: 
-  - Courses include video content that is securely stored in **Azure Blob Storage**. This allows scalable, reliable, and efficient video storage.
-  
-- **MongoDB Database**:
-  - MongoDB is used to store course data, user information, course progress, and other essential platform details.
-  
-- **Certificate of Completion**: 
-  - Students who complete a course receive a **Certificate of Completion**, which can be downloaded as a PDF. This certificate includes details about the course, student’s name, and instructor’s signature.
+---
 
-- **Course Management**:
-  - Instructors can manage their courses, add or remove modules, and track student progress.
-  - Students can track their progress, access materials, and participate in discussions.
-  
-- **Real-time Notifications**: 
-  - Users (students and instructors) receive notifications for updates such as new course availability, payment success, new content uploads, and course completions.
+## 🚀 Key Features
 
-- **Search and Filter**:
-  - Students can search for courses based on keywords, categories, ratings, or price range. 
-  - Filters allow users to sort courses based on popularity, difficulty, or newest content.
+### 👩🏫 Roles & Access
+- **Instructors**: Create courses, upload videos (Azure Storage), manage enrollments, track earnings
+- **Students**: Browse courses, enroll with Stripe payments, track progress, earn certificates
+- **Admins**: Dashboard for analytics, user management, and system moderation
 
-- **Reviews and Ratings**:
-  - After completing a course, students can leave reviews and ratings for instructors, helping future students make informed decisions about course selection.
+### 💡 Core Functionality
+- **Secure Authentication**: ASP.NET Identity with JWT & role-based authorization
+- **Multi-Database Architecture**:
+  - SQL Server (Entity Framework): User data & authentication
+  - MongoDB: Course content, enrollments, progress tracking
+  - Redis: Caching for high-traffic endpoints
+- **Payment System**: Stripe integration with webhooks for payment processing
+- **Certificates**: Auto-generated PDFs upon course completion
+- **Real-Time Notifications**: Azure Service Bus for course updates and announcements
 
-- **Admin Dashboard**:
-  - An administrator can manage users, courses, payments, and perform system-wide moderation tasks.
-  - The dashboard provides detailed analytics on course performance, student progress, and payment reports.
+### 🛠️ Tech Stack
+| Category          | Technologies                                                                 |
+|-------------------|------------------------------------------------------------------------------|
+| Backend           | ASP.NET Core 6, Entity Framework Core, FluentValidation, AutoMapper         |
+| Databases         | SQL Server, MongoDB, Redis                                                   |
+| Cloud Services    | Azure Blob Storage (videos), Azure Service Bus (notifications)              |
+| Payments          | Stripe API                                                                   |
+| DevOps            | Docker, GitHub Actions (CI/CD)                                              |
 
-## Getting Started
+---
 
-To get started with the **E-Learning Platform**, follow these steps:
+## ⚙️ Prerequisites
 
-### Prerequisites
+1. **Development Tools**:
+   - [.NET 6 SDK](https://dotnet.microsoft.com/download)
+   - [Visual Studio 2022](https://visualstudio.microsoft.com/) or VS Code
+   - [MongoDB Community Server](https://www.mongodb.com/try/download/community)
+   - [SQL Server 2022](https://www.microsoft.com/en-us/sql-server/sql-server-downloads)
+   - [Redis](https://redis.io/download)
 
-Before running the application, make sure you have the following installed:
+2. **Cloud Accounts**:
+   - [Azure Account](https://azure.microsoft.com/) (Storage & Service Bus)
+   - [Stripe Account](https://stripe.com/) (Payment processing)
 
-- .NET SDK (version 6.0 or higher)
-- MongoDB
-- SqlServer
-- Azure Storage Account
-- Stripe Account
-
-### Installing
-
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/your-username/elearning-platform.git
-   cd elearning-platform
+---
