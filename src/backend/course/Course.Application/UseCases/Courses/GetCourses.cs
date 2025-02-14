@@ -55,10 +55,10 @@ namespace Course.Application.UseCases.Course
                     .OrderByDescending(d => d.Value)
                     .Select(d => d.Key).ToList();
             }
-            var mostVisitedCourses = await _courseCache.GetMostPopularCourses();
-            var orderMostVisitedCourses = mostVisitedCourses.OrderByDescending(d => d.Value);
+            var mostPopularCourses = await _courseCache.GetMostPopularCourses();
+            mostPopularCourses = mostPopularCourses.OrderByDescending(d => d.Value).ToDictionary();
 
-            var reccomendedCourses = await _uof.courseRead.GetCourseByUserVisitsAndMostVisited(filterDto, mostVisitedCourses.Keys.ToList(), coursesTypes);
+            var reccomendedCourses = await _uof.courseRead.GetCourseByUserVisitsAndMostVisited(filterDto, mostPopularCourses.Keys.ToList(), coursesTypes);
 
             var courses = _uof.courseRead.GetCourses(page, filterDto, reccomendedCourses, itemsQuantity);
 

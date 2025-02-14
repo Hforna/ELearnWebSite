@@ -20,6 +20,7 @@ using Microsoft.AspNetCore.Mvc.Infrastructure;
 using System.Reflection;
 using Course.Domain.Cache;
 using Course.Api.Cache;
+using Course.Api.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -173,6 +174,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseSession();
+
+app.UseMiddleware<CultureMiddleware>();
 
 app.UseHealthChecks("/HealthCheck");
 
