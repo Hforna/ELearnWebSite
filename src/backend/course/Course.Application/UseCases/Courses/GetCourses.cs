@@ -2,6 +2,7 @@
 using Course.Application.UseCases.Repositories.Course;
 using Course.Communication.Requests;
 using Course.Communication.Responses;
+using Course.Domain.Cache;
 using Course.Domain.DTOs;
 using Course.Domain.Entitites;
 using Course.Domain.Repositories;
@@ -23,11 +24,14 @@ namespace Course.Application.UseCases.Course
         private readonly IStorageService _storageService;
         private readonly SqidsEncoder<long> _sqids;
         private readonly ICoursesSession _coursesSession;
+        private readonly ICourseCache _courseCache;
 
         public GetCourses(IUnitOfWork uof, IMapper mapper, 
-            IStorageService storageService, SqidsEncoder<long> sqids, ICoursesSession coursesSession)
+            IStorageService storageService, SqidsEncoder<long> sqids, 
+            ICoursesSession coursesSession, ICourseCache courseCache)
         {
             _uof = uof;
+            _courseCache = courseCache;
             _mapper = mapper;
             _storageService = storageService;
             _sqids = sqids;
@@ -51,8 +55,12 @@ namespace Course.Application.UseCases.Course
                     .OrderByDescending(d => d.Value)
                     .Select(d => d.Key).ToList();
             }
+            var mostVisitedCourses = await _courseCache.GetMostPopularCourses();
+            var orderMostVisitedCourses = mostVisitedCourses.OrderByDescending(d => d.Value);
 
-            var courses = _uof.courseRead.GetCourses(page, filterDto, coursesTypes, itemsQuantity);
+            var reccomendedCourses = await _uof.courseRead.GetCourseByUserVisitsAndMostVisited(filterDto, mostVisitedCourses.Keys.ToList(), coursesTypes);
+
+            var courses = _uof.courseRead.GetCourses(page, filterDto, reccomendedCourses, itemsQuantity);
 
             var coursesToResponse = courses.Select(async course =>
             {
