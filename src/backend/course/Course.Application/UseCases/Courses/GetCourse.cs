@@ -45,6 +45,8 @@ namespace Course.Application.UseCases.Course
         {
             var course = await _uof.courseRead.CourseById(id);
 
+            var getCourseTest = await _courseCache.GetMostPopularCourses();
+
             if (course is null)
                 throw new CourseException(ResourceExceptMessages.COURSE_DOESNT_EXISTS);
 
@@ -53,14 +55,14 @@ namespace Course.Application.UseCases.Course
             var courseInList = getCoursesList.Contains(course.Id);
 
             if (!courseInList)
+            {
                 await _courseCache.SetCourseOnMostVisited(course.Id);
+                await _coursesSession.AddCourseVisited(course.Id);
+            }
 
             course.totalVisits += courseInList == false ? 1 : 0;
             _uof.courseWrite.UpdateCourse(course);
             await _uof.Commit();
-
-            if(!getCoursesList.Contains(course.Id))
-                await _coursesSession.AddCourseVisited(course.Id);
 
             var response = _mapper.Map<CourseResponse>(course);
             response.AddLink("modules", _linkService.GenerateResourceLink("GetModules", new { id = _sqids.Encode(course.Id) }), "GET");

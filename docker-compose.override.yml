@@ -53,3 +53,12 @@ services:
       networks:
          - backend
 
+  redisserver:
+    container_name: redisserver
+    ports:
+       - 6379:6379
+    networks:
+        - backend
+    volumes:
+        - redisserver_data:/data
+

@@ -17,11 +17,15 @@ services:
   mongoserver:
     image: mongo
 
+  redisserver:
+    image: redis:latest
+
 networks:
   backend:
     driver: bridge
 
 volumes:
   sqlserver_data:
-  mongoserver_data:  
+  mongoserver_data:
+  redisserver_data:
 
