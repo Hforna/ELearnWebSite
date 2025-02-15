@@ -77,6 +77,25 @@ namespace User.Api.Controllers
             return Ok(response);
         }
 
+        [HttpGet("teacher-profiles")]
+        public async Task<IActionResult> GetTeacherProfiles([FromQuery]int page, [FromQuery]int quantity)
+        {
+            var profiles = await _uof.profileReadOnly.GetUserProfiles(page, quantity);
+
+            if (profiles.Count <= 0)
+                return NoContent();
+
+            var response = new GetTeachersProfileResponse();
+            response.Profiles = _mapper.Map<List<ProfileShortResponse>>(profiles);
+
+            response.IsFirstPage = profiles.IsFirstPage;
+            response.PageNumber = profiles.PageNumber;
+            response.IsLastPage = profiles.IsLastPage;
+            response.TotalItemCount = profiles.TotalItemCount;
+
+            return Ok(response);
+        }
+
         [HttpPut]
         public async Task<IActionResult> UpdateProfile([FromForm]CreateProfileDto request)
         {
