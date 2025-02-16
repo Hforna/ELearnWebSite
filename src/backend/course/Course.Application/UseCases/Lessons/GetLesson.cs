@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Course.Application.UseCases.Repositories.Lessons;
 using Course.Communication.Responses;
 using Course.Domain.Repositories;
 using Course.Domain.Services.Azure;

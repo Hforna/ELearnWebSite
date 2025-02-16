@@ -65,7 +65,8 @@ namespace Course.Application.UseCases.Course
             await _uof.Commit();
 
             var response = _mapper.Map<CourseResponse>(course);
-            response.AddLink("modules", _linkService.GenerateResourceLink("GetModules", new { id = _sqids.Encode(course.Id) }), "GET");
+            response.AddLink("modules", _linkService.GenerateResourceLink("GetModules", new { courseId = _sqids.Encode(course.Id),
+                id = _sqids.Encode(course.Id) }), "GET");
             response.TeacherProfile = $"https://localhost:8080/profile/{course.TeacherId}";
             //response.ThumbnailUrl = await _storage.GetCourseImage(course.courseIdentifier, course.Thumbnail);
 

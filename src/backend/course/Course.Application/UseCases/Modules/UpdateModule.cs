@@ -45,7 +45,7 @@ namespace Course.Application.UseCases.Modules
             if (module is null)
                 throw new ModuleException(ResourceExceptMessages.MODULE_DOESNT_EXISTS, System.Net.HttpStatusCode.BadRequest);
 
-            if (request.Position > course.Modules.Count)
+            if (request.Position > course.Modules.Count || request.Position <= 0)
                 throw new ModuleException(ResourceExceptMessages.MODULE_POSITION_OUT_RANGE, System.Net.HttpStatusCode.BadRequest);
 
             var user = await _userService.GetUserInfos();

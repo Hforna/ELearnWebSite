@@ -53,5 +53,10 @@ namespace Course.Infrastructure.Data.Course
             .Include(d => d.Module)
             .ThenInclude(d => d.Course)
             .Where(d => d.ModuleId == moduleId && d.Module.CourseId == courseId).ToListAsync();
+
+        public void UpdateLesson(Lesson lesson)
+        {
+            _dbContext.Lessons.Update(lesson);
+        }
     }
 }

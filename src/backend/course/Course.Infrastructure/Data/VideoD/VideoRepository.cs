@@ -28,13 +28,13 @@ namespace Course.Infrastructure.Data.VideoD
             await _dbContext.Videos.DeleteOneAsync(id);
         }
 
-        public async Task<Video> VideoById(string id)
+        public async Task<Video?> VideoById(string id)
         {
             var video = await GetVideo(id);
 
             return await video.FirstOrDefaultAsync();
         }
 
-        private async Task<IAsyncCursor<Video>> GetVideo(string id) => await _dbContext.Videos.FindAsync(id) ?? throw new VideoException(ResourceExceptMessages.VIDEO_DOESNT_EXISTS);
+        private async Task<IAsyncCursor<Video?>> GetVideo(string id) => await _dbContext.Videos.FindAsync(id);
     }
 }

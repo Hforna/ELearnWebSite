@@ -180,4 +180,7 @@
   <data name="MODULE_POSITION_GREATHER_OR_EQUAL_ZERO" xml:space="preserve">
     <value>Module position must be greater or equal zero</value>
   </data>
+  <data name="LESSON_POSITION_OUT_RANGE" xml:space="preserve">
+    <value>Lesson position out of range</value>
+  </data>
 </root>

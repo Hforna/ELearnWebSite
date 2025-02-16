@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Course.Domain.Repositories
+namespace Course.Application.UseCases.Repositories.Lessons
 {
     public interface IGetLesson
     {

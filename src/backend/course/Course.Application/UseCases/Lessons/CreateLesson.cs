@@ -42,12 +42,15 @@ namespace Course.Application.UseCases.Lessons
         public async Task<LessonResponse> Execute(CreateLessonRequest request, long moduleId, long courseId)
         {
             var module = await _uof.moduleRead.ModuleById(moduleId);
+
+            if (module is null)
+                throw new ModuleException(ResourceExceptMessages.COURSE_OR_MODULE, System.Net.HttpStatusCode.NotFound);
         
             var user = await _userService.GetUserInfos();
             var userId = _sqids.Decode(user.id).Single();
         
             if (module.Course.TeacherId != userId)
-                throw new LessonException(ResourceExceptMessages.COURSE_NOT_OF_USER);
+                throw new LessonException(ResourceExceptMessages.COURSE_NOT_OF_USER, System.Net.HttpStatusCode.Unauthorized);
 
             var lesson = _mapper.Map<Lesson>(request);
             lesson.ModuleId = module.Id;

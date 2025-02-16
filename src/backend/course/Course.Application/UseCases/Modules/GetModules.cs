@@ -38,7 +38,8 @@ namespace Course.Application.UseCases.Modules
             var response = _mapper.Map<ModulesResponse>(course.Modules);
             response.Modules = response.Modules.Select(module =>
             {
-                module.AddLink("lessons", _linkService.GenerateResourceLink("GetLessons", new { id = module.Id }), "GET");
+                module.AddLink("lessons", _linkService.GenerateResourceLink("GetLessons", new { courseId = module.CourseId,
+                    moduleId = module.Id }), "GET");
 
                 return module;
             }).ToList();

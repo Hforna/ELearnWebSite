@@ -53,6 +53,8 @@ namespace Course.Application
             services.AddScoped<IGetLesson, GetLesson>();
             services.AddScoped<IChangeModulePosition, ChangeModulePosition>();
             services.AddScoped<IUpdateModule, UpdateModule>();
+            services.AddScoped<IDeleteLesson, DeleteLesson>();
+            services.AddScoped<IUpdateLesson, UpdateLesson>();
 
             services.AddSingleton(new FileService());
         }

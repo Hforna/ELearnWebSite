@@ -9,6 +9,6 @@ namespace Course.Domain.Repositories
 {
     public interface IVideoReadOnly
     {
-        public Task<Video> VideoById(string id); 
+        public Task<Video?> VideoById(string id); 
     }
 }

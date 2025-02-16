@@ -12,5 +12,6 @@ namespace Course.Domain.Repositories
         public void AddLesson(Lesson lesson);
         public void DeleteLessonRange(IList<Lesson> lessons);
         public void DeleteLesson(Lesson lesson);
+        public void UpdateLesson(Lesson lesson);
     }
 }
