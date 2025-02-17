@@ -83,9 +83,6 @@ namespace Course.Api.Controllers
             var result = await useCase.Execute(courseId, id, position);
 
             return Ok(result);
-        }
-            
-
-        
+        }                  
     }
 }
