@@ -47,16 +47,17 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Course.Exception", "src\bac
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{CE571C72-C971-41C7-AD54-FC3DA92D63AE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommonTestUtilities", "src\backend\course\tests\CommonTestUtilities\CommonTestUtilities.csproj", "{0A3BD02C-7EFD-45C3-AD22-68E592030A28}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommonTestUtilities", "src\backend\course\tests\CommonTestUtilities\CommonTestUtilities.csproj", "{0A3BD02C-7EFD-45C3-AD22-68E592030A28}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UseCases", "src\backend\course\tests\UseCases\UseCases.csproj", "{65292408-E7D0-4144-9000-E81003C943A7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UseCases", "src\backend\course\tests\UseCases\UseCases.csproj", "{65292408-E7D0-4144-9000-E81003C943A7}"
 	ProjectSection(ProjectDependencies) = postProject
+		{0A3BD02C-7EFD-45C3-AD22-68E592030A28} = {0A3BD02C-7EFD-45C3-AD22-68E592030A28}
 		{B99F29B0-3221-44B9-8E1E-3F6A16BA485C} = {B99F29B0-3221-44B9-8E1E-3F6A16BA485C}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApiTest", "src\backend\course\tests\WebApiTest\WebApiTest.csproj", "{1868912D-1D5A-4D69-A420-68981850D4FD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApiTest", "src\backend\course\tests\WebApiTest\WebApiTest.csproj", "{1868912D-1D5A-4D69-A420-68981850D4FD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Validator", "src\backend\course\tests\Validator\Validator.csproj", "{E8E0D84F-022B-4DA5-BF65-0C055D7272EE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Validator", "src\backend\course\tests\Validator\Validator.csproj", "{E8E0D84F-022B-4DA5-BF65-0C055D7272EE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
