@@ -63,7 +63,7 @@ namespace Course.Infrastructure.Data.Course
 
         public void DeleteCourseRange(IList<CourseEntity> courses) => _dbContext.Courses.RemoveRange(courses);
 
-        public async Task<IList<CourseEntity>?> CourseByIds(List<long> ids) => await _dbContext.Courses.Where(d => ids.Contains(d.Id)).ToListAsync();
+        public async Task<IList<CourseEntity>?> CourseByIds(List<long> ids) => await _dbContext.Courses.Where(d => ids.Contains(d.Id) && d.Active).ToListAsync();
 
         public IPagedList<CourseEntity> GetCourses(int page, GetCoursesFilterDto dto, List<CourseEntity>? recommendedCourses = null, int itemsQuantity = 6)
         {

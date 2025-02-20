@@ -38,7 +38,7 @@ namespace Course.Application.UseCases.Course
             _coursesSession = coursesSession;
         }
 
-        public async Task<CoursesResponse> Execute(GetCoursesRequest request, int page, int itemsQuantity)
+        public async Task<CoursesPaginationResponse> Execute(GetCoursesRequest request, int page, int itemsQuantity)
         {
             var filterDto = _mapper.Map<GetCoursesFilterDto>(request);
 
@@ -74,7 +74,7 @@ namespace Course.Application.UseCases.Course
 
             var coursesResponse = await Task.WhenAll(coursesToResponse);
 
-            var response = new CoursesResponse()
+            var response = new CoursesPaginationResponse()
             {
                 Count = courses.Count,
                 Courses = coursesResponse.ToList(),
