@@ -46,7 +46,10 @@ namespace Course.Application.Services.AutoMapper
 
         private void EntityToResponse()
         {
-            CreateMap<CourseEntity, CourseShortResponse>();
+            CreateMap<CourseEntity, CourseShortResponse>()
+                    .ForMember(d => d.CourseId, f => f.MapFrom(d => _sqids.Encode(d.Id)))
+                    .ForMember(d => d.TeacherId, f => f.MapFrom(d => _sqids.Encode(d.TeacherId)));
+
             CreateMap<CourseEntity, CourseResponse>()
                 .ForMember(d => d.Id, f => f.MapFrom(d => _sqids.Encode(d.Id)))
                 .ForMember(d => d.TeacherId, f => f.MapFrom(d => _sqids.Encode(d.TeacherId)));

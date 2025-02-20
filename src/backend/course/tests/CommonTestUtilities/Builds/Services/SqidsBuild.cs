@@ -1,4 +1,5 @@
-﻿using Sqids;
+﻿using Bogus;
+using Sqids;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,5 +18,14 @@ namespace CommonTestUtilities.Builds.Services
                 MinLength = 4
             });
         }
+
+        public static string GenerateRandomSqid()
+        {
+            var randomLong = new Faker().Random.Long(1, 2000);
+
+            return Build().Encode(new[] { randomLong });
+        }
+
+        public static long GenerateRandomLong() => new Faker().Random.Long(1, 2000);
     }
 }

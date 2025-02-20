@@ -14,9 +14,12 @@ namespace CommonTestUtilities.Builds.Services
     {
         private readonly Mock<IUserService> _mock = new Mock<IUserService>();
 
-        public IUserService Build()
+        public IUserService Build(bool isUserNull = false, string ? userId = null)
         {
-            _mock.Setup(d => d.GetUserInfos()).ReturnsAsync(new UserInfoDtoTest().Build());
+            var userDto = new UserInfoDtoTest().Build();
+            if (userId is not null) userDto.id = userId;
+
+            _mock.Setup(d => d.GetUserInfos()).ReturnsAsync(isUserNull ? null : userDto);
             return _mock.Object;
         }
     }

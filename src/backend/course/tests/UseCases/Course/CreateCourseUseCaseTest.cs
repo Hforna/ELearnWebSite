@@ -9,6 +9,8 @@ using CommonTestUtilities.Builds.Services.Mapper;
 using CommonTestUtilities.Builds.Services;
 using CommonTestUtilities.Requests;
 using FluentAssertions;
+using Course.Domain.Enums;
+using Course.Exception;
 
 namespace UseCases.Course
 {
@@ -25,12 +27,23 @@ namespace UseCases.Course
             result.Title.Should().Be(request.Title);
         }
 
-        public CreateCourse CreateUseCase()
+        [Fact]
+        public async Task FailCourseLanguageOutEnum()
+        {
+            var request = new CreateCourseRequestTest().Build();
+
+            var useCase = CreateUseCase(true);
+            Func<Task> result = async () => await useCase.Execute(request);
+
+            await result.Should().ThrowAsync<UserException>(ResourceExceptMessages.USER_INFOS_DOESNT_EXISTS);
+        }
+
+        public CreateCourse CreateUseCase(bool isUserNull = false)
         {
             var uof = UnitOfWorkBuild.Build();
             var mapper = AutoMapperBuild.Build();
             var sqids = SqidsBuild.Build();
-            var userService = new UserServiceBuild().Build();
+            var userService = new UserServiceBuild().Build(isUserNull);
             var storageService = StorageServiceBuild.Build();
             var fileService = FileServiceBuild.Build();
 

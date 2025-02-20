@@ -60,14 +60,12 @@ namespace Course.Application.UseCases.Course
 
             var reccomendedCourses = await _uof.courseRead.GetCourseByUserVisitsAndMostVisited(filterDto, mostPopularCourses.Keys.ToList(), coursesTypes);
 
-            var courses = _uof.courseRead.GetCourses(page, filterDto, reccomendedCourses, itemsQuantity);
+            var courses = _uof.courseRead.GetCoursesPagination(page, filterDto, reccomendedCourses, itemsQuantity);
 
             var coursesToResponse = courses.Select(async course =>
             {
                 var response = _mapper.Map<CourseShortResponse>(course);
                 //response.ThumbnailUrl = await _storageService.GetCourseImage(course.courseIdentifier, course.Thumbnail);
-                response.CourseId = _sqids.Encode(course.Id);
-                response.TeacherId = _sqids.Encode(course.TeacherId);
 
                 return response;
             });

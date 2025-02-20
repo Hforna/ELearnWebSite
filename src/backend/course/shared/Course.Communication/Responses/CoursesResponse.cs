@@ -8,6 +8,6 @@ namespace Course.Communication.Responses
 {
     public class CoursesResponse
     {
-        public List<CourseShortResponse> Courses { get; set; }
+        public List<CourseShortResponse> courses { get; set; }
     }
 }

@@ -38,6 +38,25 @@ namespace Course.Api.Controllers
             return Ok(result);
         }
 
+
+        /// <summary>
+        /// Returns the ten most visited courses of the week.
+        /// Enpoint get courses using cache
+        /// </summary>
+        /// <returns>
+        /// Returns a 200 (OK) status with the list of the most popular courses of the week,  
+        /// or 204 (No Content) if no courses are found.
+        /// </returns>
+        [HttpGet("ten-courses-visited-week")]
+        public async Task<IActionResult> GetMostPopularWeekCourses([FromServices]IGetTenMostPopularWeekCourses useCase)
+        {
+            var result = await useCase.Execute();
+
+            if (result.courses.Any() == false)
+                return NoContent();
+            return Ok(result);
+        }
+
         [HttpPost("filter")]
         [ProducesResponseType(typeof(CoursesPaginationResponse), StatusCodes.Status200OK)]
         public async Task<IActionResult> FilterCourses([FromQuery] int page, [FromQuery] int items, [FromBody] GetCoursesRequest request,

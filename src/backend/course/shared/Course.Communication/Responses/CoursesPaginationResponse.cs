@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Course.Communication.Responses
 {
-    public class CoursesResponse
+    public class CoursesPaginationResponse
     {
         public int PageNumber { get; set; }
         public bool IsLastPage { get; set; }

@@ -5,8 +5,10 @@ using Course.Domain.Cache;
 using Course.Domain.Repositories;
 using Course.Domain.Services.Azure;
 using Sqids;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace Course.Application.UseCases.Courses
@@ -19,7 +21,7 @@ namespace Course.Application.UseCases.Courses
         private readonly IStorageService _storageService;
         private readonly SqidsEncoder<long> _sqids;
 
-        public GetTenMostPopularWeekCourses(IMapper mapper, IUnitOfWork uof,
+        public GetTenMostPopularWeekCourses(IMapper mapper, IUnitOfWork uof, 
             ICourseCache courseCache, IStorageService storageService, SqidsEncoder<long> sqids)
         {
             _mapper = mapper;
@@ -33,7 +35,7 @@ namespace Course.Application.UseCases.Courses
         {
             var cacheCourses = await _courseCache.GetMostPopularCourses();
             cacheCourses = cacheCourses.Take(10).ToDictionary(k => k.Key, v => v.Value);
-
+            
             var courses = await _uof.courseRead.CourseByIds(cacheCourses.Keys.ToList());
 
             var courseTasks = courses.Select(async course =>

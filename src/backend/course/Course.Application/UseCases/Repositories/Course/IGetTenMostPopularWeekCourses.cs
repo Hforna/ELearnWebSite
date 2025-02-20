@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Course.Application.UseCases.Repositories.Course
 {
-    public interface IGetTenMostVisitedCourses
+    public interface IGetTenMostPopularWeekCourses
     {
         public Task<CoursesResponse> Execute();
     }
