@@ -65,7 +65,7 @@ namespace Course.Infrastructure.Data.Course
 
         public async Task<IList<CourseEntity>?> CourseByIds(List<long> ids) => await _dbContext.Courses.Where(d => ids.Contains(d.Id)).ToListAsync();
 
-        public IPagedList<CourseEntity> GetCourses(int page, GetCoursesFilterDto dto, List<CourseEntity>? recommendedCourses = null, int itemsQuantity = 6)
+        public IPagedList<CourseEntity> GetCoursesPagination(int page, GetCoursesFilterDto dto, List<CourseEntity>? recommendedCourses = null, int itemsQuantity = 6)
         {
             var courses = _dbContext.Courses.Where(d => d.IsPublish);
             courses = FilterCourses(dto, courses);
@@ -87,6 +87,11 @@ namespace Course.Infrastructure.Data.Course
             FilterCourses(dto, query);
 
             return await query.ToListAsync();
+        }
+
+        public async Task<IList<CourseEntity>?> GetCoursesByIds(List<long> ids)
+        {
+            return await _dbContext.Courses.Where(d => ids.Contains(d.Id)).ToListAsync();
         }
 
         IQueryable<CourseEntity> FilterCourses(GetCoursesFilterDto dto, IQueryable<CourseEntity> courses)

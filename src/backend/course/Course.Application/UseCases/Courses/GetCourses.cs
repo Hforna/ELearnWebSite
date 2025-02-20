@@ -38,7 +38,7 @@ namespace Course.Application.UseCases.Course
             _coursesSession = coursesSession;
         }
 
-        public async Task<CoursesResponse> Execute(GetCoursesRequest request, int page, int itemsQuantity)
+        public async Task<CoursesPaginationResponse> Execute(GetCoursesRequest request, int page, int itemsQuantity)
         {
             var filterDto = _mapper.Map<GetCoursesFilterDto>(request);
 
@@ -60,21 +60,19 @@ namespace Course.Application.UseCases.Course
 
             var reccomendedCourses = await _uof.courseRead.GetCourseByUserVisitsAndMostVisited(filterDto, mostPopularCourses.Keys.ToList(), coursesTypes);
 
-            var courses = _uof.courseRead.GetCourses(page, filterDto, reccomendedCourses, itemsQuantity);
+            var courses = _uof.courseRead.GetCoursesPagination(page, filterDto, reccomendedCourses, itemsQuantity);
 
             var coursesToResponse = courses.Select(async course =>
             {
                 var response = _mapper.Map<CourseShortResponse>(course);
                 //response.ThumbnailUrl = await _storageService.GetCourseImage(course.courseIdentifier, course.Thumbnail);
-                response.CourseId = _sqids.Encode(course.Id);
-                response.TeacherId = _sqids.Encode(course.TeacherId);
 
                 return response;
             });
 
             var coursesResponse = await Task.WhenAll(coursesToResponse);
 
-            var response = new CoursesResponse()
+            var response = new CoursesPaginationResponse()
             {
                 Count = courses.Count,
                 Courses = coursesResponse.ToList(),

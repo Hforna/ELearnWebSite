@@ -10,6 +10,6 @@ namespace Course.Application.UseCases.Repositories.Course
 {
     public interface IGetCourses
     {
-        public Task<CoursesResponse> Execute(GetCoursesRequest request, int page, int itemsQuantity);
+        public Task<CoursesPaginationResponse> Execute(GetCoursesRequest request, int page, int itemsQuantity);
     }
 }

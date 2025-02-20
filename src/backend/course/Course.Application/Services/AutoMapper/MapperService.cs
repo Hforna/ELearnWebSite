@@ -46,7 +46,10 @@ namespace Course.Application.Services.AutoMapper
 
         private void EntityToResponse()
         {
-            CreateMap<CourseEntity, CourseShortResponse>();
+            CreateMap<CourseEntity, CourseShortResponse>()
+                    .ForMember(d => d.CourseId, f => f.MapFrom(d => _sqids.Encode(d.Id)))
+                    .ForMember(d => d.TeacherId, f => f.MapFrom(d => _sqids.Encode(d.TeacherId)));
+
             CreateMap<CourseEntity, CourseResponse>()
                 .ForMember(d => d.Id, f => f.MapFrom(d => _sqids.Encode(d.Id)))
                 .ForMember(d => d.TeacherId, f => f.MapFrom(d => _sqids.Encode(d.TeacherId)));
@@ -57,7 +60,7 @@ namespace Course.Application.Services.AutoMapper
                 .ForMember(d => d.Id, f => f.MapFrom(d => _sqids.Encode(d.Id)))
                 .ForMember(d => d.ModuleId, f => f.MapFrom(d => _sqids.Encode(d.ModuleId)));
 
-            CreateMap<IPagedList<CourseEntity>, CoursesResponse>();
+            CreateMap<IPagedList<CourseEntity>, CoursesPaginationResponse>();
 
             CreateMap<Module, ModuleResponse>()
                 .ForMember(d => d.CourseId, d => d.MapFrom(d => _sqids.Encode(d.CourseId)))

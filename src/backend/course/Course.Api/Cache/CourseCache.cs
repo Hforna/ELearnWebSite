@@ -44,7 +44,7 @@ namespace Course.Api.Cache
                     ? weekCoursesDict[courseId] + 1 : 1;
             }
 
-            serializeDict = JsonSerializer.Serialize(weekCoursesDict);
+            serializeDict = JsonSerializer.Serialize(weekCoursesDict.OrderByDescending(d => d.Value));
 
             await _redis.SetStringAsync(keyString, serializeDict, new DistributedCacheEntryOptions()
             {
