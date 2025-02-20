@@ -1,4 +1,5 @@
 ﻿using Bogus;
+using Course.Domain.Entitites;
 using Course.Domain.Repositories;
 using Moq;
 using System;
@@ -12,6 +13,14 @@ namespace CommonTestUtilities.Builds.Repositories
     public class CourseReadBuild
     {
         private static Mock<ICourseReadOnly> _mock = new Mock<ICourseReadOnly>();
-        public static ICourseReadOnly Build() => _mock.Object;
+        public ICourseReadOnly Build()
+        {
+            return _mock.Object;
+        }
+
+        public void CourseByTeacherAndIdBuild(CourseEntity course, bool returnNull = false)
+        {
+            _mock.Setup(d => d.CourseByTeacherAndId(course.TeacherId, course.Id)).ReturnsAsync(returnNull ? null : course);
+        }
     }
 }
