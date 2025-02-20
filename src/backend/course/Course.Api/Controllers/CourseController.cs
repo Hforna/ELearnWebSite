@@ -67,6 +67,26 @@ namespace Course.Api.Controllers
             return Ok(result);
         }
 
+        /// <summary>
+        /// Returns the five most visited courses of the week.
+        /// Get most popular courses using cache
+        /// </summary>
+        /// <returns>
+        /// Returns a 200 (OK) status with the list of the most popular courses of the week,  
+        /// or 204 (No Content) if no courses are found.
+        /// </returns>
+        [HttpGet("five-courses-visited-week")]
+        [ProducesDefaultResponseType()]
+        public async Task<IActionResult> GetMostPopularWeekCourses([FromServices] IGetTenMostPopularWeekCourses useCase)
+        {
+            var result = await useCase.Execute();
+
+            if (result.Courses.Any() == false)
+                return NoContent();
+            return Ok(result);
+        }
+
+
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(CourseResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(CourseException), StatusCodes.Status404NotFound)]

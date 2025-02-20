@@ -35,22 +35,19 @@ namespace Course.Application.UseCases.Courses
         {
             var cacheCourses = await _courseCache.GetMostPopularCourses();
             cacheCourses = cacheCourses.Take(10).ToDictionary(k => k.Key, v => v.Value);
+            
+            var courses = await _uof.courseRead.CourseByIds(cacheCourses.Keys.ToList());
 
-            var courses = await _uof.courseRead.GetCoursesByIds(cacheCourses.Keys.ToList());
-
-            var response = new CoursesResponse();
-            var courseToResponse = courses.Select(async course =>
+            var courseTasks = courses.Select(async course =>
             {
                 var response = _mapper.Map<CourseShortResponse>(course);
                 response.ThumbnailUrl = await _storageService.GetCourseImage(course.courseIdentifier, course.Thumbnail);
-
                 return response;
-            });
+            }).ToList();
 
-            var taskCourseResponse = await Task.WhenAll(courseToResponse);
-            response.courses = taskCourseResponse.ToList();
-            
-            return response;
+            var taskCourseResponse = await Task.WhenAll(courseTasks);
+
+            return new CoursesResponse { Courses = taskCourseResponse.ToList() };
         }
     }
 }
