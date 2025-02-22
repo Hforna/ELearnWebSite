@@ -83,6 +83,7 @@ builder.Services.AddScoped<ICoursesSession, CoursesSession>();
 
 builder.Services.AddHostedService<DeleteModuleService>();
 builder.Services.AddHostedService<DeleteCourseService>();
+builder.Services.AddHostedService<NotifyNewModuleCourseService>();
 
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddApplication(builder.Configuration);

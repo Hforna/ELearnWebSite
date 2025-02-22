@@ -47,7 +47,7 @@ namespace Course.Application.UseCases.Courses
 
             var taskCourseResponse = await Task.WhenAll(courseTasks);
 
-            return new CoursesResponse { Courses = taskCourseResponse.ToList() };
+            return new CoursesResponse { courses = taskCourseResponse.ToList() };
         }
     }
 }

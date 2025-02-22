@@ -9,5 +9,6 @@ namespace Course.Domain.Repositories
     public interface IEnrollmentReadOnly
     {
         public Task<bool> UserGotCourse(long courseId, long userId);
+        public Task<List<long>> GetCourseUsersId(long courseId);
     }
 }

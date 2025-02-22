@@ -11,5 +11,6 @@ namespace Course.Domain.Services.Rest
     {
         public Task<List<string>?> GetUserRoles(Guid uid);
         public Task<UserInfosDto?> GetUserInfos();
+        public Task<UserInfosDto?> GetUserInfosById(long id);
     }
 }

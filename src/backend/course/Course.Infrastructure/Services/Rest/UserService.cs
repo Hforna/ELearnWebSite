@@ -46,6 +46,23 @@ namespace Course.Infrastructure.Services.Rest
             throw new RestException(response.Content.ToString());    
         }
 
+        public async Task<UserInfosDto?> GetUserInfosById(long id)
+        {
+            var client = _httpClient.CreateClient("user.api");
+
+            var response = await client.GetAsync($"api/user/user-infos/{id}");
+
+            if(response.IsSuccessStatusCode)
+            {
+                var userResponse = await response.Content.ReadAsStringAsync();
+
+                var serializer = JsonSerializer.Deserialize<UserInfosDto>(userResponse);
+
+                return serializer;
+            }
+            throw new RestException(response.Content.ToString()!);
+        }
+
         public async Task<List<string>?> GetUserRoles(Guid uid)
         {
             if (string.IsNullOrEmpty(_token))
@@ -64,7 +81,7 @@ namespace Course.Infrastructure.Services.Rest
 
                 return roles!;
             }
-            throw new RestException($"Error for user uid, status code: {response.StatusCode}");
+            throw new RestException(response.Content.ToString());
         }
     }
 }

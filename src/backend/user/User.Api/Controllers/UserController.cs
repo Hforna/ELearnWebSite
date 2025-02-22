@@ -82,9 +82,9 @@ namespace User.Api.Controllers
 
         [AuthenticationUser]
         [HttpGet("get-user-roles/{uid}")]
-        public async Task<IActionResult> GetUserRoles([FromRoute]string uid)
+        public async Task<IActionResult> GetUserRoles([FromRoute]long id)
         {
-            var user = await _uof.userReadOnly.UserByUid(Guid.Parse(uid));
+            var user = await _uof.userReadOnly.UserById(id);
 
             if (user is null)
                 return BadRequest("User doesn't exists");

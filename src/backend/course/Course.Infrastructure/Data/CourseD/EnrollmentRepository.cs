@@ -15,6 +15,11 @@ namespace Course.Infrastructure.Data.CourseD
 
         public EnrollmentRepository(CourseDbContext dbContext) => _dbContext = dbContext;
 
+        public async Task<List<long>> GetCourseUsersId(long courseId)
+        {
+            return await _dbContext.Enrollments.Where(d => d.CourseId == courseId).Select(d => d.CustomerId).ToListAsync();
+        }
+
         public async Task<bool> UserGotCourse(long courseId, long userId)
         {
             return await _dbContext.Enrollments.Where(d => d.CourseId == courseId && d.CustomerId == userId && d.Active)

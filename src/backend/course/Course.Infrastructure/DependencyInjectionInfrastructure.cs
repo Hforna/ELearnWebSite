@@ -81,14 +81,23 @@ namespace Course.Infrastructure
 
             var sender = new DeleteCourseSender(serviceBus.CreateSender("delete"));
 
-            service.AddScoped<IDeleteCourseSender>(d => sender);
-
             var processor = new DeleteCourseProcessor(serviceBus.CreateProcessor("delete", new ServiceBusProcessorOptions()
             {
                 MaxConcurrentCalls = 1
             }));
 
+            var moduleSender = new NewModuleSender(serviceBus.CreateSender("newModule"));
+
+            var moduleProcessor = new NewModuleProcessor(serviceBus.CreateProcessor("newModule", new ServiceBusProcessorOptions()
+            {
+                MaxConcurrentCalls = 1
+            }));
+
+            service.AddScoped<INewModuleSender>(d => moduleSender);
+            service.AddScoped<IDeleteCourseSender>(d => sender);
+
             service.AddSingleton(processor);
+            service.AddSingleton(moduleProcessor);
         }
 
         private static void AddServices(IServiceCollection services)

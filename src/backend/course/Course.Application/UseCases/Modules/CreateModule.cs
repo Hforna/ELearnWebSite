@@ -4,6 +4,7 @@ using Course.Communication.Requests;
 using Course.Communication.Responses;
 using Course.Domain.Entitites;
 using Course.Domain.Repositories;
+using Course.Domain.Services.Azure;
 using Course.Domain.Services.Rest;
 using Course.Exception;
 using Sqids;
@@ -22,13 +23,16 @@ namespace Course.Application.UseCases.Modules
         private readonly SqidsEncoder<long> _sqids;
         private readonly IUserService _userService;
         private readonly ILinkService _linkService;
+        private readonly INewModuleSender _moduleSender;
 
         public CreateModule(IUnitOfWork uof, IMapper mapper, 
-            SqidsEncoder<long> sqids, IUserService userService, ILinkService linkService)
+            SqidsEncoder<long> sqids, IUserService userService, 
+            ILinkService linkService, INewModuleSender moduleSender)
         {
             _uof = uof;
             _mapper = mapper;
             _sqids = sqids;
+            _moduleSender = moduleSender;
             _userService = userService;
             _linkService = linkService;
         }
@@ -75,6 +79,8 @@ namespace Course.Application.UseCases.Modules
             _uof.moduleWrite.AddModule(module);
 
             await _uof.Commit();
+
+            await _moduleSender.SendMessage(module.Id);
 
             var response = _mapper.Map<IList<ModuleResponse>>(course.Modules);
 
