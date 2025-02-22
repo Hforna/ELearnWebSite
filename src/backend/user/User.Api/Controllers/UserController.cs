@@ -186,6 +186,19 @@ namespace User.Api.Controllers
             return Ok();
         }
 
+        [HttpGet("user-infos/{id}")]
+        public async Task<IActionResult> UserInfosById([FromRoute] string id)
+        {
+            var user = await _uof.userReadOnly.UserByUid(Guid.Parse(id));
+
+            if (user is null)
+                throw new BadHttpRequestException("User doesn't exists");
+
+            var response = _mapper.Map<UserResponse>(user);
+
+            return Ok(response);
+        }
+
         [AuthenticationUser]
         [HttpGet("user-infos")]
         public async Task<IActionResult> UserInfos()
