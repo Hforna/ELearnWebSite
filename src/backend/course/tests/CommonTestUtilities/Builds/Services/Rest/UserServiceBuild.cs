@@ -8,13 +8,13 @@ using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CommonTestUtilities.Builds.Services
+namespace CommonTestUtilities.Builds.Services.Rest
 {
     public class UserServiceBuild
     {
         private readonly Mock<IUserService> _mock = new Mock<IUserService>();
 
-        public IUserService Build(bool isUserNull = false, string ? userId = null)
+        public IUserService Build(bool isUserNull = false, string? userId = null)
         {
             var userDto = new UserInfoDtoTest().Build();
             if (userId is not null) userDto.id = userId;

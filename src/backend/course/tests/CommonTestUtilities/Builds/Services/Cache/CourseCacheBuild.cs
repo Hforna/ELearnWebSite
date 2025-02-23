@@ -1,4 +1,5 @@
-﻿using Course.Domain.Cache;
+﻿using Bogus;
+using Course.Domain.Cache;
 using Moq;
 using System;
 using System.Collections.Generic;
@@ -13,9 +14,26 @@ namespace CommonTestUtilities.Builds.Services.Cache
         private readonly Mock<ICourseCache> _mock = new Mock<ICourseCache>();
 
         public ICourseCache Build() => _mock.Object;
-        public void GetMostPopularCourses(Dictionary<long, int> courses)
+        public List<long> GetMostPopularCourses(long courseId, int visits)
         {
-            _mock.Setup(d => d.GetMostPopularCourses()).ReturnsAsync(courses);
+            var faker = new Faker<Dictionary<long, int>>()
+            .CustomInstantiator(
+            f =>
+            {
+                var dict = new Dictionary<long, int>();
+                for(long i = 0; i < 10; i++)
+                {
+                    dict[i] = f.Random.Int();
+                }
+                return dict;
+            });
+
+            var generate = faker.Generate();
+            generate[courseId] = visits;
+
+            _mock.Setup(d => d.GetMostPopularCourses()).ReturnsAsync(generate);
+
+            return generate.Select(d => d.Key).ToList();
         }
     } 
 }

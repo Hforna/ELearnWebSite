@@ -11,6 +11,7 @@ using CommonTestUtilities.Requests;
 using FluentAssertions;
 using Course.Domain.Enums;
 using Course.Exception;
+using CommonTestUtilities.Builds.Services.Rest;
 
 namespace UseCases.Course
 {

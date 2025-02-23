@@ -12,6 +12,7 @@ using FluentAssertions;
 using Course.Exception;
 using Course.Domain.Entitites;
 using CommonTestUtilities.Entities;
+using CommonTestUtilities.Builds.Services.Rest;
 
 namespace UseCases.Course
 {
