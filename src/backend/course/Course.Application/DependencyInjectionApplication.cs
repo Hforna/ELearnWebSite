@@ -3,9 +3,11 @@ using Course.Application.Services;
 using Course.Application.Services.AutoMapper;
 using Course.Application.UseCases.Course;
 using Course.Application.UseCases.Courses;
+using Course.Application.UseCases.Enrollments;
 using Course.Application.UseCases.Lessons;
 using Course.Application.UseCases.Modules;
 using Course.Application.UseCases.Repositories.Course;
+using Course.Application.UseCases.Repositories.Enrollments;
 using Course.Application.UseCases.Repositories.Lessons;
 using Course.Application.UseCases.Repositories.Modules;
 using Course.Domain.Repositories;
@@ -57,6 +59,7 @@ namespace Course.Application
             services.AddScoped<IDeleteLesson, DeleteLesson>();
             services.AddScoped<IUpdateLesson, UpdateLesson>();
             services.AddScoped<IGetTenMostPopularWeekCourses, GetTenMostPopularWeekCourses>();
+            services.AddScoped<IGetCourseEnrollments, GetCourseEnrollments>();
 
             services.AddSingleton(new FileService());
         }
