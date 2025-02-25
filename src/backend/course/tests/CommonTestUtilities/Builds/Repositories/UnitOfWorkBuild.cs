@@ -15,7 +15,7 @@ namespace CommonTestUtilities.Builds.Repositories
         {
             var mock = new Mock<IUnitOfWork>();
             mock.Setup(d => d.courseRead).Returns(courseReadMock is null ? new CourseReadBuild().Build() : courseReadMock.Object);
-            mock.Setup(d => d.courseWrite).Returns(CourseWriteBuild.Build());
+            mock.Setup(d => d.enrollmentRead).Returns(new EnrollmentReadBuild().Build());
             return mock.Object;
         }
     }

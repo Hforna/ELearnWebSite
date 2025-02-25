@@ -7,7 +7,7 @@ namespace Course.Api.Controllers
     [ApiController]
     public class ReviewController : ControllerBase
     {
-        [HttpPost("{id}")]
-        public async Task<IActionResult> CreateReview()
+        //[HttpPost("{id}")]
+        //public async Task<IActionResult> CreateReview()
     }
 }

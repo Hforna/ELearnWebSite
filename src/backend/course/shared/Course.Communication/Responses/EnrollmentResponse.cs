@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Course.Communication.Responses
 {
-    public class CourseEnrollmentResponse
+    public class EnrollmentResponse
     {
         public string Id { get; set; }
         public DateTime CreatedAt { get; set; }

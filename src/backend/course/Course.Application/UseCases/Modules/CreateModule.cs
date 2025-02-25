@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Course.Application.Services.Validators.Module;
 using Course.Application.UseCases.Repositories.Modules;
 using Course.Communication.Requests;
 using Course.Communication.Responses;
@@ -40,6 +41,8 @@ namespace Course.Application.UseCases.Modules
 
         public async Task<IList<ModuleResponse>> Execute(CreateModuleRequest request, long courseId)
         {
+            Validate(request);
+
             var user = await _userService.GetUserInfos();
             var userId = _sqids.Decode(user.id).Single();
 
@@ -90,6 +93,18 @@ namespace Course.Application.UseCases.Modules
 
                 return module;
             }).ToList();
+        }
+
+        void Validate(CreateModuleRequest request)
+        {
+            var validator = new CreateModuleValidator();
+            var result = validator.Validate(request);
+
+            if(!result.IsValid)
+            {
+                var errorMessages = result.Errors.Select(d => d.ErrorMessage).ToList();
+                throw new ModuleException(errorMessages, System.Net.HttpStatusCode.BadRequest);
+            }
         }
     }
 }

@@ -12,7 +12,7 @@ namespace Course.Communication.Responses
         public bool IsLastPage { get; set; }
         public bool IsFirstPage { get; set; }
         public int Count { get; set; }
-        public List<CourseEnrollmentResponse> Enrollments { get; set; }
+        public List<EnrollmentResponse> Enrollments { get; set; }
         public int TotalItemCount { get; set; }
     }
 }
