@@ -50,6 +50,8 @@ namespace Course.Application.Services.AutoMapper
                     .ForMember(d => d.CourseId, f => f.MapFrom(d => _sqids.Encode(d.Id)))
                     .ForMember(d => d.TeacherId, f => f.MapFrom(d => _sqids.Encode(d.TeacherId)));
 
+            CreateMap<Enrollment, EnrollmentResponse>();
+
             CreateMap<CourseEntity, CourseResponse>()
                 .ForMember(d => d.Id, f => f.MapFrom(d => _sqids.Encode(d.Id)))
                 .ForMember(d => d.TeacherId, f => f.MapFrom(d => _sqids.Encode(d.TeacherId)));
