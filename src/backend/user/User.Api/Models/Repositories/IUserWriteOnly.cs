@@ -4,5 +4,6 @@
     {
         public Task CreateUser(UserModel user);
         public void DeleteUser(UserModel user);
+        public void UpdateUser(UserModel user);
     }
 }

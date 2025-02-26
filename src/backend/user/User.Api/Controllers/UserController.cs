@@ -5,6 +5,10 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Sqids;
+using System.Runtime.InteropServices;
+using System.Text.RegularExpressions;
+using Twilio;
+using Twilio.Rest.Verify.V2.Service;
 using User.Api.Attributes;
 using User.Api.DTOs;
 using User.Api.Excpetions;
@@ -31,13 +35,15 @@ namespace User.Api.Controllers
         private readonly IConfiguration _configuration;
         private readonly ITokenService _tokenService;
         private readonly ITokenReceptor _tokenReceptor;
+        private readonly ILogger<UserController> _logger;
 
         public UserController(IUnitOfWork uof, IBcryptCryptography cryptography, 
             EmailService emailService, IMapper mapper, 
             UserManager<UserModel> userManager, IConfiguration configuration, 
-            ITokenService tokenService, ITokenReceptor tokenReceptor)
+            ITokenService tokenService, ITokenReceptor tokenReceptor, ILogger<UserController> logger)
         {
             _uof = uof;
+            _logger = logger;
             _cryptography = cryptography;
             _emailService = emailService;
             _mapper = mapper;
@@ -211,8 +217,8 @@ namespace User.Api.Controllers
         }
 
         [AuthenticationUser]
-        [HttpGet("2fa/request")]
-        public async Task<IActionResult> RequestTwoFactorAuthentication()
+        [HttpGet("2fa/email/request")]
+        public async Task<IActionResult> RequestTwoFactorAuthenticationByEmail()
         {
             var user = await _tokenService.UserByToken(_tokenReceptor.GetToken());
 
@@ -227,8 +233,8 @@ namespace User.Api.Controllers
         }
 
         [AuthenticationUser]
-        [HttpGet("2fa/enable")]
-        public async Task<IActionResult> EnableTwoFactorAuthentication([FromQuery]string code)
+        [HttpGet("2fa/email/enable")]
+        public async Task<IActionResult> EnableTwoFactorAuthenticationByEmail([FromQuery]string code)
         {
             var user = await _tokenService.UserByToken(_tokenReceptor.GetToken());
 
@@ -240,6 +246,62 @@ namespace User.Api.Controllers
             user.TwoFactorEnabled = true;
             user.EmailConfirmed = true;
             await _userManager.UpdateAsync(user);
+
+            return Ok();
+        }
+
+        [AuthenticationUser]
+        [HttpGet("2fa/phone/request")]
+        public async Task<IActionResult> RequestTwoFactorByPhone()
+        {
+            var user = await _tokenService.UserByToken(_tokenReceptor.GetToken());
+
+            if (user.PhoneNumberConfirmed != true)
+                return Unauthorized("user must confirm their number");
+
+            var serviceSid = _configuration.GetValue<string>("services:twilio:serviceSid");
+
+            var verification = await VerificationResource.CreateAsync(
+                to: $"{user.PhoneNumber}",
+                channel: "sms",
+                pathServiceSid: serviceSid);
+            
+            _logger.LogInformation($"Status: {verification.Status}");
+
+            if (verification.Status != "pending" && verification.Status != "approved")
+                return BadRequest("message not sent");
+
+            return Ok("verify message sent");
+        }
+
+        [AuthenticationUser]
+        [HttpGet("2fa/phone/enable")]
+        public async Task<IActionResult> EnableTwoFactoByPhone([FromQuery]string code)
+        {
+            if (code.Length != 6)
+                return BadRequest("Code is wrong");
+
+            var user = await _tokenService.UserByToken(_tokenReceptor.GetToken());
+
+            if (user.PhoneNumberConfirmed != true)
+                return Unauthorized("user must confirm their phone number");
+
+            var serviceSid = _configuration.GetValue<string>("services:twilio:serviceSid");
+
+            var verifyCode = await VerificationCheckResource.CreateAsync(
+                to: $"{user.PhoneNumber}", code: code, pathServiceSid: serviceSid);
+
+            if (verifyCode.Status != "approved")
+                throw new Exception("Code cannot be verified now, try again later");
+
+            if (!(bool)verifyCode.Valid!)
+                return BadRequest("Wrong code");
+
+            user.TwoFactorEnabled = true;
+            user.TwoFactorPhoneEnabled = true;
+
+            _uof.userWriteOnly.UpdateUser(user);
+            await _uof.Commit();
 
             return Ok();
         }

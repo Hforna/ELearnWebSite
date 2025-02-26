@@ -272,7 +272,13 @@ namespace User.Api.Migrations
                     b.Property<DateTime?>("TimeDisabled")
                         .HasColumnType("datetime2");
 
+                    b.Property<bool>("TwoFactorEmailEnabled")
+                        .HasColumnType("bit");
+
                     b.Property<bool>("TwoFactorEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("TwoFactorPhoneEnabled")
                         .HasColumnType("bit");
 
                     b.Property<Guid>("UserIdentifier")

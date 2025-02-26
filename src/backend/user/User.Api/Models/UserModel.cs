@@ -12,5 +12,7 @@ namespace User.Api.Models
         public string? RefreshToken { get; set; }
         public DateTime? RefreshTokenExpiration { get; set; }
         public Guid UserIdentifier { get; set; }
+        public bool TwoFactorEmailEnabled { get; set; }
+        public bool TwoFactorPhoneEnabled { get; set; }
     }
 }

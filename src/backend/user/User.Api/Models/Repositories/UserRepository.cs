@@ -28,6 +28,11 @@ namespace User.Api.Models.Repositories
 
         public async Task<IList<UserModel>> GetUsersNotActive() =>  await _dbContext.Users.Where(d => d.Active == false && d.TimeDisabled != null).ToListAsync();
 
+        public void UpdateUser(UserModel user)
+        {
+            _dbContext.Users.Update(user);
+        }
+
         public async Task<UserModel?> UserByEmail(string email)
         {
             return await _dbContext.Users.SingleOrDefaultAsync(d => d.Email == email);

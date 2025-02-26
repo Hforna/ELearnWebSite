@@ -70,7 +70,7 @@ namespace User.Api.Controllers
             return Ok(new ResponseLogin() { AccessToken = token, RefreshToken = refreshToken});
         }
 
-        [HttpGet("2fa/verify")]
+        [HttpGet("2fa/email/verify")]
         public async Task<IActionResult> VerfiyTwoFactorAuthentication([FromQuery]string code, [FromQuery]string email)
         {
             var user = await _uof.userReadOnly.UserByEmail(email);

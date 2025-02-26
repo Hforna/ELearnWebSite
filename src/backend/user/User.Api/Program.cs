@@ -18,6 +18,7 @@ using Microsoft.OpenApi.Models;
 using User.Api.Filters;
 using User.Api.Services;
 using User.Api.BackgroundServices;
+using Twilio;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -105,6 +106,11 @@ var name = builder.Configuration.GetValue<string>("services:gmail:name");
 
 builder.Services.AddSingleton<EmailService>(d => new EmailService(email!, password!, name!));
 builder.Services.AddSingleton<ImageService>(d => new ImageService());
+
+var accountSidTwilio = builder.Configuration.GetValue<string>("services:twilio:accountSid");
+var authTokenTwilio = builder.Configuration.GetValue<string>("services:twilio:authToken");
+
+TwilioClient.Init(accountSidTwilio, authTokenTwilio);
 
 var signKey = builder.Configuration.GetValue<string>("jwt:signKey");
 
