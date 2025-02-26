@@ -70,7 +70,7 @@ namespace Course.Infrastructure.Data.Course
             var courses = _dbContext.Courses.Where(d => d.IsPublish);
             courses = FilterCourses(dto, courses);
 
-            if (recommendedCourses is not null || recommendedCourses.Any() )
+            if (recommendedCourses is not null && recommendedCourses.Any())
                 return recommendedCourses.Union(courses.Except(recommendedCourses))
                 .OrderByDescending(d => d.totalVisits)
                 .ToPagedList(page, itemsQuantity);

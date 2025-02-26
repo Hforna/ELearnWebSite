@@ -21,16 +21,21 @@ namespace Course.Infrastructure.Data
         public IVideoWriteOnly videoWrite { get; set; }
         public IEnrollmentReadOnly enrollmentRead { get; set; }
         public IEnrollmentWriteOnly enrollmentWrite { get; set; }
+        public IReviewReadOnly reviewRead { get; set; }
+        public IReviewWriteOnly reviewWrite { get; set; }
 
         public UnitOfWork(CourseDbContext dbContext, ICourseReadOnly courseRead, ICourseWriteOnly courseWrite,
             IModuleReadOnly moduleReadOnly, IModuleWriteOnly moduleWriteOnly, 
             ILessonReadOnly lessonRead, ILessonWriteOnly lessonWrite,
             IVideoReadOnly videoRead, IVideoWriteOnly videoWriteOnly,
-            IEnrollmentReadOnly enrollmentRead, IEnrollmentWriteOnly enrollmentWrite)
+            IEnrollmentReadOnly enrollmentRead, IEnrollmentWriteOnly enrollmentWrite,
+            IReviewReadOnly reviewRead, IReviewWriteOnly reviewWrite)
         {
             _dbContext = dbContext;
             this.courseRead = courseRead;
             this.courseWrite = courseWrite;
+            this.reviewRead = reviewRead;
+            this.reviewWrite = reviewWrite;
             moduleRead = moduleReadOnly;
             moduleWrite = moduleWriteOnly;
             this.lessonRead = lessonRead;
