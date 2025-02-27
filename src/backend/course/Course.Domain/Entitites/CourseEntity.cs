@@ -18,6 +18,7 @@ namespace Course.Domain.Entitites
         public string Title { get; set; }
         public string? Thumbnail { get; set; }
         public string Description { get; set; }
+        public decimal Note { get; set; }
         public IList<CourseTopicsEntity> TopicsCovered { get; set; }
         public double Price { get; set; }
         public int? Enrollments { get; set; }

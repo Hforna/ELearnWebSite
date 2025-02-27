@@ -183,4 +183,16 @@
   <data name="LESSON_POSITION_OUT_RANGE" xml:space="preserve">
     <value>Lesson position out of range</value>
   </data>
+  <data name="USER_DOESNT_GOT_COURSE" xml:space="preserve">
+    <value>User must get course access for it</value>
+  </data>
+  <data name="RATING_OUT_ENUM" xml:space="preserve">
+    <value>Invalid rating type</value>
+  </data>
+  <data name="TEXT_CANT_BE_NULL" xml:space="preserve">
+    <value>Text field can't be null or empty</value>
+  </data>
+  <data name="TEXT_LENGTH_MUST_BE_LESS_THAN_300" xml:space="preserve">
+    <value>Text length must be less than 3000</value>
+  </data>
 </root>

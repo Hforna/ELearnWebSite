@@ -10,6 +10,8 @@ using Course.Application.UseCases.Repositories.Course;
 using Course.Application.UseCases.Repositories.Enrollments;
 using Course.Application.UseCases.Repositories.Lessons;
 using Course.Application.UseCases.Repositories.Modules;
+using Course.Application.UseCases.Repositories.Reviews;
+using Course.Application.UseCases.Reviews;
 using Course.Domain.Repositories;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -60,6 +62,7 @@ namespace Course.Application
             services.AddScoped<IUpdateLesson, UpdateLesson>();
             services.AddScoped<IGetTenMostPopularWeekCourses, GetTenMostPopularWeekCourses>();
             services.AddScoped<IGetCourseEnrollments, GetCourseEnrollments>();
+            services.AddScoped<ICreateReview, CreateReview>();
 
             services.AddSingleton(new FileService());
         }

@@ -232,11 +232,47 @@ namespace Course.Exception {
         }
         
         /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Invalid rating type.
+        /// </summary>
+        public static string RATING_OUT_ENUM {
+            get {
+                return ResourceManager.GetString("RATING_OUT_ENUM", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Text field can&apos;t be null or empty.
+        /// </summary>
+        public static string TEXT_CANT_BE_NULL {
+            get {
+                return ResourceManager.GetString("TEXT_CANT_BE_NULL", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Text length must be less than 3000.
+        /// </summary>
+        public static string TEXT_LENGTH_MUST_BE_LESS_THAN_300 {
+            get {
+                return ResourceManager.GetString("TEXT_LENGTH_MUST_BE_LESS_THAN_300", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a User not have permission for access this content.
         /// </summary>
         public static string USER__NOT_HAVE_LESSON {
             get {
                 return ResourceManager.GetString("USER__NOT_HAVE_LESSON", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a User must get course access for it.
+        /// </summary>
+        public static string USER_DOESNT_GOT_COURSE {
+            get {
+                return ResourceManager.GetString("USER_DOESNT_GOT_COURSE", resourceCulture);
             }
         }
         

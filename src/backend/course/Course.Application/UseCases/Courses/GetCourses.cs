@@ -56,9 +56,14 @@ namespace Course.Application.UseCases.Course
                     .Select(d => d.Key).ToList();
             }
             var mostPopularCourses = await _courseCache.GetMostPopularCourses();
-            mostPopularCourses = mostPopularCourses.OrderByDescending(d => d.Value).ToDictionary();
+            List<CourseEntity>? reccomendedCourses = new List<CourseEntity>();
 
-            var reccomendedCourses = await _uof.courseRead.GetCourseByUserVisitsAndMostVisited(filterDto, mostPopularCourses.Keys.ToList(), coursesTypes);
+            if(mostPopularCourses is not null)
+            {
+                mostPopularCourses = mostPopularCourses.OrderByDescending(d => d.Value).ToDictionary();
+
+                reccomendedCourses = await _uof.courseRead.GetCourseByUserVisitsAndMostVisited(filterDto, mostPopularCourses.Keys.ToList(), coursesTypes);
+            }
 
             var courses = _uof.courseRead.GetCoursesPagination(page, filterDto, reccomendedCourses, itemsQuantity);
 

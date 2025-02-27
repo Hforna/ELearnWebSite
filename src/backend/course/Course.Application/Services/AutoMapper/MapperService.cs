@@ -41,6 +41,8 @@ namespace Course.Application.Services.AutoMapper
             CreateMap<UpdateCourseRequest, CourseEntity>()
                 .ForMember(d => d.Thumbnail, f => f.Ignore());
 
+            CreateMap<CreateReviewRequest, Review>();
+
             CreateMap<CreateModuleRequest, Module>();
         }
 
@@ -49,6 +51,11 @@ namespace Course.Application.Services.AutoMapper
             CreateMap<CourseEntity, CourseShortResponse>()
                     .ForMember(d => d.CourseId, f => f.MapFrom(d => _sqids.Encode(d.Id)))
                     .ForMember(d => d.TeacherId, f => f.MapFrom(d => _sqids.Encode(d.TeacherId)));
+
+            CreateMap<Review, ReviewResponse>()
+                .ForMember(d => d.CourseId, f => f.MapFrom(d => _sqids.Encode(d.CourseId)))
+                .ForMember(d => d.Id, f => f.MapFrom(d => _sqids.Encode(d.Id)))
+                .ForMember(d => d.CustomerId, f => f.MapFrom(d => _sqids.Encode(d.CustomerId)));
 
             CreateMap<Enrollment, EnrollmentResponse>();
 

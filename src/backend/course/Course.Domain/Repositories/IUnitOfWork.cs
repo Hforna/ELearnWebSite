@@ -18,6 +18,8 @@ namespace Course.Domain.Repositories
         public IVideoWriteOnly videoWrite { get; set; }
         public IEnrollmentReadOnly enrollmentRead { get; set; }
         public IEnrollmentWriteOnly enrollmentWrite { get; set; }
+        public IReviewReadOnly reviewRead { get; set; }
+        public IReviewWriteOnly reviewWrite { get; set; }
         public Task Commit();
     }
 }
