@@ -36,7 +36,11 @@ namespace User.Api.Services.Email
 
             using (var client = new SmtpClient())
             {
+                // only use when certificate is disabled
+                //client.CheckCertificateRevocation = false;
+
                 client.Connect("smtp.gmail.com", 587, SecureSocketOptions.StartTls);
+
                 client.Authenticate(_email, _password);
 
                 await client.SendAsync(message);

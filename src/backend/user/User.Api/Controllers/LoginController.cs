@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using Twilio.Rest.Verify.V2.Service;
 using User.Api.DTOs;
 using User.Api.Models;
 using User.Api.Models.Repositories;
@@ -48,7 +49,8 @@ namespace User.Api.Controllers
                 await _emailService.SendEmail(user.Email, user.UserName, "Two factor verification", $"Your code is: {twofaCode}");
 
 
-                return Ok(new { required2fa = true, Message = "We sent a e-mail for two factor code" } );
+                return Ok(new { required2fa = true, 
+                    Methods = $"[email, phone]", Message = "We sent a e-mail for two factor code" } );
             }
 
             var roles = await _userManager.GetRolesAsync(user);
@@ -70,14 +72,93 @@ namespace User.Api.Controllers
             return Ok(new ResponseLogin() { AccessToken = token, RefreshToken = refreshToken});
         }
 
+        [HttpPost("2fa/send-code")]
+        public async Task<IActionResult> VerifyTwoFactorAuthenticationCode([FromBody]TwoFactorSendDto dto)
+        {
+            if (dto.method != "phone" && dto.method != "email")
+                return BadRequest("Two factor method not allowed");
+
+            var user = await _uof.userReadOnly.UserByEmail(dto.email);
+
+            if (user is null)
+                return NotFound("User doesn't exists");
+
+            if (!user.TwoFactorEnabled)
+                return Unauthorized("User 2fa isn't enabled");
+
+            var twofaMethod = dto.method;
+
+            if ((twofaMethod == "email" && !user.TwoFactorEmailEnabled) 
+                || (twofaMethod == "phone" && !user.TwoFactorPhoneEnabled))
+                return Unauthorized("2fa method not authorized for this user");
+
+            if(twofaMethod == "email")
+            {
+                var twofaCode = await _userManager.GenerateTwoFactorTokenAsync(user, "Email");
+                await _emailService.SendEmail(user.Email, user.UserName, "Two factor verification", 
+                    $"Your code is: {twofaCode}");
+            } else if(twofaMethod == "phone")
+            {
+                var serviceSid = _configuration.GetValue<string>("services:twilio:serviceSid");
+
+                var verification = await VerificationResource.CreateAsync(to: user.PhoneNumber,
+                    channel: "sms", pathServiceSid: serviceSid);
+
+                if (verification.Status != "pending" && verification.Status != "approved")
+                    return BadRequest("message not sent");
+            }
+
+            return Ok();
+        }
+
+        [HttpGet("2fa/phone/verify")]
+        public async Task<IActionResult> VerifyTwoFactorAuthenticationByPhone([FromQuery]string code, [FromQuery]string email)
+        {
+            var user = await _uof.userReadOnly.UserByEmail(email);
+
+            if(user is null)
+                return BadRequest("user e-mail is wrong");
+
+            var serviceSid = _configuration.GetValue<string>("services:twilio:serviceSid");
+
+            var verify = await VerificationCheckResource.CreateAsync(to: user.PhoneNumber, code: code,
+                pathServiceSid: serviceSid);
+
+            if (!(bool)verify.Valid!)
+                throw new Exception("code cannot be verified, try again later");
+
+            var userRoles = await _userManager.GetRolesAsync(user);
+
+            var claims = new List<Claim>();
+
+            foreach(var role in userRoles)
+            {
+                var claim = new Claim(ClaimTypes.Role, role);
+                claims.Add(claim);
+            }
+
+            var refreshToken = _tokenService.GenerateRefreshToken();
+
+            user.RefreshToken = refreshToken;
+            user.RefreshTokenExpiration = DateTime.UtcNow.AddHours(_configuration.GetValue<int>("jwt:refreshTokenExpirationHours"));
+
+            var response =  new ResponseLogin()
+            {
+                AccessToken = _tokenService.GenerateToken(user.UserIdentifier, claims),
+                RefreshToken = refreshToken
+            };
+
+            return Ok(response);
+        }
+
         [HttpGet("2fa/email/verify")]
-        public async Task<IActionResult> VerfiyTwoFactorAuthentication([FromQuery]string code, [FromQuery]string email)
+        public async Task<IActionResult> VerfiyTwoFactorAuthenticationByEmail([FromQuery]string code, [FromQuery]string email)
         {
             var user = await _uof.userReadOnly.UserByEmail(email);
 
             if (user is null)
                 return BadRequest("user e-mail is wrong");
-
+            
             var isValidCode = await _userManager.VerifyTwoFactorTokenAsync(user, "Email", code);
 
             if (!isValidCode)

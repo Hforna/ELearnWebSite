@@ -87,6 +87,70 @@ namespace User.Api.Controllers
         }
 
         [AuthenticationUser]
+        [HttpGet("verify-phone-request")]
+        public async Task<IActionResult> VerifyPhoneRequest()
+        {
+            var user = await _tokenService.UserByToken(_tokenReceptor.GetToken());
+
+            if (string.IsNullOrEmpty(user.PhoneNumber))
+                return BadRequest("you need to update your phone number for verify it");
+
+            if (user.PhoneNumberConfirmed)
+                return Ok("You already verify you phone number");
+
+            var serviceSid = _configuration.GetValue<string>("services:twilio:serviceSid");
+
+            var verification = VerificationResource.CreateAsync(
+                to: user.PhoneNumber,
+                pathServiceSid: serviceSid,
+                channel: "sms");
+
+            return NoContent();
+        }
+
+        [AuthenticationUser]
+        [HttpGet("verify-phone")]
+        public async Task<IActionResult> VerifyPhone([FromQuery]string code)
+        {
+            var user = await _tokenService.UserByToken(_tokenReceptor.GetToken());
+
+            if (string.IsNullOrEmpty(user.PhoneNumber))
+                return Unauthorized("You need to update your phone number first");
+
+            var serviceSid = _configuration.GetValue<string>("services:twilio:serviceSid");
+
+            var verify = await VerificationCheckResource.CreateAsync(
+                to: user.PhoneNumber, code: code, pathServiceSid: serviceSid);
+
+            if (verify.Status != "approved")
+                throw new Exception("Can't verify the code, try again later");
+
+            if (!(bool)verify.Valid!)
+                return BadRequest("Code is wrong");
+
+            user.PhoneNumberConfirmed = true;
+
+            _uof.userWriteOnly.UpdateUser(user);
+            await _uof.Commit();
+
+            return NoContent();
+        }
+
+        [AuthenticationUser]
+        [HttpPut]
+        public async Task<IActionResult> UpdatePhoneNumber([FromQuery]string phone)
+        {
+            var user = await _tokenService.UserByToken(_tokenReceptor.GetToken());
+
+            user.PhoneNumber = phone;
+
+            _uof.userWriteOnly.UpdateUser(user);
+            await _uof.Commit();
+
+            return NoContent();
+        }
+
+        [AuthenticationUser]
         [HttpGet("get-user-roles/{uid}")]
         public async Task<IActionResult> GetUserRoles([FromRoute]long id)
         {
@@ -244,7 +308,7 @@ namespace User.Api.Controllers
                 return BadRequest("Code is wrong");
 
             user.TwoFactorEnabled = true;
-            user.EmailConfirmed = true;
+            user.TwoFactorEmailEnabled = true;
             await _userManager.UpdateAsync(user);
 
             return Ok();
@@ -276,7 +340,7 @@ namespace User.Api.Controllers
 
         [AuthenticationUser]
         [HttpGet("2fa/phone/enable")]
-        public async Task<IActionResult> EnableTwoFactoByPhone([FromQuery]string code)
+        public async Task<IActionResult> EnableTwoFactorByPhone([FromQuery]string code)
         {
             if (code.Length != 6)
                 return BadRequest("Code is wrong");
@@ -366,9 +430,9 @@ namespace User.Api.Controllers
             return NoContent();
         }
 
-        private static void ValidateGenericRequest<Validator>(object request) where Validator : IValidator
+        static void ValidateGenericRequest<V>(object request) where V : IValidator
         {
-            var validator = Activator.CreateInstance<Validator>();
+            var validator = Activator.CreateInstance<V>();
             var result = validator.Validate(request);
 
             if(result.IsValid == false)
