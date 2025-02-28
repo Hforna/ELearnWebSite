@@ -19,6 +19,11 @@ namespace CommonTestUtilities.Builds.Repositories
             return _mock.Object;
         }
 
+        public void UserGotCourse(long courseId, long userId, bool gotCourse = true)
+        {
+            _mock.Setup(d => d.UserGotCourse(courseId, userId)).ReturnsAsync(gotCourse);
+        }
+
         public void GetPagedEnrollments(int page, int quantity, long courseId, List<Enrollment> enrollments)
         {
             _mock.Setup(d => d.GetPagedEnrollments(courseId, page, quantity)).Returns(enrollments.ToPagedList(page, quantity));
