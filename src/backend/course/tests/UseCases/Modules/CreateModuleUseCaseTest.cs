@@ -23,14 +23,18 @@ namespace UseCases.Modules
         [Fact]
         public async Task Success()
         {
-            var request = CreateModuleRequestTest.Build(1);
+            var request = CreateModuleRequestTest.Build(2);
             var course = CourseEntityTest.Build();
-            course.Modules = [];
+            var modules = new ModuleEntityTest().CreateModules(10, course.Id);
+            course.Modules = modules;
             course.TeacherId = 5;
             var useCase = CreateUseCase(5, course);
-            Func<Task> result = async () => await useCase.Execute(request, course.Id);
+            var result = await useCase.Execute(request, course.Id);
 
-            await result.Should().NotThrowAsync();
+            result.Where(d => modules
+            .Where(d => d.Position == request.Position)
+            .Select(d => d.Id).FirstOrDefault() == SqidsBuild.Build().Decode(d.Id).Single())
+                .Should().NotBeNullOrEmpty();
         }
 
         [Fact]
@@ -46,6 +50,8 @@ namespace UseCases.Modules
 
             await result.Should().ThrowAsync<CourseException>(ResourceExceptMessages.MODULE_POSITION_OUT_RANGE);
         }
+
+
 
         CreateModule CreateUseCase(long userId, CourseEntity course)
         {

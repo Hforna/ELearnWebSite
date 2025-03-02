@@ -36,6 +36,8 @@ namespace Course.Application.Services.AutoMapper
 
             CreateMap<CreateCourseTopicsRequest, CourseTopicsEntity>();
 
+            CreateMap<UpdateModuleRequest, Module>();
+
             CreateMap<CreateLessonRequest, Lesson>();
 
             CreateMap<UpdateCourseRequest, CourseEntity>()

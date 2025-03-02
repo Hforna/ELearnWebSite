@@ -59,17 +59,14 @@ namespace Course.Application.UseCases.Modules
 
             if (request.Position is not null)
             {
-                if (course.Modules.Any(d => d.Position == module.Position))
+                course.Modules.Insert(module.Position - 1, module);
+                var modulesUpdate = course.Modules.Select(module =>
                 {
-                    var moduleFilter = course.Modules.Where(d => d.Position >= request.Position).OrderBy(d => d.Position).Select(m =>
-                    {
-                        m.Position += 1;
+                    module.Position = course.Modules.IndexOf(module) + 1;
 
-                        return m;
-                    }).ToList();
-
-                    _uof.moduleWrite.UpdateModules(moduleFilter);
-                }
+                    return module;
+                }).ToList();
+                _uof.moduleWrite.UpdateModules(modulesUpdate);
             }          
 
             if (request.Position is null)
