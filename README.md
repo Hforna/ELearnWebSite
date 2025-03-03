@@ -14,6 +14,7 @@ A modern online learning platform built with **ASP.NET Core** that empowers inst
 - **Instructors**: Create courses, upload videos (Azure Storage), manage enrollments, track earnings
 - **Students**: Browse courses, enroll with Stripe payments, track progress, earn certificates
 - **Admins**: Dashboard for analytics, user management, and system moderation
+- **Authentication** Users can authenticate and active 2fa using phone or email by twilio api and mail kit sender
 
 ### 💡 Core Functionality
 - **Secure Authentication**: ASP.NET Identity with JWT & role-based authorization
