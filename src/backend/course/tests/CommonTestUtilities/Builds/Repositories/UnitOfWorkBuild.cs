@@ -12,12 +12,15 @@ namespace CommonTestUtilities.Builds.Repositories
     public static class UnitOfWorkBuild
     {
     
-        public static IUnitOfWork Build(Mock<ICourseReadOnly>? courseReadMock = null)
+        public static IUnitOfWork Build(
+            ICourseReadOnly? courseReadMock = null,
+            IReviewReadOnly? reviewReadMock = null,
+            IEnrollmentReadOnly? enrollmentRead = null)
         {
             var mock = new Mock<IUnitOfWork>();
-            mock.Setup(d => d.courseRead).Returns(courseReadMock is null ? new CourseReadBuild().Build() : courseReadMock.Object);
-            mock.Setup(d => d.enrollmentRead).Returns(new EnrollmentReadBuild().Build());
-            mock.Setup(d => d.reviewRead).Returns(new ReviewReadBuild().Build());
+            mock.Setup(d => d.courseRead).Returns(courseReadMock ?? new CourseReadBuild().Build());
+            mock.Setup(d => d.enrollmentRead).Returns(enrollmentRead ?? new EnrollmentReadBuild().Build());
+            mock.Setup(d => d.reviewRead).Returns(reviewReadMock ?? new ReviewReadBuild().Build());
 
             mock.Setup(d => d.courseWrite).Returns(CourseWriteBuild.Build());
             mock.Setup(d => d.reviewWrite).Returns(ReviewWriteBuild.Build());

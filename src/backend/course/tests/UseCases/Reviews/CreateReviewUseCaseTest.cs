@@ -15,7 +15,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace UseCases.Review
+namespace UseCases.Reviews
 {
     public class CreateReviewUseCaseTest
     {
@@ -55,7 +55,6 @@ namespace UseCases.Review
             var reviewRead = new ReviewReadBuild();
             reviewRead.GetReviewCount(course, 10);
             reviewRead.GetReviewsSum(course, 26);
-            uof.reviewRead = reviewRead.Build();
 
             var courseRead = new CourseReadBuild();
             courseRead.CourseId(course);

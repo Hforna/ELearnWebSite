@@ -9,7 +9,7 @@ namespace Course.Exception
 {
     public class ReviewException : BaseException
     {
-        public override List<string> Errors { get; set; }
+        public override List<string> Errors { get; set; } = new List<string>();
         public override HttpStatusCode StatusCode { get; set; }
 
         public ReviewException(List<string> errors, HttpStatusCode? statusCode = null)

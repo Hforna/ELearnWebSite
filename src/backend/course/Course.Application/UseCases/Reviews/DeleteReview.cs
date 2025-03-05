@@ -42,7 +42,7 @@ namespace Course.Application.UseCases.Reviews
 
             var course = await _uof.courseRead.CourseById(review.CourseId);
 
-            var reviewSum = await _uof.reviewRead.GetReviewSum(review.CourseId);
+            var reviewSum = await _uof.reviewRead.GetReviewSum(review.CourseId) + (decimal)review.Rating;
             var reviewCount = await _uof.reviewRead.ReviewsCount(review.CourseId) - 1;
             var reviewAverage = reviewSum / reviewCount;
             var round = Math.Round(reviewAverage, 1);

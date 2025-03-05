@@ -20,6 +20,16 @@ namespace CommonTestUtilities.Builds.Repositories
             _mock.Setup(d => d.GetReviewSum(course.Id)).ReturnsAsync(sumReview);
         }
 
+        public void ReviewById(Review review)
+        {
+            _mock.Setup(d => d.ReviewById(review.Id)).ReturnsAsync(review);
+        }
+
+        public void ReviewOfUser(long reviewId, long userId, bool reviewOfuser = true)
+        {
+            _mock.Setup(d => d.ReviewOfUser(userId, reviewId)).ReturnsAsync(reviewOfuser);
+        }
+
         public void GetReviewCount(CourseEntity course, int countReview)
         {
             _mock.Setup(d => d.ReviewsCount(course.Id)).ReturnsAsync(countReview);
