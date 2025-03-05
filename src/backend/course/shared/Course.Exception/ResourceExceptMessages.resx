@@ -195,4 +195,10 @@
   <data name="TEXT_LENGTH_MUST_BE_LESS_THAN_300" xml:space="preserve">
     <value>Text length must be less than 3000</value>
   </data>
+  <data name="REVIEW_NOT_EXISTS" xml:space="preserve">
+    <value>Review not exists</value>
+  </data>
+  <data name="REVIEW_NOT_OF_USER" xml:space="preserve">
+    <value>User doesn't have acces for this review</value>
+  </data>
 </root>

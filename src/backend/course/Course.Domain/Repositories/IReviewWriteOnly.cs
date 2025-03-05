@@ -10,5 +10,7 @@ namespace Course.Domain.Repositories
     public interface IReviewWriteOnly
     {
         public void Add(Review review);
+        public void DeleteReview(Review review);
+        public void DeleteCourseReviews(long courseId);
     }
 }

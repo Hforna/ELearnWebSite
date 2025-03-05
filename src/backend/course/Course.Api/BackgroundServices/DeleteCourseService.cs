@@ -47,6 +47,8 @@ namespace Course.Api.BackgroundServices
                 uof.lessonWrite.DeleteLessonRange(module.Lessons);
                 uof.moduleWrite.DeleteModule(module);
             }
+            uof.reviewWrite.DeleteCourseReviews(course.Id);
+            await uof.Commit();
         }
 
         public async Task ProcessErrorAsync(ProcessErrorEventArgs args) => await Task.CompletedTask;

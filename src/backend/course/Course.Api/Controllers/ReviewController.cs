@@ -30,5 +30,13 @@ namespace Course.Api.Controllers
 
             return Ok(result);
         }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteReview([FromRoute][ModelBinder(typeof(BinderId))]long id, [FromBody]IDeleteReview useCase)
+        {
+            await useCase.Execute(id);
+
+            return NoContent();
+        }
     }
 }

@@ -241,6 +241,24 @@ namespace Course.Exception {
         }
         
         /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Review not exists.
+        /// </summary>
+        public static string REVIEW_NOT_EXISTS {
+            get {
+                return ResourceManager.GetString("REVIEW_NOT_EXISTS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a User doesn&apos;t have acces for this review.
+        /// </summary>
+        public static string REVIEW_NOT_OF_USER {
+            get {
+                return ResourceManager.GetString("REVIEW_NOT_OF_USER", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a Text field can&apos;t be null or empty.
         /// </summary>
         public static string TEXT_CANT_BE_NULL {

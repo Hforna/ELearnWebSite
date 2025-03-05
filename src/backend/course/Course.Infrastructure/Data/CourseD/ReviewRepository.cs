@@ -21,11 +21,33 @@ namespace Course.Infrastructure.Data.CourseD
             _dbContext.Reviews.Add(review);
         }
 
+        public void DeleteCourseReviews(long courseId)
+        {
+            var reviews = _dbContext.Reviews.Where(d => d.CourseId == courseId);
+
+            _dbContext.Reviews.RemoveRange(reviews);
+        }
+
+        public void DeleteReview(Review review)
+        {
+            _dbContext.Reviews.Remove(review);
+        }
+
         public async Task<decimal> GetReviewSum(long courseId)
         {
             var reviews = _dbContext.Reviews.Where(d => d.CourseId == courseId && d.Active);
 
             return await reviews.SumAsync(d => (decimal)d.Rating);
+        }
+
+        public async Task<Review?> ReviewById(long id)
+        {
+            return await _dbContext.Reviews.SingleOrDefaultAsync(d => d.Id == id && d.Active);
+        }
+
+        public async Task<bool> ReviewOfUser(long userId, long reviewId)
+        {
+            return await _dbContext.Reviews.AnyAsync(d => d.CustomerId == userId && d.Id == reviewId && d.Active);
         }
 
         public async Task<List<Review>> ReviewsByCourse(long courseId)

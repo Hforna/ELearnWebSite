@@ -20,6 +20,12 @@ namespace Course.Infrastructure.Data.Course
             _dbContext.Modules.Add(module);
         }
 
+        public void DeactiveModule(Module module)
+        {
+            module.Active = false;
+            _dbContext.Modules.Update(module);
+        }
+
         public void DeleteModule(Module module)
         {
             _dbContext.Modules.Remove(module);
