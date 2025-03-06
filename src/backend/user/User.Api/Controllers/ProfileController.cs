@@ -41,7 +41,7 @@ namespace User.Api.Controllers
             var user = await _tokenService.UserByToken(_tokenReceptor.GetToken());
 
             if (await _uof.profileReadOnly.ProfileByUserId(user.Id) is not null)
-                return BadRequest("User already has a profile");
+                return BadRequest("User has already a profile");
 
             var userProfile = _mapper.Map<ProfileModel>(request);
 

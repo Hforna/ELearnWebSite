@@ -145,6 +145,9 @@ namespace User.Api.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<decimal>("Note")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<string>("ProfilePicture")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");

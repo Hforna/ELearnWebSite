@@ -19,6 +19,7 @@ using User.Api.Filters;
 using User.Api.Services;
 using User.Api.BackgroundServices;
 using Twilio;
+using MassTransit;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -94,6 +95,19 @@ builder.Services.AddScoped<IProfileReadOnly, ProfileRepository>();
 builder.Services.AddScoped<IProfileWriteOnly, ProfileRepository>();
 
 builder.Services.AddScoped<IBcryptCryptography, BcryptCryptography>();
+
+builder.Services.AddMassTransit(x =>
+{
+    x.UsingRabbitMq((context, cfg) =>
+    {
+        cfg.Host(new Uri(builder.Configuration.GetConnectionString("rabbitmq")!), f =>
+        {
+            cfg.ConfigureEndpoints(context);
+            f.Username("guest");
+            f.Password("guest");
+        });
+    });
+});
 
 builder.Services.AddSingleton(d => new SqidsEncoder<long>(new() {
     Alphabet = builder.Configuration.GetValue<string>("sqids:alphabet")!,

@@ -14,6 +14,7 @@ namespace User.Api.Models
         public string ProfilePicture { get; set; }
         public string Country { get; set; }
         public string Bio { get; set; }
+        public decimal Note { get; set; }
         public string FullName { get; set; }
     }
 }
