@@ -16,6 +16,9 @@ services:
 
   mongoserver:
     image: mongo
+   
+  rabbitmq:
+    image: rabbitmq:3-management
 
   redisserver:
     image: redis:latest
