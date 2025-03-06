@@ -38,6 +38,20 @@ namespace Course.Api.Controllers
             return Ok(result);
         }
 
+        /// <summary>
+        /// get courses using pagination by user's filter,
+        /// return the items quantity that was on query
+        /// </summary>
+        /// <param name="page">The page of courses</param>
+        /// <param name="items">quantity of courses for api take</param>
+        /// <param name="request">The request contains fields for user filter by course attributes like:
+        /// ratings: enum that user can choose a rating with 5 as max note
+        /// text: user can search by key words or course titles
+        /// course language: enum that user can choose their languages choices
+        /// price: user can choose the range of price
+        /// </param>
+        /// <param name="useCase"></param>
+        /// <returns>return courses and information about pagination</returns>
         [HttpPost("filter")]
         [ProducesResponseType(typeof(CoursesPaginationResponse), StatusCodes.Status200OK)]
         public async Task<IActionResult> FilterCourses([FromQuery] int page, [FromQuery] int items, [FromBody] GetCoursesRequest request,

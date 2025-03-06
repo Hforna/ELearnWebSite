@@ -9,5 +9,6 @@ backend/user/User.Api/[Oo]bj/
 sqlserver_data/
 **/appsettings.Development.json
 **/appsettings.Production.json
+.sonarqube
 
 .fake

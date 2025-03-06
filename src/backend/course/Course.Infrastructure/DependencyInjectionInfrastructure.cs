@@ -8,6 +8,7 @@ using Course.Infrastructure.Data.CourseD;
 using Course.Infrastructure.Data.VideoD;
 using Course.Infrastructure.Services.Azure;
 using Course.Infrastructure.Services.Rest;
+using MassTransit;
 using Microsoft.Azure.ServiceBus;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -32,9 +33,10 @@ namespace Course.Infrastructure
             AddAzureStorage(services, configuration);
             AddServiceBus(services, configuration);
             AddRedis(services, configuration);
+            AddRabbitMq(services, configuration);
         }
 
-        private static void AddDbContext(IServiceCollection services, IConfiguration configuration)
+        static void AddDbContext(IServiceCollection services, IConfiguration configuration)
         {
             var sqlconnection = configuration.GetConnectionString("sqlserver");
             services.AddDbContext<CourseDbContext>(d => d.UseSqlServer(sqlconnection));
@@ -42,7 +44,7 @@ namespace Course.Infrastructure
             services.AddScoped<VideoDbContext>(d => new VideoDbContext(configuration));
         }
 
-        private static void AddRedis(IServiceCollection services, IConfiguration configuration)
+        static void AddRedis(IServiceCollection services, IConfiguration configuration)
         {
             services.AddStackExchangeRedisCache(opt =>
             {
@@ -50,7 +52,19 @@ namespace Course.Infrastructure
             });
         }
 
-        private static void AddRepositories(IServiceCollection services)
+        static void AddRabbitMq(IServiceCollection services, IConfiguration configuration)
+        {
+            var rabbitmqServer = configuration.GetConnectionString("rabbitmq");
+            services.AddMassTransit((x) =>
+            {
+                x.UsingRabbitMq((context, cfg) =>
+                {
+                    cfg.Host(new Uri(rabbitmqServer!));
+                });
+            });
+        }
+
+        static void AddRepositories(IServiceCollection services)
         {
             services.AddScoped<ICourseReadOnly, CourseRepository>();
             services.AddScoped<ICourseWriteOnly, CourseRepository>();
@@ -67,13 +81,13 @@ namespace Course.Infrastructure
             services.AddScoped<IReviewWriteOnly, ReviewRepository>();
         }
 
-        private static void AddAzureStorage(IServiceCollection services, IConfiguration configuration)
+        static void AddAzureStorage(IServiceCollection services, IConfiguration configuration)
         {
             var connectionString = configuration.GetValue<string>("services:azure:storage:blobClient");
             services.AddScoped<IStorageService>(d => new StorageService(new Azure.Storage.Blobs.BlobServiceClient(connectionString)));
         }
 
-        private static void AddServiceBus(IServiceCollection service, IConfiguration configuration)
+        static void AddServiceBus(IServiceCollection service, IConfiguration configuration)
         {
             var serviceConnection = configuration.GetValue<string>("services:azure:serviceBus");
 
@@ -102,7 +116,7 @@ namespace Course.Infrastructure
             service.AddSingleton(moduleProcessor);
         }
 
-        private static void AddServices(IServiceCollection services)
+        static void AddServices(IServiceCollection services)
         {
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<ILinkService, LinkService>();
