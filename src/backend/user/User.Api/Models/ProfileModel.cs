@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using MimeKit.Tnef;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace User.Api.Models
@@ -14,7 +15,8 @@ namespace User.Api.Models
         public string ProfilePicture { get; set; }
         public string Country { get; set; }
         public string Bio { get; set; }
-        public decimal Note { get; set; }
+        public int? CourseNumber { get; set; }
+        public decimal? Note { get; set; }
         public string FullName { get; set; }
     }
 }

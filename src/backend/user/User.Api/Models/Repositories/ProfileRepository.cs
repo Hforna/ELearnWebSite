@@ -27,5 +27,10 @@ namespace User.Api.Models.Repositories
         {
             return await _dbContext.Profiles.SingleOrDefaultAsync(d => d.UserId == id);
         }
+
+        public void UpdateProfile(ProfileModel profile)
+        {
+            _dbContext.Profiles.Update(profile);
+        }
     }
 }

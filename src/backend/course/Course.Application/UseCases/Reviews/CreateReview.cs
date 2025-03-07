@@ -3,9 +3,11 @@ using Course.Application.Services.Validators.Review;
 using Course.Application.UseCases.Repositories.Reviews;
 using Course.Communication.Enums;
 using Course.Communication.Requests;
+using Course.Communication.Requests.MessageSenders;
 using Course.Communication.Responses;
 using Course.Domain.Entitites;
 using Course.Domain.Repositories;
+using Course.Domain.Services.RabbitMq;
 using Course.Domain.Services.Rest;
 using Course.Exception;
 using Sqids;
@@ -23,10 +25,13 @@ namespace Course.Application.UseCases.Reviews
         private readonly IMapper _mapper;
         private readonly IUserService _userService;
         private readonly SqidsEncoder<long> _sqids;
+        private readonly IUserSenderService _userSenderService;
 
-        public CreateReview(IUnitOfWork uof, IMapper mapper, IUserService userService, SqidsEncoder<long> sqids)
+        public CreateReview(IUnitOfWork uof, IMapper mapper, IUserService userService, 
+            SqidsEncoder<long> sqids, IUserSenderService userSenderService)
         {
             _uof = uof;
+            _userSenderService = userSenderService;
             _mapper = mapper;
             _userService = userService;
             _sqids = sqids;
@@ -69,6 +74,18 @@ namespace Course.Application.UseCases.Reviews
             _uof.reviewWrite.Add(review);
             _uof.courseWrite.UpdateCourse(course);
             await _uof.Commit();
+
+            var courseNumber = await _uof.courseRead.GetQuantityUserCourse(course.TeacherId);
+            var coursesSumNote = await _uof.courseRead.CoursesNoteSum(course.TeacherId);
+
+            var sendCourseNoteMessage = new SendCourseNoteMessage()
+            {
+                CourseNumber = courseNumber,
+                Note = course.Note,
+                UserId = _sqids.Encode(course.TeacherId)
+            };
+
+            await _userSenderService.SendCourseNote(sendCourseNoteMessage);
 
             var response = _mapper.Map<ReviewResponse>(review);
 

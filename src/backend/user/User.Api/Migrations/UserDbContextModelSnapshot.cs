@@ -141,11 +141,14 @@ namespace User.Api.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("CourseNumber")
+                        .HasColumnType("int");
+
                     b.Property<string>("FullName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<decimal>("Note")
+                    b.Property<decimal?>("Note")
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("ProfilePicture")

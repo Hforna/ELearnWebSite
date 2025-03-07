@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using Course.Application.UseCases.Repositories.Reviews;
+using Course.Communication.Requests.MessageSenders;
 using Course.Domain.Repositories;
+using Course.Domain.Services.RabbitMq;
 using Course.Domain.Services.Rest;
 using Course.Exception;
 using Sqids;
@@ -17,10 +19,13 @@ namespace Course.Application.UseCases.Reviews
         private readonly IUnitOfWork _uof;
         private readonly IUserService _userService;
         private readonly SqidsEncoder<long> _sqids;
+        private readonly IUserSenderService _userSender;
 
-        public DeleteReview(IUnitOfWork uof, IUserService userService, SqidsEncoder<long> sqids)
+        public DeleteReview(IUnitOfWork uof, IUserService userService, 
+            SqidsEncoder<long> sqids, IUserSenderService userSender)
         {
             _uof = uof;
+            _userSender = userSender;
             _userService = userService;
             _sqids = sqids;
         }
@@ -51,6 +56,18 @@ namespace Course.Application.UseCases.Reviews
             _uof.reviewWrite.DeleteReview(review);
             _uof.courseWrite.UpdateCourse(course);
             await _uof.Commit();
+
+            var courseNumber = await _uof.courseRead.GetQuantityUserCourse(course.TeacherId);
+            var coursesSumNote = await _uof.courseRead.CoursesNoteSum(course.TeacherId);
+
+            var sendCourseNoteMessage = new CourseNoteMessage()
+            {
+                CourseNumber = courseNumber,
+                Note = course.Note,
+                UserId = _sqids.Encode(course.TeacherId)
+            };
+
+            await _userSender.SendCourseNote(sendCourseNoteMessage);
         }
     }
 }

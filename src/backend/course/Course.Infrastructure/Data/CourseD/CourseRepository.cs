@@ -119,5 +119,15 @@ namespace Course.Infrastructure.Data.Course
 
             return courses;
         }
+
+        public async Task<int> GetQuantityUserCourse(long userId)
+        {
+            return await _dbContext.Courses.CountAsync(d => d.TeacherId == userId && d.Active && d.Note > 0);
+        }
+
+        public async Task<decimal> CoursesNoteSum(long userId)
+        {
+            return await _dbContext.Courses.AsNoTracking().Where(d => d.TeacherId == userId && d.Active && d.Note > 0).SumAsync(d => d.Note);
+        }
     }
 }

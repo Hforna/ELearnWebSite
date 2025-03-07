@@ -12,6 +12,8 @@ namespace Course.Domain.Repositories
     public interface ICourseReadOnly
     {
         public Task<CourseEntity?> CourseById(long id, bool asNoTracking = false);
+        public Task<decimal> CoursesNoteSum(long userId);
+        public Task<int> GetQuantityUserCourse(long userId);
         public Task<IList<CourseEntity>?> CourseByIds(List<long> ids);
         public Task<IList<CourseEntity>?> CoursesByTeacher(long userId);
         public Task<CourseEntity?> CourseByTeacherAndId(long userId, long id);

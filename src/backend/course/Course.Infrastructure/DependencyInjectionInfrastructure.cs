@@ -1,12 +1,14 @@
 ﻿using Azure.Messaging.ServiceBus;
 using Course.Domain.Repositories;
 using Course.Domain.Services.Azure;
+using Course.Domain.Services.RabbitMq;
 using Course.Domain.Services.Rest;
 using Course.Infrastructure.Data;
 using Course.Infrastructure.Data.Course;
 using Course.Infrastructure.Data.CourseD;
 using Course.Infrastructure.Data.VideoD;
 using Course.Infrastructure.Services.Azure;
+using Course.Infrastructure.Services.RabbitMq;
 using Course.Infrastructure.Services.Rest;
 using MassTransit;
 using Microsoft.Azure.ServiceBus;
@@ -14,6 +16,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,6 +37,7 @@ namespace Course.Infrastructure
             AddServiceBus(services, configuration);
             AddRedis(services, configuration);
             AddRabbitMq(services, configuration);
+            AddMessagingServices(services);
         }
 
         static void AddDbContext(IServiceCollection services, IConfiguration configuration)
@@ -59,9 +63,19 @@ namespace Course.Infrastructure
             {
                 x.UsingRabbitMq((context, cfg) =>
                 {
-                    cfg.Host(new Uri(rabbitmqServer!));
+                    cfg.ConfigureEndpoints(context);
+                    cfg.Host(new Uri(rabbitmqServer!), f =>
+                    {
+                        f.Username("guest");
+                        f.Password("guest");
+                    });
                 });
             });
+        }
+
+        static void AddMessagingServices(IServiceCollection services)
+        {
+            services.AddScoped<IUserSenderService, UserSenderService>();
         }
 
         static void AddRepositories(IServiceCollection services)

@@ -11,6 +11,14 @@ namespace Course.Api.Controllers
     [ApiController]
     public class ReviewController : ControllerBase
     {
+        private readonly ILogger<ReviewController> _logger;
+
+        public ReviewController(ILogger<ReviewController> logger)
+        {
+            _logger = logger;
+        }
+
+
         /// <summary>
         /// create a review of a course,
         /// make a review's text and rate the course
@@ -27,7 +35,7 @@ namespace Course.Api.Controllers
             [FromBody]CreateReviewRequest request, [FromRoute][ModelBinder(typeof(BinderId))]long id)
         {
             var result = await useCase.Execute(request, id);
-
+            _logger.LogInformation("message sent");
             return Ok(result);
         }
 
