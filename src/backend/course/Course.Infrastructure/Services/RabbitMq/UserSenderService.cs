@@ -19,10 +19,10 @@ namespace Course.Infrastructure.Services.RabbitMq
             _bus = bus;
         }
 
-        public async Task SendCourseNote(SendCourseNoteMessage message)
+        public async Task SendCourseNote(CourseNoteMessage message)
         {
-            var sendEndpoint = await _bus.GetSendEndpoint(new Uri("queue:course-note-queue"));
-            await sendEndpoint.Send<SendCourseNoteMessage>(message);
+            var endpoint = await _bus.GetSendEndpoint(new Uri("queue:course-note-queue"));
+            await endpoint.Send<CourseNoteMessage>(message);
         }
     }
 }

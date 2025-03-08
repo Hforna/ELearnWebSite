@@ -9,6 +9,6 @@ namespace Course.Domain.Services.RabbitMq
 {
     public interface IUserSenderService
     {
-        public Task SendCourseNote(SendCourseNoteMessage message);
+        public Task SendCourseNote(CourseNoteMessage message);
     }
 }

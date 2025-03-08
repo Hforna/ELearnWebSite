@@ -27,6 +27,26 @@ namespace Course.Api.Controllers
             return Created(string.Empty, result);
         }
 
+        /// <summary>
+        /// Get active courses for a specific teacher by their teacher ID.
+        /// </summary>
+        /// <param name="teacherId">The unique identifier of the teacher.</param>
+        /// <param name="page">The page number for pagination.</param>
+        /// <param name="quantity">The number of courses to return per page.</param>
+        /// <returns>A paginated list of active courses for the specified teacher.</returns>
+        /// <response code="200">Returns the paginated list of active courses.</response>
+        /// <response code="404">If no courses are found for the given teacher or if the teacher does not exist.</response>
+        [HttpGet("teacher-courses/{teacherId}")]
+        [ProducesDefaultResponseType]
+        [ProducesResponseType(typeof(CourseException), StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> TeacherCourses([FromRoute][ModelBinder(typeof(BinderId))]long teacherId, [FromQuery]int page, 
+            [FromQuery]int quantity, [FromServices]ITeacherCourses useCase)
+        {
+            var result = await useCase.Execute(page, quantity, teacherId);
+
+            return Ok(result);
+        }
+
         [Authorize(Policy = "TeacherOnly")]
         [HttpPut]
         [Route("{id}")]

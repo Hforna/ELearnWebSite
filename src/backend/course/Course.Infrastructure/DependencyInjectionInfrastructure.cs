@@ -1,4 +1,5 @@
 ﻿using Azure.Messaging.ServiceBus;
+using Course.Communication.Requests.MessageSenders;
 using Course.Domain.Repositories;
 using Course.Domain.Services.Azure;
 using Course.Domain.Services.RabbitMq;
@@ -11,6 +12,7 @@ using Course.Infrastructure.Services.Azure;
 using Course.Infrastructure.Services.RabbitMq;
 using Course.Infrastructure.Services.Rest;
 using MassTransit;
+using MassTransit.Transports.Fabric;
 using Microsoft.Azure.ServiceBus;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -69,6 +71,8 @@ namespace Course.Infrastructure
                         f.Username("guest");
                         f.Password("guest");
                     });
+                    cfg.Message<CourseNoteMessage>(x => x.SetEntityName("course-note-exchange"));
+                    cfg.Publish<CourseNoteMessage>(x => x.ExchangeType = "direct");
                 });
             });
         }

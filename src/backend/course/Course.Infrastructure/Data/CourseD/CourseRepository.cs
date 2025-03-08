@@ -129,5 +129,12 @@ namespace Course.Infrastructure.Data.Course
         {
             return await _dbContext.Courses.AsNoTracking().Where(d => d.TeacherId == userId && d.Active && d.Note > 0).SumAsync(d => d.Note);
         }
+
+        public IPagedList<CourseEntity> TeacherCoursesPagination(int page, int quantity, long teacherId)
+        {
+            var query = _dbContext.Courses.Where(d => d.Active && d.TeacherId == teacherId);
+
+            return query.ToPagedList(page, quantity);
+        }
     }
 }

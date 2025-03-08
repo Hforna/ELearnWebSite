@@ -19,6 +19,7 @@ namespace Course.Domain.Repositories
         public Task<CourseEntity?> CourseByTeacherAndId(long userId, long id);
         public Task<IList<CourseEntity>?> GetNotActiveCourses();
         public Task<IList<CourseEntity>?> GetCoursesByIds(List<long> ids);
+        public IPagedList<CourseEntity> TeacherCoursesPagination(int page, int quantity, long teacherId);
         public IPagedList<CourseEntity> GetCoursesPagination(int page, GetCoursesFilterDto dto, List<CourseEntity>? reccomendedCourses, int itemsQuantity = 6);
         public Task<List<CourseEntity>> GetCourseByUserVisitsAndMostVisited(GetCoursesFilterDto dto, List<long> mostVisitedCourses, List<string>? recommendedCourses = null);
     }

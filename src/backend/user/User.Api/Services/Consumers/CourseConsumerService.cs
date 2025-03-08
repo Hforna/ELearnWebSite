@@ -28,9 +28,7 @@ namespace User.Api.Services.Consumers
             var profile = await _uof.profileReadOnly.ProfileByUserId(decodeUserId);
             var user = await _uof.userReadOnly.UserById(decodeUserId);
 
-            var average = Math.Round((decimal)context.Message.Note! / context.Message.CourseNumber, 2);
-
-            await _emailService.SendEmail(user.Email, user.UserName, "new notify", $"you profile note now is: {average}");
+            var average = Math.Round((decimal)context.Message.Note! / context.Message.CourseNumber, 2);;
 
             profile.Note = average;
 

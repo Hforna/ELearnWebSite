@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Course.Communication.Requests.MessageSenders
 {
-    public class SendCourseNoteMessage
+    public class CourseNoteMessage
     {
         public int CourseNumber { get; set; }
         public string UserId { get; set; }
