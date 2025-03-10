@@ -15,6 +15,7 @@ namespace Course.Domain.Repositories
         public Task<decimal> CoursesNoteSum(long userId);
         public Task<int> GetQuantityUserCourse(long userId);
         public Task<IList<CourseEntity>?> CourseByIds(List<long> ids);
+        public Task<IPagedList<CourseEntity>> CoursesUserHas(int page, int quantity, long userId);
         public Task<IList<CourseEntity>?> CoursesByTeacher(long userId);
         public Task<CourseEntity?> CourseByTeacherAndId(long userId, long id);
         public Task<IList<CourseEntity>?> GetNotActiveCourses();

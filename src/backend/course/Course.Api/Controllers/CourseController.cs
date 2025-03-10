@@ -38,7 +38,7 @@ namespace Course.Api.Controllers
         /// <response code="404">If no courses are found for the given teacher or if the teacher does not exist.</response>
         [HttpGet("teacher-courses/{teacherId}")]
         [ProducesDefaultResponseType]
-        [ProducesResponseType(typeof(CourseException), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(CourseException), StatusCodes.Status404NotFound)] 
         public async Task<IActionResult> TeacherCourses([FromRoute][ModelBinder(typeof(BinderId))]long teacherId, [FromQuery]int page, 
             [FromQuery]int quantity, [FromServices]ITeacherCourses useCase)
         {
@@ -63,7 +63,7 @@ namespace Course.Api.Controllers
         /// return the items quantity that was on query
         /// </summary>
         /// <param name="page">The page of courses</param>
-        /// <param name="items">quantity of courses for api take</param>
+        /// <param name="quantity">quantity of courses for api take</param>
         /// <param name="request">The request contains fields for user filter by course attributes like:
         /// ratings: enum that user can choose a rating with 5 as max note
         /// text: user can search by key words or course titles
@@ -74,10 +74,26 @@ namespace Course.Api.Controllers
         /// <returns>return courses and information about pagination</returns>
         [HttpPost("filter")]
         [ProducesResponseType(typeof(CoursesPaginationResponse), StatusCodes.Status200OK)]
-        public async Task<IActionResult> FilterCourses([FromQuery] int page, [FromQuery] int items, [FromBody] GetCoursesRequest request,
+        public async Task<IActionResult> FilterCourses([FromQuery] int page, [FromQuery] int quantity, [FromBody] GetCoursesRequest request,
             [FromServices] IGetCourses useCase)
         {
-            var result = await useCase.Execute(request, page, items);
+            var result = await useCase.Execute(request, page, quantity);
+
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// Take courses according pagination that user is registered
+        /// </summary>
+        /// <param name="page">The page of courses that user bought</param>
+        /// <param name="quantity">quantity of courses for api take</param>
+        /// <returns>return the courses that user is registered and infos about page</returns>
+        [HttpGet("my-courses")]
+        [ProducesResponseType(typeof(UserException), StatusCodes.Status400BadRequest)]
+        [ProducesDefaultResponseType]
+        public async Task<IActionResult> CoursesThatUserBought([FromQuery]int page, [FromQuery]int quantity, [FromServices]ICourseThatUserBought useCase)
+        {
+            var result = await useCase.Execute(page, quantity);
 
             return Ok(result);
         }

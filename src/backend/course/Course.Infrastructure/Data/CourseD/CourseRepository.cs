@@ -44,7 +44,8 @@ namespace Course.Infrastructure.Data.Course
             return await course.SingleOrDefaultAsync(d => d.Id == id);
         }
 
-        public async Task<CourseEntity?> CourseByTeacherAndId(long userId, long id) => await _dbContext.Courses.Include(d => d.Modules).SingleOrDefaultAsync(d => d.TeacherId == userId && d.Id == id);
+        public async Task<CourseEntity?> CourseByTeacherAndId(long userId, long id) => await _dbContext.Courses
+            .Include(d => d.Modules).SingleOrDefaultAsync(d => d.TeacherId == userId && d.Id == id);
 
         public void UpdateCourse(CourseEntity course)
         {
@@ -135,6 +136,16 @@ namespace Course.Infrastructure.Data.Course
             var query = _dbContext.Courses.Where(d => d.Active && d.TeacherId == teacherId);
 
             return query.ToPagedList(page, quantity);
+        }
+
+        public async Task<IPagedList<CourseEntity>> CoursesUserHas(int page, int quantity, long userId)
+        {
+            var enrollments = _dbContext.Enrollments.Where(d => d.CustomerId == userId && d.Active).OrderByDescending(d => d.CreatedOn);
+            var coursesId = await enrollments.Select(d => d.Id).ToListAsync();
+
+            var courses = _dbContext.Courses.Where(d => coursesId.Contains(d.Id) && d.Active);
+
+            return courses.ToPagedList(page, quantity);
         }
     }
 }

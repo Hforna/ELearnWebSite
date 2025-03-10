@@ -65,6 +65,7 @@ namespace Course.Application
             services.AddScoped<ICreateReview, CreateReview>();
             services.AddScoped<IDeleteReview, DeleteReview>();
             services.AddScoped<ITeacherCourses, TeacherCourses>();
+            services.AddScoped<ICourseThatUserBought, CoursesThatUserBought>();
 
             services.AddSingleton(new FileService());
         }
