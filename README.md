@@ -25,6 +25,7 @@ A modern online learning platform built with **ASP.NET Core** that empowers inst
 - **Payment System**: Stripe integration with webhooks for payment processing
 - **Certificates**: Auto-generated PDFs upon course completion
 - **Real-Time Notifications**: Azure Service Bus for course updates and announcements
+- **Message brokers**: Rabbitmq for communication between services and azure service bus for background services on services
 
 ### 🛠️ Tech Stack
 | Category          | Technologies                                                                 |
