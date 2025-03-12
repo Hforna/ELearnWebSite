@@ -204,4 +204,7 @@
   <data name="TEACHER_DOESNT_HAVE_COURSES" xml:space="preserve">
     <value>Teacher doesn't have courses yet</value>
   </data>
+  <data name="USER_NOT_LOGGED" xml:space="preserve">
+    <value>User must be logged for access this</value>
+  </data>
 </root>

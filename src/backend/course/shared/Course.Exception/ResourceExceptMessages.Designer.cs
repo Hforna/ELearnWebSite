@@ -313,6 +313,15 @@ namespace Course.Exception {
         }
         
         /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a User must be logged for access this.
+        /// </summary>
+        public static string USER_NOT_LOGGED {
+            get {
+                return ResourceManager.GetString("USER_NOT_LOGGED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a Video doesn&apos;t exists.
         /// </summary>
         public static string VIDEO_DOESNT_EXISTS {

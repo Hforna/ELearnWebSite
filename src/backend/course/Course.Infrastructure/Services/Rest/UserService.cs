@@ -68,10 +68,10 @@ namespace Course.Infrastructure.Services.Rest
             if (string.IsNullOrEmpty(_token))
                 return null;
 
-            var client = _httpClient.CreateClient();
+            var client = _httpClient.CreateClient("user.api");
             client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _token);
 
-            var response = await client.GetAsync($"https://user.api:8081/api/user/get-user-roles/{uid.ToString()}");
+            var response = await client.GetAsync($"api/user/get-user-roles/{uid.ToString()}");
 
             if(response.IsSuccessStatusCode)
             {
@@ -82,6 +82,24 @@ namespace Course.Infrastructure.Services.Rest
                 return roles!;
             }
             throw new RestException(response.Content.ToString());
+        }
+
+        public async Task<bool> IsUserLogged()
+        {
+            var client = _httpClient.CreateClient("user.api");
+            client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _token);
+        
+            var response = await client.GetAsync("login/is-user-logged");
+
+            if(response.IsSuccessStatusCode)
+            {
+                var result = await response.Content.ReadAsStringAsync();
+
+                var isLogged = JsonSerializer.Deserialize<bool>(result);
+
+                return isLogged;
+            }
+            return false;
         }
     }
 }

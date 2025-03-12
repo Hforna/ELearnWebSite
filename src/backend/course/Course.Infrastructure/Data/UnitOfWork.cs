@@ -23,13 +23,16 @@ namespace Course.Infrastructure.Data
         public IEnrollmentWriteOnly enrollmentWrite { get; set; }
         public IReviewReadOnly reviewRead { get; set; }
         public IReviewWriteOnly reviewWrite { get; set; }
+        public IWishListReadOnly wishListRead { get; set; }
+        public IWishListWriteOnly wishListWrite { get; set; }
 
         public UnitOfWork(CourseDbContext dbContext, ICourseReadOnly courseRead, ICourseWriteOnly courseWrite,
             IModuleReadOnly moduleReadOnly, IModuleWriteOnly moduleWriteOnly, 
             ILessonReadOnly lessonRead, ILessonWriteOnly lessonWrite,
             IVideoReadOnly videoRead, IVideoWriteOnly videoWriteOnly,
             IEnrollmentReadOnly enrollmentRead, IEnrollmentWriteOnly enrollmentWrite,
-            IReviewReadOnly reviewRead, IReviewWriteOnly reviewWrite)
+            IReviewReadOnly reviewRead, IReviewWriteOnly reviewWrite,
+            IWishListReadOnly wishListRead, IWishListWriteOnly wishListWrite)
         {
             _dbContext = dbContext;
             this.courseRead = courseRead;
@@ -44,6 +47,8 @@ namespace Course.Infrastructure.Data
             this.enrollmentRead = enrollmentRead;
             this.enrollmentWrite = enrollmentWrite;
             videoWrite = videoWriteOnly;
+            this.wishListRead = wishListRead;
+            this.wishListWrite = wishListWrite;
         }
 
         public async Task Commit()

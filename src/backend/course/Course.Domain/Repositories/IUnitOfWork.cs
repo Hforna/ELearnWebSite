@@ -20,6 +20,8 @@ namespace Course.Domain.Repositories
         public IEnrollmentWriteOnly enrollmentWrite { get; set; }
         public IReviewReadOnly reviewRead { get; set; }
         public IReviewWriteOnly reviewWrite { get; set; }
+        public IWishListReadOnly wishListRead { get; set; }
+        public IWishListWriteOnly wishListWrite { get; set; }
         public Task Commit();
     }
 }

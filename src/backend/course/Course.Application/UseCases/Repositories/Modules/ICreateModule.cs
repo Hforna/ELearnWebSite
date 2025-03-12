@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Course.Application.UseCases.Repositories.Modules
 {
-    public interface ICreateModules
+    public interface ICreateModule
     {
         public Task<IList<ModuleResponse>> Execute(CreateModuleRequest request, long courseId);
     }

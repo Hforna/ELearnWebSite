@@ -11,7 +11,9 @@ using Course.Application.UseCases.Repositories.Enrollments;
 using Course.Application.UseCases.Repositories.Lessons;
 using Course.Application.UseCases.Repositories.Modules;
 using Course.Application.UseCases.Repositories.Reviews;
+using Course.Application.UseCases.Repositories.WishLists;
 using Course.Application.UseCases.Reviews;
+using Course.Application.UseCases.WishLists;
 using Course.Domain.Repositories;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -46,7 +48,7 @@ namespace Course.Application
         private static void AddRepositories(IServiceCollection services)
         {
             services.AddScoped<ICreateCourse, CreateCourse>();
-            services.AddScoped<CreateModule, CreateModule>();
+            services.AddScoped<ICreateModule, CreateModule>();
             services.AddScoped<IGetCourses, GetCourses>();
             services.AddScoped<IGetCourse, GetCourse>();
             services.AddScoped<IDeleteCourse, DeleteCourse>();
@@ -66,6 +68,7 @@ namespace Course.Application
             services.AddScoped<IDeleteReview, DeleteReview>();
             services.AddScoped<ITeacherCourses, TeacherCourses>();
             services.AddScoped<ICourseThatUserBought, CoursesThatUserBought>();
+            services.AddScoped<IAddItemToWishList, AddItemToWishList>();
 
             services.AddSingleton(new FileService());
         }

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using Twilio.Rest.Verify.V2.Service;
 using User.Api.DTOs;
+using User.Api.Filters.Token;
 using User.Api.Models;
 using User.Api.Models.Repositories;
 using User.Api.Services.Email;
@@ -22,10 +23,11 @@ namespace User.Api.Controllers
         private readonly UserManager<UserModel> _userManager;
         private readonly IConfiguration _configuration;
         private readonly EmailService _emailService;
+        private readonly IHttpContextAccessor _httpContext;
 
         public LoginController(ITokenService tokenService, IUnitOfWork uof, 
         IBcryptCryptography bcrypt, UserManager<UserModel> userManager, 
-        IConfiguration configuration, EmailService emailService)
+        IConfiguration configuration, EmailService emailService, IHttpContextAccessor httpContext)
         {
             _tokenService = tokenService;
             _uof = uof;
@@ -33,6 +35,7 @@ namespace User.Api.Controllers
             _userManager = userManager;
             _configuration = configuration;
             _emailService = emailService;
+            _httpContext = httpContext;
         }
 
         [HttpPost]
@@ -184,6 +187,25 @@ namespace User.Api.Controllers
             var response = new ResponseLogin() { AccessToken = accessToken, RefreshToken = refreshToken};
 
             return Ok(response);
+        }
+
+        
+        [HttpGet("is-user-logged")]
+        public async Task<IActionResult> IsUserLogged()
+        {
+            var token = _httpContext.HttpContext.Request.Headers.Authorization.ToString();
+
+            if (token is null)
+                return Ok(false);
+
+            var validate = _tokenService.ValidateToken(token);
+
+            var user = await _uof.userReadOnly.UserByUid(validate.userGuid);
+
+            if (user is null)
+                return Ok(false);
+
+            return Ok(true);
         }
     }
 }

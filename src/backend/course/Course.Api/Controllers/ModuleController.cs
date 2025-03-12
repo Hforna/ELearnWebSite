@@ -13,7 +13,6 @@ using System.Net;
 namespace Course.Api.Controllers
 {
     [Route("api/course/{courseId}/[controller]")]
-    [ApiController]
     public class ModuleController : ProjectBaseController
     {
         [Authorize(Policy = "TeacherOnly")]

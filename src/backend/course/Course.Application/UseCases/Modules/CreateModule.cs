@@ -17,7 +17,7 @@ using System.Threading.Tasks;
 
 namespace Course.Application.UseCases.Modules
 {
-    public class CreateModule : ICreateModules
+    public class CreateModule : ICreateModule
     {
         private readonly IUnitOfWork _uof;
         private readonly IMapper _mapper;
