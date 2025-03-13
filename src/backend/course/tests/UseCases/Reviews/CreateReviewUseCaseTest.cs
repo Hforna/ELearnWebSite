@@ -2,6 +2,7 @@
 using CommonTestUtilities.Builds.Repositories;
 using CommonTestUtilities.Builds.Services;
 using CommonTestUtilities.Builds.Services.Mapper;
+using CommonTestUtilities.Builds.Services.RabbitMq;
 using CommonTestUtilities.Builds.Services.Rest;
 using CommonTestUtilities.Entities;
 using CommonTestUtilities.Requests;
@@ -63,9 +64,10 @@ namespace UseCases.Reviews
             var mapper = AutoMapperBuild.Build();
             var sqids = SqidsBuild.Build();
             var user = new UserServiceBuild().Build(userId: sqids.Encode(userId));
+            var userSender = UserSenderServiceBuild.Build();
 
 
-            return new CreateReview(uof, mapper, user, sqids);
+            return new CreateReview(uof, mapper, user, sqids, userSender);
         }
     }
 }

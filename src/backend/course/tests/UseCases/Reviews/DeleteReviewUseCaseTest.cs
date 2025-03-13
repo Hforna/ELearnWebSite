@@ -1,5 +1,6 @@
 ﻿using CommonTestUtilities.Builds.Repositories;
 using CommonTestUtilities.Builds.Services;
+using CommonTestUtilities.Builds.Services.RabbitMq;
 using CommonTestUtilities.Builds.Services.Rest;
 using CommonTestUtilities.Entities;
 using Course.Application.UseCases.Reviews;
@@ -52,7 +53,9 @@ namespace UseCases.Reviews
             var sqids = SqidsBuild.Build();
 
             var uof = UnitOfWorkBuild.Build(reviewReadMock: reviewRead.Build(), courseReadMock: courseRead.Build());
-            return new DeleteReview(uof, userService.Build(userId: sqids.Encode(userId)), sqids);
+            var userSender = UserSenderServiceBuild.Build();
+
+            return new DeleteReview(uof, userService.Build(userId: sqids.Encode(userId)), sqids, userSender);
         }
     }
 }
