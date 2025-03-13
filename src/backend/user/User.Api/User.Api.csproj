@@ -38,4 +38,8 @@
     <PackageReference Include="X.PagedList" Version="10.5.7" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\SharedMessages\SharedMessages.csproj" />
+  </ItemGroup>
+
 </Project>

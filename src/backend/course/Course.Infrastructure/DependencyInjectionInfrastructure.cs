@@ -1,5 +1,4 @@
 ﻿using Azure.Messaging.ServiceBus;
-using Course.Communication.Requests.MessageSenders;
 using Course.Domain.Repositories;
 using Course.Domain.Services.Azure;
 using Course.Domain.Services.RabbitMq;
@@ -19,6 +18,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
+using SharedMessages.CourseMessages;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -71,8 +71,11 @@ namespace Course.Infrastructure
                         f.Username("guest");
                         f.Password("guest");
                     });
-                    cfg.Message<CourseNoteMessage>(x => x.SetEntityName("course-note-exchange"));
+                    cfg.Message<CourseNoteMessage>(x => x.SetEntityName("course-exchange"));
                     cfg.Publish<CourseNoteMessage>(x => x.ExchangeType = "direct");
+
+                    cfg.Message<CourseCreatedMessage>(x => x.SetEntityName("course-exchange"));
+                    cfg.Publish<CourseCreatedMessage>(x => x.ExchangeType = "direct");
                 });
             });
         }

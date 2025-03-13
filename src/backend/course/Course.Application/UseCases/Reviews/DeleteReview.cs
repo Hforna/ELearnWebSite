@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
 using Course.Application.UseCases.Repositories.Reviews;
-using Course.Communication.Requests.MessageSenders;
 using Course.Domain.Repositories;
 using Course.Domain.Services.RabbitMq;
 using Course.Domain.Services.Rest;
 using Course.Exception;
+using SharedMessages.CourseMessages;
 using Sqids;
 using System;
 using System.Collections.Generic;

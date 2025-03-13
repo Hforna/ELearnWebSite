@@ -1,7 +1,7 @@
-﻿using Course.Communication.Requests.MessageSenders;
-using Course.Domain.Services.RabbitMq;
+﻿using Course.Domain.Services.RabbitMq;
 using DnsClient.Internal;
 using MassTransit;
+using SharedMessages.CourseMessages;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,8 +21,18 @@ namespace Course.Infrastructure.Services.RabbitMq
 
         public async Task SendCourseNote(CourseNoteMessage message)
         {
-            var endpoint = await _bus.GetSendEndpoint(new Uri("queue:course-note-queue"));
-            await endpoint.Send<CourseNoteMessage>(message);
+            await _bus.Publish(message, ctx =>
+            {
+                ctx.SetRoutingKey("course-note");
+            });
+        }
+
+        public async Task SendCourseCreated(CourseCreatedMessage message)
+        {
+            await _bus.Publish(message, ctx =>
+            {
+                ctx.SetRoutingKey("course-created");
+            });
         }
     }
 }

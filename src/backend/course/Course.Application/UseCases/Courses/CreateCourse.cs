@@ -8,8 +8,10 @@ using Course.Domain.DTOs;
 using Course.Domain.Entitites;
 using Course.Domain.Repositories;
 using Course.Domain.Services.Azure;
+using Course.Domain.Services.RabbitMq;
 using Course.Domain.Services.Rest;
 using Course.Exception;
+using SharedMessages.CourseMessages;
 using Sqids;
 using System;
 using System.Collections.Generic;
@@ -27,12 +29,14 @@ namespace Course.Application.UseCases.Course
         private readonly SqidsEncoder<long> _sqids;
         private readonly IStorageService _storageService;
         private readonly FileService _fileService;
+        private readonly IUserSenderService _userSenderService;
 
         public CreateCourse(IUnitOfWork uof, IMapper mapper, 
             IUserService userService, SqidsEncoder<long> sqids, 
-            IStorageService storageService, FileService fileService)
+            IStorageService storageService, FileService fileService, IUserSenderService userSenderService)
         {
             _uof = uof;
+            _userSenderService = userSenderService;
             _fileService = fileService;
             _mapper = mapper;
             _userService = userService;
@@ -71,6 +75,10 @@ namespace Course.Application.UseCases.Course
             _uof.courseWrite.AddCourseTopics(course.TopicsCovered);
 
             await _uof.Commit();
+
+            var message = new CourseCreatedMessage() { UserId = userInfos.id };
+
+            await _userSenderService.SendCourseCreated(message);
 
             var response = _mapper.Map<CourseShortResponse>(course);
             response.CourseId = _sqids.Encode(course.Id);

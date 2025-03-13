@@ -1,13 +1,12 @@
-﻿using AutoMapper;
-using MassTransit;
+﻿using MassTransit;
+using SharedMessages.CourseMessages;
 using Sqids;
 using User.Api.Models.Repositories;
-using User.Api.Services.Consumers.ResponseClass;
 using User.Api.Services.Email;
 
 namespace User.Api.Services.Consumers
 {
-    public class CourseConsumerService : IConsumer<CourseNoteMessage>
+    public class CourseConsumerService : IConsumer<CourseNoteMessage>, IConsumer<CourseCreatedMessage>
     {
         private readonly IUnitOfWork _uof;
         private readonly SqidsEncoder<long> _sqids;
@@ -31,6 +30,17 @@ namespace User.Api.Services.Consumers
             var average = Math.Round((decimal)context.Message.Note! / context.Message.CourseNumber, 2);;
 
             profile.Note = average;
+
+            _uof.profileWriteOnly.UpdateProfile(profile);
+            await _uof.Commit();
+        }
+
+        public async Task Consume(ConsumeContext<CourseCreatedMessage> context)
+        {
+            var userId = _sqids.Decode(context.Message.UserId).Single();
+            var profile = await _uof.profileReadOnly.ProfileByUserId(userId);
+
+            profile.CourseNumber = profile.CourseNumber is null ? 1 : profile.CourseNumber + 1;
 
             _uof.profileWriteOnly.UpdateProfile(profile);
             await _uof.Commit();

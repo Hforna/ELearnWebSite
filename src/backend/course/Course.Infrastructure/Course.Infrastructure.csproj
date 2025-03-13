@@ -34,6 +34,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\SharedMessages\SharedMessages.csproj" />
     <ProjectReference Include="..\Course.Domain\Course.Domain.csproj" />
     <ProjectReference Include="..\shared\Course.Exception\Course.Exception.csproj" />
   </ItemGroup>

@@ -1,4 +1,4 @@
-﻿using Course.Communication.Requests.MessageSenders;
+﻿using SharedMessages.CourseMessages;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,5 +10,6 @@ namespace Course.Domain.Services.RabbitMq
     public interface IUserSenderService
     {
         public Task SendCourseNote(CourseNoteMessage message);
+        public Task SendCourseCreated(CourseCreatedMessage message);
     }
 }

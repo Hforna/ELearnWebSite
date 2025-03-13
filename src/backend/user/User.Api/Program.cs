@@ -109,6 +109,21 @@ builder.Services.AddMassTransit(x =>
         cfg.ReceiveEndpoint("course-note-queue", e =>
         {
             e.ConfigureConsumer<CourseConsumerService>(context);
+            e.Bind("course-exchange", f =>
+            {
+                f.RoutingKey = "course-note";
+                f.ExchangeType = "direct";
+            });
+        });
+
+        cfg.ReceiveEndpoint("create-course-queue", e =>
+        {
+            e.ConfigureConsumer<CourseConsumerService>(context);
+            e.Bind("course-exchange", f =>
+            {
+                f.RoutingKey = "course-created";
+                f.ExchangeType = "direct";
+            });
         });
     });
 });
