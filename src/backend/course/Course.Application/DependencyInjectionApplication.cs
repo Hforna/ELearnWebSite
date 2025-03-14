@@ -69,6 +69,7 @@ namespace Course.Application
             services.AddScoped<ITeacherCourses, TeacherCourses>();
             services.AddScoped<ICourseThatUserBought, CoursesThatUserBought>();
             services.AddScoped<IAddItemToWishList, AddItemToWishList>();
+            services.AddScoped<IRemoveCourseFromWishList, RemoveCourseFromWishList>();
 
             services.AddSingleton(new FileService());
         }

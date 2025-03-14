@@ -10,5 +10,6 @@ namespace Course.Domain.Repositories
     public interface IWishListWriteOnly
     {
         public Task Add(WishList wishList);
+        public void Delete(WishList wishList);
     }
 }

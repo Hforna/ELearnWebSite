@@ -27,9 +27,6 @@ namespace Course.Infrastructure.Services.Rest
 
         public async Task<UserInfosDto?> GetUserInfos()
         {
-            if (string.IsNullOrEmpty(_token))
-                return null;
-
             var client = _httpClient.CreateClient("user.api");
             client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _token);
 

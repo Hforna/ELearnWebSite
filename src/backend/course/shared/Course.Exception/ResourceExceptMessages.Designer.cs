@@ -79,11 +79,29 @@ namespace Course.Exception {
         }
         
         /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Course already is in wish list.
+        /// </summary>
+        public static string COURSE_IN_WISH_LIST {
+            get {
+                return ResourceManager.GetString("COURSE_IN_WISH_LIST", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a Course language must be within enum.
         /// </summary>
         public static string COURSE_LANGUAGE_OUT_ENUM {
             get {
                 return ResourceManager.GetString("COURSE_LANGUAGE_OUT_ENUM", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Course is not in wish list.
+        /// </summary>
+        public static string COURSE_NOT_IN_WISH_LIST {
+            get {
+                return ResourceManager.GetString("COURSE_NOT_IN_WISH_LIST", resourceCulture);
             }
         }
         

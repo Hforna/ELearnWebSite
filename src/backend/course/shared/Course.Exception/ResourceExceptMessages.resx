@@ -207,4 +207,10 @@
   <data name="USER_NOT_LOGGED" xml:space="preserve">
     <value>User must be logged for access this</value>
   </data>
+  <data name="COURSE_NOT_IN_WISH_LIST" xml:space="preserve">
+    <value>Course is not in wish list</value>
+  </data>
+  <data name="COURSE_IN_WISH_LIST" xml:space="preserve">
+    <value>Course already is in wish list</value>
+  </data>
 </root>

@@ -45,6 +45,7 @@ namespace Course.Application.UseCases.WishLists
             try
             {
                 var user = await _userService.GetUserInfos();
+
                 var userId = _sqids.Decode(user.id).Single();
 
                 var wishList = new WishList() { CourseId = courseId, UserId = userId };

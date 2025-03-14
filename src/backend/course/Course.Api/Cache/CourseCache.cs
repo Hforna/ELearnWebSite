@@ -3,6 +3,7 @@ using Microsoft.Extensions.Caching.Distributed;
 using MongoDB.Driver;
 using System.Text.Json;
 using StackExchange.Redis;
+using Course.Exception;
 
 namespace Course.Api.Cache
 {
@@ -19,13 +20,16 @@ namespace Course.Api.Cache
 
         public async Task AddCourseToWishList(long courseId, string sessionId)
         {
-            var wishList = await _redis.GetAsync(sessionId);
+            var wishList = await _redis.GetAsync($"{sessionId}_wish_list");
 
             var deserializeList = new List<long>();
 
-            if(wishList is not null || wishList.Any())
+            if(wishList is not null && wishList.Length > 1)
             {
                 deserializeList = JsonSerializer.Deserialize<List<long>>(wishList);
+
+                if (deserializeList.Contains(courseId))
+                    throw new WishListException(ResourceExceptMessages.COURSE_IN_WISH_LIST);
             }
             deserializeList.Add(courseId);
 
@@ -46,6 +50,39 @@ namespace Course.Api.Cache
 
             var deserializeList = JsonSerializer.Deserialize<Dictionary<long, int>>(weekCourses);
             return deserializeList;
+        }
+
+        public async Task<List<long>?> GetSessionWishList(string sessionId)
+        {
+            var wishList = await _redis.GetAsync($"{sessionId}_wish_list");
+
+            if (wishList is null || wishList.Length < 1)
+                return null;
+
+            var deserializeList = JsonSerializer.Deserialize<List<long>>(wishList);
+
+            return deserializeList;
+        }
+
+        public async Task RemoveCourseFromWishList(long courseId, string sessionId)
+        {
+            var wishList = await _redis.GetAsync($"{sessionId}_wish_list");
+
+            if (wishList is null)
+                return;
+
+            var deserializeList = JsonSerializer.Deserialize<List<long>>(wishList);
+
+            if (deserializeList.Contains(courseId) == false)
+                return;
+
+            deserializeList.Remove(courseId);
+            var serializeList = JsonSerializer.SerializeToUtf8Bytes(deserializeList);
+
+            await _redis.SetAsync($"{sessionId}_wish_list", serializeList, new DistributedCacheEntryOptions()
+            {
+                AbsoluteExpirationRelativeToNow = _cacheWishListExpire
+            });
         }
 
         public async Task SetCourseOnMostVisited(long courseId)
