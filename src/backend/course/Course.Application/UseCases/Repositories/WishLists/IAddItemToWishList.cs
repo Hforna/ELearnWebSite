@@ -9,6 +9,6 @@ namespace Course.Application.UseCases.Repositories.WishLists
 {
     public interface IAddItemToWishList
     {
-        public Task<WishListResponse> Execute(long courseId);
+        public Task<WishListResponse> Execute(long courseId, string sessionId);
     }
 }

@@ -63,7 +63,6 @@ namespace Course.Application.Services.AutoMapper
 
             CreateMap<WishList, WishListResponse>()
                 .ForMember(d => d.CourseId, f => f.MapFrom(s => _sqids.Encode(s.CourseId)))
-                .ForMember(d => d.Id, f => f.MapFrom(s => _sqids.Encode(s.Id)))
                 .ForMember(d => d.UserId, f => f.MapFrom(s => _sqids.Encode(s.UserId)));
 
             CreateMap<CourseEntity, CourseResponse>()

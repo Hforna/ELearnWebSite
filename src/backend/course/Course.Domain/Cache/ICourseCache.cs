@@ -10,5 +10,6 @@ namespace Course.Domain.Cache
     {
         public Task<Dictionary<long, int>?> GetMostPopularCourses();
         public Task SetCourseOnMostVisited(long courseId);
+        public Task AddCourseToWishList(long courseId, string sessionId);
     }
 }

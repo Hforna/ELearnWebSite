@@ -9,8 +9,7 @@ namespace Course.Communication.Responses
 {
     public class WishListResponse
     {
-        public string Id { get; set; }
-        public string CourseId { get; set; }
         public string UserId { get; set; }
+        public string CourseId { get; set; }
     }
 }

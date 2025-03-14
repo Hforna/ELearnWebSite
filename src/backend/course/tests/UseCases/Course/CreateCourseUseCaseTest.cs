@@ -12,6 +12,7 @@ using FluentAssertions;
 using Course.Domain.Enums;
 using Course.Exception;
 using CommonTestUtilities.Builds.Services.Rest;
+using CommonTestUtilities.Builds.Services.RabbitMq;
 
 namespace UseCases.Course
 {
@@ -47,8 +48,9 @@ namespace UseCases.Course
             var userService = new UserServiceBuild().Build(isUserNull);
             var storageService = StorageServiceBuild.Build();
             var fileService = FileServiceBuild.Build();
+            var userSenderService = UserSenderServiceBuild.Build();
 
-            var useCase = new CreateCourse(uof, mapper, userService, sqids, storageService, fileService);
+            var useCase = new CreateCourse(uof, mapper, userService, sqids, storageService, fileService, userSenderService);
 
             return useCase;
         }

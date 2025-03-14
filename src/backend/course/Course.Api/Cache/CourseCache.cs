@@ -2,17 +2,39 @@
 using Microsoft.Extensions.Caching.Distributed;
 using MongoDB.Driver;
 using System.Text.Json;
+using StackExchange.Redis;
 
 namespace Course.Api.Cache
 {
     public class CourseCache : ICourseCache
     {
         private readonly IDistributedCache _redis;
-        private readonly TimeSpan _cacheExpire = TimeSpan.FromDays(7);
+        private readonly TimeSpan _cacheCourseExpire = TimeSpan.FromDays(7);
+        private readonly TimeSpan _cacheWishListExpire = TimeSpan.FromDays(20);
 
         public CourseCache(IDistributedCache redis)
         {
             _redis = redis;
+        }
+
+        public async Task AddCourseToWishList(long courseId, string sessionId)
+        {
+            var wishList = await _redis.GetAsync(sessionId);
+
+            var deserializeList = new List<long>();
+
+            if(wishList is not null || wishList.Any())
+            {
+                deserializeList = JsonSerializer.Deserialize<List<long>>(wishList);
+            }
+            deserializeList.Add(courseId);
+
+            var serializeList = JsonSerializer.SerializeToUtf8Bytes(deserializeList);
+
+            await _redis.SetAsync(sessionId, serializeList, new DistributedCacheEntryOptions()
+            {
+                AbsoluteExpirationRelativeToNow = _cacheWishListExpire
+            });
         }
 
         public async Task<Dictionary<long, int>?> GetMostPopularCourses()
@@ -48,7 +70,7 @@ namespace Course.Api.Cache
 
             await _redis.SetStringAsync(keyString, serializeDict, new DistributedCacheEntryOptions()
             {
-                AbsoluteExpirationRelativeToNow = _cacheExpire
+                AbsoluteExpirationRelativeToNow = _cacheCourseExpire
             });
         }
     }
