@@ -1,7 +1,9 @@
-﻿using Course.Api.Binders;
+﻿using Course.Api.Attributes;
+using Course.Api.Binders;
 using Course.Application.UseCases.Repositories.Reviews;
 using Course.Communication.Requests;
 using Course.Exception;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -37,6 +39,31 @@ namespace Course.Api.Controllers
             var result = await useCase.Execute(request, id);
             _logger.LogInformation("message sent");
             return Ok(result);
+        }
+
+        /// <summary>
+        /// Allows a teacher to respond to a review submitted by a user. 
+        /// The teacher must be the owner of the course associated with the review to provide an answer.
+        /// The response is saved and returned as part of the review.
+        /// </summary>
+        /// <param name="reviewId">The unique identifier of the review to which the teacher is responding.</param>
+        /// <param name="request">The request object containing the teacher's response to the review.</param>
+        /// <param name="useCase">The service responsible for handling the business logic of answering a review.</param>
+        /// <returns>
+        /// Returns a created response with the created review response object if successful.
+        /// </returns>
+        [AuthenticationUser]
+        [Authorize(Policy = "TeacherOnly")]
+        [HttpPost("answer-review/{reviewId}")]
+        [ProducesResponseType(typeof(ReviewException), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(UserException), StatusCodes.Status401Unauthorized)]
+        [ProducesDefaultResponseType()]
+        public async Task<IActionResult> AnswerReview([FromRoute][ModelBinder(typeof(BinderId))]long reviewId, [FromBody]CreateReviewResponseRequest request,
+            [FromServices]IAnswerReview useCase)
+        {
+            var result = await useCase.Execute(reviewId, request);
+
+            return Created(string.Empty, result);
         }
 
         [HttpDelete("{id}")]

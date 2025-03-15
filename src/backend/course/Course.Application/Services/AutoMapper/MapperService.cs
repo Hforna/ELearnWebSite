@@ -36,6 +36,8 @@ namespace Course.Application.Services.AutoMapper
 
             CreateMap<CreateCourseTopicsRequest, CourseTopicsEntity>();
 
+            CreateMap<CreateReviewResponseRequest, ReviewResponseEntity>();
+
             CreateMap<UpdateModuleRequest, Module>();
 
             CreateMap<CreateLessonRequest, Lesson>();
@@ -70,6 +72,12 @@ namespace Course.Application.Services.AutoMapper
                 .ForMember(d => d.TeacherId, f => f.MapFrom(d => _sqids.Encode(d.TeacherId)));
 
             CreateMap<CourseTopicsEntity, CourseTopicsResponse>();
+
+            CreateMap<ReviewResponseEntity, ReviewAnswerResponse>()
+                .ForMember(d => d.ReviewId, f => f.MapFrom(d => _sqids.Encode(d.ReviewId)))
+                .ForMember(d => d.Id, f => f.MapFrom(d => _sqids.Encode(d.Id)))
+                .ForMember(d => d.TeacherId, f => f.MapFrom(d => _sqids.Encode(d.TeacherId)))
+                .ForMember(d => d.CourseId, f => f.MapFrom(d => _sqids.Encode(d.CourseId)));
 
             CreateMap<Lesson, LessonResponse>()
                 .ForMember(d => d.Id, f => f.MapFrom(d => _sqids.Encode(d.Id)))

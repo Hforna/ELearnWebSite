@@ -59,7 +59,6 @@ namespace Course.Application.UseCases.WishLists
                 response = new WishListResponse() { CourseId = _sqids.Encode(courseId), UserId = sessionId};
             }
 
-
             return response;
         }
     }
