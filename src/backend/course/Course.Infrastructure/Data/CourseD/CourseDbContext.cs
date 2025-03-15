@@ -19,6 +19,7 @@ namespace Course.Infrastructure.Data.Course
         public DbSet<Review> Reviews { get; set; }
         public DbSet<CourseTopicsEntity> CourseTopics { get; set; }
         public DbSet<WishList> WishList { get; set; }
+        public DbSet<ReviewResponseEntity> ReviewResponse { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

@@ -21,6 +21,11 @@ namespace Course.Infrastructure.Data.CourseD
             _dbContext.Reviews.Add(review);
         }
 
+        public async Task AddReviewResponse(ReviewResponseEntity reviewResponse)
+        {
+            await _dbContext.ReviewResponse.AddAsync(reviewResponse);
+        }
+
         public void DeleteCourseReviews(long courseId)
         {
             var reviews = _dbContext.Reviews.Where(d => d.CourseId == courseId);
@@ -48,6 +53,11 @@ namespace Course.Infrastructure.Data.CourseD
         public async Task<bool> ReviewOfUser(long userId, long reviewId)
         {
             return await _dbContext.Reviews.AnyAsync(d => d.CustomerId == userId && d.Id == reviewId && d.Active);
+        }
+
+        public Task<ReviewResponseEntity> ReviewResponseById(long reviewId)
+        {
+            throw new NotImplementedException();
         }
 
         public async Task<List<Review>> ReviewsByCourse(long courseId)
