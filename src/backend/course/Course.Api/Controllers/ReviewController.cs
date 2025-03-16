@@ -66,6 +66,33 @@ namespace Course.Api.Controllers
             return Created(string.Empty, result);
         }
 
+        /// <summary>
+        /// get reviews of a course
+        /// </summary>
+        /// <param name="courseId">the course that user want to get reviews</param>
+        /// <returns>return a list of each course review</returns>
+        [HttpGet("reviews/{courseId}")]
+        [ProducesResponseType(typeof(CourseException), StatusCodes.Status400BadRequest)]
+        [ProducesDefaultResponseType]
+        public async Task<IActionResult> GetCourseReviews([FromRoute][ModelBinder(typeof(BinderId))]long courseId, [FromServices]IGetReviews useCase)
+        {
+            var result = await useCase.Execute(courseId);
+
+            if (result.Reviews.Count < 1)
+                return NoContent();
+
+            return Ok(result);
+        }
+
+        [HttpGet]
+        [Route("{id}")]
+        public async Task<IActionResult> GetReview([FromRoute][ModelBinder(typeof(BinderId))]long id, [FromServices]IGetReview useCase)
+        {
+            var result = await useCase.Execute(id);
+
+            return Ok(result);
+        }
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteReview([FromRoute][ModelBinder(typeof(BinderId))]long id, [FromBody]IDeleteReview useCase)
         {
@@ -73,5 +100,4 @@ namespace Course.Api.Controllers
 
             return NoContent();
         }
-    }
-}
+    } }

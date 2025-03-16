@@ -64,6 +64,11 @@ namespace Course.Application.UseCases.Reviews
             await _uof.reviewWrite.AddReviewResponse(reviewResponse);
             await _uof.Commit();
 
+            var customer = await _userService.GetUserInfosById(review.Id);
+
+            await _emailService.SendEmail(customer.userName, customer.email, $"You review has just been answered by: {course.TeacherId}", 
+                $"Message: {request.Text}");
+
             var response = _mapper.Map<ReviewAnswerResponse>(reviewResponse);
             response.AddLink("reviews", _linkService.GenerateResourceLink("AnswerReview", new { reviewId = _sqids.Encode(reviewId) }), "GET");
 

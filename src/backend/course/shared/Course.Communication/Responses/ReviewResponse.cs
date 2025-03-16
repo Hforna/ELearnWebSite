@@ -14,5 +14,6 @@ namespace Course.Communication.Responses
         public string Id { get; set; }
         public string Text { get; set; }
         public CourseRatingEnum Rating { get; set; }
+        public DateTime CreatedOn { get; set; }
     }
 }

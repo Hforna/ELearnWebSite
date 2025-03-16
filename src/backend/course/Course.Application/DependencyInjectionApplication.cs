@@ -71,6 +71,8 @@ namespace Course.Application
             services.AddScoped<IAddItemToWishList, AddItemToWishList>();
             services.AddScoped<IRemoveCourseFromWishList, RemoveCourseFromWishList>();
             services.AddScoped<IAnswerReview, AnswerReview>();
+            services.AddScoped<IGetReviews, GetReviews>();
+            services.AddScoped<IGetReview, GetReview>();
 
             services.AddSingleton(new FileService());
         }
