@@ -34,14 +34,14 @@ namespace Course.Application.UseCases.WishLists
             _courseCache = courseCache;
         }
 
-        public async Task<WishListResponse> Execute(long courseId, string sessionId)
+        public async Task<CourseWishListResponse> Execute(long courseId, string sessionId)
         {
             var course = await _uof.courseRead.CourseById(courseId, true);
 
             if (course is null)
                 throw new CourseException(ResourceExceptMessages.COURSE_DOESNT_EXISTS);
 
-            var response = new WishListResponse();
+            var response = new CourseWishListResponse();
             try
             {
                 var user = await _userService.GetUserInfos();
@@ -52,11 +52,11 @@ namespace Course.Application.UseCases.WishLists
 
                 await _uof.wishListWrite.Add(wishList);
                 await _uof.Commit();
-                response = _mapper.Map<WishListResponse>(wishList);
+                response = _mapper.Map<CourseWishListResponse>(wishList);
             } catch(RestException ex)
             {
                 await _courseCache.AddCourseToWishList(courseId, sessionId);
-                response = new WishListResponse() { CourseId = _sqids.Encode(courseId), UserId = sessionId};
+                response = new CourseWishListResponse() { CourseId = _sqids.Encode(courseId), UserId = sessionId};
             }
 
             return response;

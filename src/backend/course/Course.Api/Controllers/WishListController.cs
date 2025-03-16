@@ -23,12 +23,14 @@ namespace Course.Api.Controllers
             return Created(string.Empty, result);
         }
 
+        //[HttpGet]
+        //public async Task<IActionResult> GetUserWishList()
+
+
         /// <summary>
         /// Delete a course from user wish list, if user isn't logged it will be deleted on cache
         /// </summary>
-        /// <param name="courseId"></param>
-        /// <param name="useCase"></param>
-        /// <returns></returns>
+        /// <param name="courseId">course id that user want remove from wish list</param>
         [HttpDelete("{courseId}")]
         public async Task<IActionResult> RemoveCourseFromUserWishList([FromRoute][ModelBinder(typeof(BinderId))]long courseId, [FromServices]IRemoveCourseFromWishList useCase)
         {

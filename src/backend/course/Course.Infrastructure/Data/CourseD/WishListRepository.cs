@@ -33,5 +33,10 @@ namespace Course.Infrastructure.Data.CourseD
         {
             return await _dbContext.WishList.SingleOrDefaultAsync(d => d.CourseId == courseId && d.UserId == userId && d.Active);
         }
+
+        public async Task<List<WishList>?> WishListByUserId(long userId)
+        {
+            return await _dbContext.WishList.Where(d => d.Active && d.UserId == userId).ToListAsync();
+        }
     }
 }

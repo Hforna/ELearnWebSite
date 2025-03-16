@@ -10,5 +10,6 @@ namespace Course.Domain.Repositories
     public interface IWishListReadOnly
     {
         public Task<WishList?> WishListByCourseAndUserId(long userId, long courseId);
+        public Task<List<WishList>?> WishListByUserId(long userId);
     }
 }

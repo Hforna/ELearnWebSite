@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace Course.Application.UseCases.Repositories.WishLists
 {
-    public interface IAddItemToWishList
+    public interface IGetUserWishList
     {
-        public Task<CourseWishListResponse> Execute(long courseId, string sessionId);
+        public Task<WishListResponse> Execute(string sessionId);
     }
 }
