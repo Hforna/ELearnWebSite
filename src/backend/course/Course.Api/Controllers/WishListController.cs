@@ -23,8 +23,16 @@ namespace Course.Api.Controllers
             return Created(string.Empty, result);
         }
 
-        //[HttpGet]
-        //public async Task<IActionResult> GetUserWishList()
+        [HttpGet]
+        public async Task<IActionResult> GetUserWishList([FromServices]IGetUserWishList useCase)
+        {
+            var sessionId = HttpContext.Session.Id;
+            var result = await useCase.Execute(sessionId);
+
+            if (result.Courses is null || result.Courses.Any() == false)
+                return NoContent();
+            return Ok(result);
+        }
 
 
         /// <summary>

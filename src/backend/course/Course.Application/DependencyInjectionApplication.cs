@@ -73,6 +73,7 @@ namespace Course.Application
             services.AddScoped<IAnswerReview, AnswerReview>();
             services.AddScoped<IGetReviews, GetReviews>();
             services.AddScoped<IGetReview, GetReview>();
+            services.AddScoped<IGetUserWishList, GetUserWishList>();
 
             services.AddSingleton(new FileService());
         }

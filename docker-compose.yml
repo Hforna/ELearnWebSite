@@ -23,6 +23,12 @@ services:
   redisserver:
     image: redis:latest
 
+  payment.api:
+    image: ${DOCKER_REGISTRY-}paymentapi
+    build:
+      context: .
+      dockerfile: src/backend/payment/Payment.Api/Dockerfile
+
 networks:
   backend:
     driver: bridge
@@ -31,4 +37,5 @@ volumes:
   sqlserver_data:
   mongoserver_data:
   redisserver_data:
+
 
