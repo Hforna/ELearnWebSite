@@ -16,13 +16,15 @@ namespace Payment.Infrastructure.DataContext
         public DbSet<PaymentEntity> Payments { get; set; }
         public DbSet<Payout> Payouts { get; set; }
         public DbSet<Transaction> Transactions { get; set; }
-
+        public DbSet<Order> Orders { get; set; }
+        public DbSet<OrderItem> OrderItems { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.Entity<Transaction>().HasOne(d => d.Payment);
+            modelBuilder.Entity<Order>().HasMany(d => d.OrderItems).WithOne(d => d.Order);
 
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(PaymentDbContext).Assembly);
         }
