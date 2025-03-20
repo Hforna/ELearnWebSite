@@ -1,4 +1,6 @@
-﻿using Moq;
+﻿using CommonUtilities.Fakers.DTOs;
+using Moq;
+using Payment.Domain.DTOs;
 using Payment.Domain.Services.Rest;
 using System;
 using System.Collections.Generic;
@@ -13,5 +15,10 @@ namespace CommonUtilities.Builds.Services.Rest
         private readonly Mock<ICourseRestService> _mock = new Mock<ICourseRestService>();
 
         public ICourseRestService Build() => _mock.Object;
+
+        public void GetCourse(CourseDto courseDto)
+        {
+            _mock.Setup(d => d.GetCourse(courseDto.id)).ReturnsAsync(courseDto);
+        }
     }
 }
