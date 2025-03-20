@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Payment.Application.ApplicationServices.Interfaces;
 using Payment.Application.Requests;
+using Payment.Domain.Exceptions;
 
 namespace Payment.Api.Controllers
 {
@@ -13,7 +14,14 @@ namespace Payment.Api.Controllers
 
         public OrderController(IOrderService orderService) => _orderService = orderService;
 
+        /// <summary>
+        /// add a course to user order, user must be logged to add a course to their order
+        /// </summary>
+        /// <param name="request">a request body that contain the course id that user wanna add on order</param>
+        /// <returns>return the orderItem that contain: order item id, course id, user id and course price</returns>
         [HttpPost]
+        [ProducesDefaultResponseType]
+        [ProducesResponseType(typeof(OrderException), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> AddCourseToOrder([FromBody]AddCourseToOrderRequest request)
         {
             var result = await _orderService.AddCourseToOrder(request);
@@ -21,7 +29,13 @@ namespace Payment.Api.Controllers
             return Created(string.Empty, result);
         }
 
+        /// <summary>
+        /// get the order of user, users just can get if them is logged
+        /// </summary>
+        /// <returns>return the order of user and order items in order</returns>
         [HttpGet]
+        [ProducesDefaultResponseType]
+        [ProducesResponseType(typeof(OrderException), StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetUserOrder()
         {
             var result = await _orderService.GetUserOrder();

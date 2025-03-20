@@ -1,5 +1,6 @@
 using Microsoft.OpenApi.Models;
 using Payment.Api.Filters;
+using Payment.Api.Middlewares;
 using Payment.Application;
 using Payment.Domain.Token;
 using Payment.Infrastructure;
@@ -81,6 +82,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseMiddleware<CultureInfoMiddleware>();
+
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
@@ -88,3 +91,8 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+public partial class Program
+{
+
+}

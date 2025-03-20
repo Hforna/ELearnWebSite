@@ -40,7 +40,7 @@ namespace Payment.Infrastructure.Services.Rest
 
                 return deserialize;
             }
-            throw new RestException(await response.Content.ReadAsStringAsync());
+            throw new RestException(await response.Content.ReadAsStringAsync(), response.StatusCode);
         }
     }
 }

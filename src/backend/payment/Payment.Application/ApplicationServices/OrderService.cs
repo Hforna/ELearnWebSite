@@ -44,7 +44,7 @@ namespace Payment.Application.Services
             var orderItemExists = await _uow.orderRead.OrderItemExists(courseId, userId);
 
             if (orderItemExists)
-                throw new OrderException(ResourceExceptMessages.ORDER_ITEM_EXISTS);
+                throw new OrderException(ResourceExceptMessages.ORDER_ITEM_EXISTS, System.Net.HttpStatusCode.BadRequest);
 
             var userOrder = await _uow.orderRead.OrderByUserId(userId);
 
@@ -79,7 +79,7 @@ namespace Payment.Application.Services
             var order = await _uow.orderRead.OrderByUserId(userId);
 
             if (order is null)
-                throw new OrderException(ResourceExceptMessages.ORDER_DOESNT_EXISTS);
+                throw new OrderException(ResourceExceptMessages.ORDER_DOESNT_EXISTS, System.Net.HttpStatusCode.NotFound);
 
             var response = _mapper.Map<OrderResponse>(order);
             response.OrderItems = order.OrderItems.Select(orderItem =>

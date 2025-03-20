@@ -40,6 +40,7 @@ namespace Payment.Infrastructure
         {
             services.AddScoped<ICourseRestService, CourseRestService>();
             services.AddScoped<IUserRestService, UserRestService>();
+            services.AddScoped<ILocationRestService, GeoLocationRestService>();
         }
     }
 }
