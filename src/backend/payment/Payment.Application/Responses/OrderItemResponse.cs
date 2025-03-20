@@ -4,16 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Payment.Domain.Entities
+namespace Payment.Application.Responses
 {
-    public class OrderItem
+    public class OrderItemResponse
     {
         public Guid Id { get; set; } = Guid.NewGuid();
         public Guid OrderId { get; set; }
-        public long CourseId { get; set; }
+        public string CourseId { get; set; }
         public decimal Price { get; set; }
-        public bool Active { get; set; } = true;
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-        public Order Order { get; set; }
     }
 }

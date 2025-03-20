@@ -14,15 +14,15 @@ namespace Payment.Infrastructure.Services.Rest
 {
     public class UserRestService : IUserRestService
     {
-        private readonly ITokenReceptor _tokenReceptor;
         private readonly IHttpClientFactory _httpClient;
+        private readonly ITokenReceptor _tokenReceptor;
         private readonly string? _token;
 
         public UserRestService(ITokenReceptor tokenReceptor, IHttpClientFactory httpClient)
         {
             _tokenReceptor = tokenReceptor;
             _httpClient = httpClient;
-            _token = _tokenReceptor.GetToken();
+            _token = _tokenReceptor.GetToken()!;
         }
 
         public async Task<UserInfoDto> GetUserInfos()

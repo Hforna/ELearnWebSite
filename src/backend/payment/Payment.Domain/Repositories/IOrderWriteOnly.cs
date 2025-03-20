@@ -10,5 +10,6 @@ namespace Payment.Domain.Repositories
     public interface IOrderWriteOnly
     {
         public Task AddOrderItem(OrderItem orderItem);
+        public Task AddOrder(Order order);
     }
 }

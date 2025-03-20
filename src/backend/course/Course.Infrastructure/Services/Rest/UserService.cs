@@ -40,7 +40,7 @@ namespace Course.Infrastructure.Services.Rest
 
                 return userInfosFormat!;
             }
-            throw new RestException(response.Content.ToString());    
+            throw new RestException(await response.Content.ReadAsStringAsync());    
         }
 
         public async Task<UserInfosDto?> GetUserInfosById(long id)
@@ -48,16 +48,15 @@ namespace Course.Infrastructure.Services.Rest
             var client = _httpClient.CreateClient("user.api");
 
             var response = await client.GetAsync($"api/user/user-infos/{id}");
+            var userResponse = await response.Content.ReadAsStringAsync();
 
-            if(response.IsSuccessStatusCode)
+            if (response.IsSuccessStatusCode)
             {
-                var userResponse = await response.Content.ReadAsStringAsync();
-
                 var serializer = JsonSerializer.Deserialize<UserInfosDto>(userResponse);
 
                 return serializer;
             }
-            throw new RestException(response.Content.ToString()!);
+            throw new RestException(userResponse);
         }
 
         public async Task<List<string>?> GetUserRoles(Guid uid)
@@ -69,16 +68,16 @@ namespace Course.Infrastructure.Services.Rest
             client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _token);
 
             var response = await client.GetAsync($"api/user/get-user-roles/{uid.ToString()}");
+            var result = await response.Content.ReadAsStringAsync();
 
-            if(response.IsSuccessStatusCode)
+            if (response.IsSuccessStatusCode)
             {
-                var result = await response.Content.ReadAsStringAsync();
 
                 var roles = JsonSerializer.Deserialize<List<String>>(result);
 
                 return roles!;
             }
-            throw new RestException(response.Content.ToString());
+            throw new RestException(result);
         }
 
         public async Task<bool> IsUserLogged()

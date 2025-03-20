@@ -48,8 +48,8 @@ namespace Course.Api.Cache
             if (string.IsNullOrEmpty(weekCourses))
                 return null;
 
-            var deserializeList = JsonSerializer.Deserialize<Dictionary<long, int>>(weekCourses);
-            return deserializeList;
+            var deserializeList = JsonSerializer.Deserialize<List<KeyValuePair<long, int>>>(weekCourses);
+            return deserializeList.ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
         }
 
         public async Task<List<long>?> GetSessionWishList(string sessionId)
@@ -98,7 +98,8 @@ namespace Course.Api.Cache
                 weekCoursesDict[courseId] = 1;
             } else
             {
-                weekCoursesDict = JsonSerializer.Deserialize<Dictionary<long, int>>(weekCourses)!;
+                var deserializeKvp = JsonSerializer.Deserialize<List<KeyValuePair<long, int>>>(weekCourses);
+                weekCoursesDict = deserializeKvp.ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
                 weekCoursesDict[courseId] = weekCoursesDict.ContainsKey(courseId)
                     ? weekCoursesDict[courseId] + 1 : 1;
             }

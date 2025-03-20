@@ -10,5 +10,6 @@ namespace Payment.Domain.Repositories
     public interface IOrderReadOnly
     {
         public Task<bool> OrderItemExists(long courseId, long userId);
+        public Task<Order?> OrderByUserId(long userId);
     }
 }

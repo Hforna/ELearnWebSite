@@ -20,6 +20,7 @@ namespace Payment.Infrastructure
         {
             AddDbContext(services, configuration);
             AddRestService(services, configuration);
+            AddRepositories(services);
         }
 
         static void AddDbContext(IServiceCollection services, IConfiguration configuration)

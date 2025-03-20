@@ -213,4 +213,7 @@
   <data name="COURSE_IN_WISH_LIST" xml:space="preserve">
     <value>Course already is in wish list</value>
   </data>
+  <data name="ORDER_ITEM_EXISTS" xml:space="preserve">
+    <value>This course is already on order user</value>
+  </data>
 </root>

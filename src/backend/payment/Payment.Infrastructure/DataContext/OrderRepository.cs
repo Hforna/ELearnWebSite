@@ -15,9 +15,19 @@ namespace Payment.Infrastructure.DataContext
 
         public OrderRepository(PaymentDbContext dbContext) => _dbContext = dbContext;
 
+        public async Task AddOrder(Order order)
+        {
+            await _dbContext.Orders.AddAsync(order);
+        }
+
         public async Task AddOrderItem(OrderItem orderItem)
         {
             await _dbContext.OrderItems.AddAsync(orderItem);
+        }
+
+        public async Task<Order?> OrderByUserId(long userId)
+        {
+            return await _dbContext.Orders.Include(d => d.OrderItems).SingleOrDefaultAsync(d => d.UserId == userId);
         }
 
         public async Task<bool> OrderItemExists(long courseId, long userId)

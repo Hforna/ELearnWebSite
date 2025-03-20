@@ -48,7 +48,7 @@ namespace Course.Application.UseCases.Course
             var getCourseTest = await _courseCache.GetMostPopularCourses();
 
             if (course is null)
-                throw new CourseException(ResourceExceptMessages.COURSE_DOESNT_EXISTS);
+                throw new CourseException(ResourceExceptMessages.COURSE_DOESNT_EXISTS, HttpStatusCode.NotFound);
 
             var getCoursesList = _coursesSession.GetCoursesVisited() ?? [];
 

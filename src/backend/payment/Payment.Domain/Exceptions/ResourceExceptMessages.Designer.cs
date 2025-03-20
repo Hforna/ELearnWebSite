@@ -68,5 +68,23 @@ namespace Payment.Domain.Exceptions {
                 return ResourceManager.GetString("COURSE_NOT_FOUND", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a User still doesn&apos;t have a order.
+        /// </summary>
+        public static string ORDER_DOESNT_EXISTS {
+            get {
+                return ResourceManager.GetString("ORDER_DOESNT_EXISTS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Course is already on user order.
+        /// </summary>
+        public static string ORDER_ITEM_EXISTS {
+            get {
+                return ResourceManager.GetString("ORDER_ITEM_EXISTS", resourceCulture);
+            }
+        }
     }
 }
