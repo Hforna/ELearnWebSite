@@ -1,7 +1,9 @@
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.OpenApi.Models;
 using Payment.Api.Filters;
 using Payment.Api.Middlewares;
 using Payment.Application;
+using Payment.Domain.Services.Rest;
 using Payment.Domain.Token;
 using Payment.Infrastructure;
 
@@ -83,6 +85,13 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseMiddleware<CultureInfoMiddleware>();
+
+//app.MapGet("/get-current-location", async () =>
+//{
+//    var locationService = builder.Services.BuildServiceProvider().GetRequiredService<ILocationRestService>();
+//
+//    return await locationService.GetCurrencyByUserLocation();
+//});
 
 app.UseHttpsRedirection();
 

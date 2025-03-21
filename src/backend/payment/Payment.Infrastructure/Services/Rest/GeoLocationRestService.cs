@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json.Linq;
 using Payment.Domain.DTOs;
 using Payment.Domain.Exceptions;
 using Payment.Domain.Services.Rest;
@@ -33,8 +34,11 @@ namespace Payment.Infrastructure.Services.Rest
 
             if(request.IsSuccessStatusCode)
             {
-                var deserialize = JsonSerializer.Deserialize<CurrencyByLocationDto>(response);
-                return deserialize;
+                var toJson = JObject.Parse(response);
+                var currencyToken = toJson["currency"];
+
+                var infos = currencyToken.ToObject<CurrencyByLocationDto>();
+                return infos;
             }
             throw new RestException(response, System.Net.HttpStatusCode.InternalServerError);
         }

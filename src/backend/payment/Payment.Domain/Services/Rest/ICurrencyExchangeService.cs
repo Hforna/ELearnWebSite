@@ -4,9 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Payment.Infrastructure.Services.Rest
+namespace Payment.Domain.Services.Rest
 {
-    class CurrencyExchangeRestService
+    public interface ICurrencyExchangeService
     {
+        //public Task
     }
 }
