@@ -21,6 +21,7 @@ namespace Course.Domain.Entitites
         public decimal Note { get; set; }
         public IList<CourseTopicsEntity> TopicsCovered { get; set; }
         public double Price { get; set; }
+        public CurrencyEnum CurrencyType { get; set; } = CurrencyEnum.BRL;
         public int? Enrollments { get; set; }
         public long totalVisits { get; set; } = 0;
         public LanguagesEnum CourseLanguage { get; set; }
