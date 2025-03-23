@@ -17,6 +17,7 @@ using Course.Domain.DTOs;
 using Course.Domain.Entitites;
 using FluentAssertions;
 using Course.Domain.Sessions;
+using CommonTestUtilities.Builds.DTOs;
 
 namespace UseCases.Course
 {
@@ -54,8 +55,16 @@ namespace UseCases.Course
             var cache = new CourseCacheBuild();
             cache.GetMostPopularCourses(courseId, 5);
             var linkService = LinkServiceBuild.Build();
+            var locationService = new LocationServiceBuild();
+            var locationDto = CurrencyByLocationDtoTest.Build();
+            locationService.CurrencyByUserLocation(locationDto);
 
-            return new GetCourses(uof, mapper, storageService, sqids, courseSession, cache.Build());
+            var currencyExchange = new CurrencyExchangeServiceBuild();
+            var ratesExchangeDto = RateExchangeDtoTest.Build();
+            currencyExchange.CurrencyRates(ratesExchangeDto);
+
+            return new GetCourses(uof, mapper, storageService, sqids, 
+                courseSession, cache.Build(), locationService.Build(), currencyExchange.Build());
         }
     }
 
