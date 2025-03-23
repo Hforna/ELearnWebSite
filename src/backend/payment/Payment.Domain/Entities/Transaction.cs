@@ -8,14 +8,12 @@ using System.Threading.Tasks;
 
 namespace Payment.Domain.Entities
 {
-    public class Transaction
+    public class Transaction : BaseEntity
     {
-        public Guid Id { get; set; }
         public Guid PaymentId { get; set; }
         [ForeignKey("PaymentId")]
         public PaymentEntity Payment { get; set; }
         public decimal Amount { get; set; }
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public TransactionStatusEnum TransactionStatus { get; set; }
     }
 }

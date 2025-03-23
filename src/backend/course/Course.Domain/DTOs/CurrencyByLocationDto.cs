@@ -5,7 +5,7 @@ using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace Payment.Domain.DTOs
+namespace Course.Domain.DTOs
 {
     public sealed record class CurrencyByLocationDto
     {

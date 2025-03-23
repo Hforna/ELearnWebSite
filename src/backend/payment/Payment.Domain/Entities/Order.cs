@@ -7,13 +7,11 @@ using System.Threading.Tasks;
 
 namespace Payment.Domain.Entities
 {
-    public class Order
+    public class Order : BaseEntity
     {
-        public Guid Id { get; set; } = Guid.NewGuid();
         public long UserId { get; set; }
         public bool Active { get; set; } = true;
         public decimal TotalPrice { get; set; } = 0;
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public ICollection<OrderItem>? OrderItems { get; set; }
     }
 }

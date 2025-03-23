@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Payment.Domain.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,5 +13,6 @@ namespace Payment.Application.Responses
         public Guid OrderId { get; set; }
         public string CourseId { get; set; }
         public decimal Price { get; set; }
+        public string CurrencyType { get; set; }
     }
 }

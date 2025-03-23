@@ -34,7 +34,7 @@ namespace Course.Infrastructure
         {
             AddDbContext(services, configuration);
             AddRepositories(services);
-            AddServices(services);
+            AddServices(services, configuration);
             AddAzureStorage(services, configuration);
             AddServiceBus(services, configuration);
             AddRedis(services, configuration);
@@ -139,10 +139,14 @@ namespace Course.Infrastructure
             service.AddSingleton(moduleProcessor);
         }
 
-        static void AddServices(IServiceCollection services)
+        static void AddServices(IServiceCollection services, IConfiguration configuration)
         {
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<ILinkService, LinkService>();
+            services.AddScoped<ILocationService, GeoLocationService>();
+            services.AddScoped<ICurrencyExchangeService, CurrencyFreaksService>(d => new CurrencyFreaksService(
+                services.BuildServiceProvider().CreateScope().ServiceProvider.GetRequiredService<IHttpClientFactory>(),
+                configuration.GetValue<string>("apis:currencyFreaks:apiKey")!));
         }
     }
 }

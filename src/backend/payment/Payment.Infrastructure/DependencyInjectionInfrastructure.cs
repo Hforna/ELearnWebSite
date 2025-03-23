@@ -41,6 +41,9 @@ namespace Payment.Infrastructure
             services.AddScoped<ICourseRestService, CourseRestService>();
             services.AddScoped<IUserRestService, UserRestService>();
             services.AddScoped<ILocationRestService, GeoLocationRestService>();
+            services.AddScoped<ICurrencyExchangeService>(d => new CurrencyFreaksExchangeRestService(
+                configuration.GetValue<string>("apis:currencyFreaks:apiKey"), 
+                services.BuildServiceProvider().CreateScope().ServiceProvider.GetRequiredService<IHttpClientFactory>()));
         }
     }
 }

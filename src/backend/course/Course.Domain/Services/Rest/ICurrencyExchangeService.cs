@@ -1,12 +1,12 @@
-﻿using Payment.Domain.DTOs;
-using Payment.Domain.Enums;
+﻿using Course.Domain.DTOs;
+using Course.Domain.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Payment.Domain.Services.Rest
+namespace Course.Domain.Services.Rest
 {
     public interface ICurrencyExchangeService
     {

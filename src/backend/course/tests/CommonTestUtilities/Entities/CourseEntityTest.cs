@@ -1,6 +1,7 @@
 ﻿using Bogus;
 using CommonTestUtilities.Builds.Services;
 using Course.Domain.Entitites;
+using Course.Domain.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -49,6 +50,7 @@ namespace CommonTestUtilities.Entities
                 .RuleFor(d => d.Description, f => f.Lorem.Paragraph())
                 .RuleFor(d => d.Id, id)
                 .RuleFor(d => d.Price, f => (double)f.Finance.Amount(10, 2000, 2))
+                .RuleFor(d => d.CurrencyType, f => f.PickRandom<CurrencyEnum>())
                 .RuleFor(d => d.TopicsCovered, f => f.Make<CourseTopicsEntity>(5, d => new CourseTopicsEntity()
                 {
                     Active = true,
