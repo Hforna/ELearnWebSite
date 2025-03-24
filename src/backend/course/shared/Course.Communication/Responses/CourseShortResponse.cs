@@ -14,6 +14,7 @@ namespace Course.Communication.Responses
         public string Title { get; set; }
         public double Price { get; set; }
         public LanguagesEnum CourseLanguage { get; set; }
+        public CurrencyEnum CurrencyType { get; set; }
         public string ThumbnailUrl { get; set; }
     }
 }
