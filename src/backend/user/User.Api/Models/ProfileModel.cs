@@ -16,6 +16,8 @@ namespace User.Api.Models
         public string Country { get; set; }
         public string Bio { get; set; }
         public int? CourseNumber { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
         public decimal? Note { get; set; }
         public string FullName { get; set; }
     }
