@@ -10,10 +10,11 @@ namespace Payment.Domain.Entities
 {
     public class Transaction : BaseEntity
     {
-        public Guid PaymentId { get; set; }
-        [ForeignKey("PaymentId")]
-        public PaymentEntity Payment { get; set; }
+        public Guid OrderId { get; set; }
+        public Order Order { get; set; }
         public decimal Amount { get; set; }
+        public string GatewayTransactionId { get; set; }
+        public CurrencyEnum Currency { get; set; }
         public TransactionStatusEnum TransactionStatus { get; set; }
     }
 }

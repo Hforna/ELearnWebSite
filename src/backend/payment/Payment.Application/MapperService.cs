@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
-using Payment.Application.Responses;
+using Payment.Application.Responses.Order;
+using Payment.Application.Responses.Payment;
+using Payment.Domain.DTOs;
 using Payment.Domain.Entities;
 using Sqids;
 using System;
@@ -19,6 +21,7 @@ namespace Payment.Application
 
             RequestToEntity();
             EntityToResponse();
+            DtoToResponse();
         }
 
         void RequestToEntity()
@@ -33,6 +36,11 @@ namespace Payment.Application
 
             CreateMap<Order, OrderResponse>()
                 .ForMember(d => d.UserId, f => f.MapFrom(d => _sqids.Encode(d.UserId)));
+        }
+
+        void DtoToResponse()
+        {
+            CreateMap<PixPaymentResponseDto, PaymentPixResponse>();
         }
     }
 }

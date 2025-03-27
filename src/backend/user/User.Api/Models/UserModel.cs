@@ -13,7 +13,7 @@ namespace User.Api.Models
         public DateTime? RefreshTokenExpiration { get; set; }
         public Guid UserIdentifier { get; set; }
         public bool TwoFactorEmailEnabled { get; set; }
-        public string Cpf { get; set; }
+        public string? TaxId { get; set; }
         public bool TwoFactorPhoneEnabled { get; set; }
     }
 }

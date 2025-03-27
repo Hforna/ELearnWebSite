@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Payment.Application.ApplicationServices;
 using Payment.Application.ApplicationServices.Interfaces;
 using Payment.Application.Services;
 using Sqids;
@@ -25,6 +26,7 @@ namespace Payment.Application
         static void AddRepositories(IServiceCollection services)
         {
             services.AddScoped<IOrderService, OrderService>();
+            services.AddScoped<IPaymentService, PaymentService>();
         }
 
         static void AddSqids(IServiceCollection services, IConfiguration configuration)

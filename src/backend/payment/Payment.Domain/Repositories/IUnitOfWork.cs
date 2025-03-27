@@ -10,6 +10,11 @@ namespace Payment.Domain.Repositories
     {
         public IOrderReadOnly orderRead { get; set; }
         public IOrderWriteOnly orderWrite { get; set; }
+        public ITransactionReadOnly transactionRead { get; set; }
+        public ITransactionWriteOnly transactionWrite { get; set; }
+        public IPaymentReadOnly paymentRead { get; set; }
+        public IPaymentWriteOnly paymentWrite { get; set; }
+
         public Task Commit();
     }
 }

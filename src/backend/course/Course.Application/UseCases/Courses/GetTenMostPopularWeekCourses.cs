@@ -67,7 +67,7 @@ namespace Course.Application.UseCases.Courses
                         convertPrice = course.Price * courseRates.EUR;
                         break;
                 }
-                response.Price = convertPrice;
+                response.Price = Math.Round(convertPrice, 2, MidpointRounding.AwayFromZero);
 
                 return response;
             }).ToList();

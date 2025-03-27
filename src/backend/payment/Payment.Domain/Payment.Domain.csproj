@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="mercadopago-sdk" Version="2.4.2" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Update="Exceptions\ResourceExceptMessages.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>

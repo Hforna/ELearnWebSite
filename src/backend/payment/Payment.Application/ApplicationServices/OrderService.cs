@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Logging;
 using Payment.Application.ApplicationServices.Interfaces;
 using Payment.Application.Requests;
-using Payment.Application.Responses;
+using Payment.Application.Responses.Order;
 using Payment.Domain.Cons;
 using Payment.Domain.Entities;
 using Payment.Domain.Enums;
@@ -25,18 +25,13 @@ namespace Payment.Application.Services
         private readonly ICourseRestService _courseRest;
         private readonly IUserRestService _userRest;
         private readonly IUnitOfWork _uow;
-        private readonly ICurrencyExchangeService _exchangeService;
-        private readonly ILocationRestService _locationService;
         private readonly ILogger<OrderService> _logger;
 
         public OrderService(IUnitOfWork uow, SqidsEncoder<long> sqids, ICourseRestService courseRest, 
-            IUserRestService userRest, IMapper mapper, 
-            ICurrencyExchangeService exchangeService, ILocationRestService locationService, ILogger<OrderService> logger)
+            IUserRestService userRest, IMapper mapper, ILogger<OrderService> logger)
         {
             _courseRest = courseRest;
             _uow = uow;
-            _exchangeService = exchangeService;
-            _locationService = locationService;
             _userRest = userRest;
             _mapper = mapper;
             _sqids = sqids;
@@ -86,27 +81,18 @@ namespace Payment.Application.Services
             var user = await _userRest.GetUserInfos();
             var userId = _sqids.Decode(user.id).Single();
 
+            _logger.LogInformation($"user id: {userId}");
+
             var order = await _uow.orderRead.OrderByUserId(userId);
 
             if (order is null)
                 throw new OrderException(ResourceExceptMessages.ORDER_DOESNT_EXISTS, System.Net.HttpStatusCode.NotFound);
 
-            var getUserCurrency = await _locationService.GetCurrencyByUserLocation();
-            _logger.LogInformation($"user current currency: {getUserCurrency.Code}");
-
-            var userCurrencyCode = Enum.GetNames<CurrencyEnum>().ToList().Contains(getUserCurrency.Code) 
-                ? getUserCurrency.Code.ToString() 
-                : DefaultCurrency.Currency.ToString();
-
             var response = _mapper.Map<OrderResponse>(order);
-
-            var rateCurrency = await _exchangeService.GetCurrencyRates((CurrencyEnum)Enum.Parse(typeof(CurrencyEnum), userCurrencyCode));
 
             response.OrderItems = order.OrderItems.Select(orderItem =>
             {
                 var response = _mapper.Map<OrderItemResponse>(orderItem);
-                response.CurrencyType = userCurrencyCode;
-                //response.Price = 
 
                 return response;
             }).ToList();

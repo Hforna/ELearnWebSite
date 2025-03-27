@@ -12,6 +12,10 @@ namespace Payment.Infrastructure.DataContext
         private readonly PaymentDbContext _dbContext;
         public IOrderReadOnly orderRead { get; set; }
         public IOrderWriteOnly orderWrite { get; set; }
+        public ITransactionReadOnly transactionRead { get; set; }
+        public ITransactionWriteOnly transactionWrite { get; set; }
+        public IPaymentReadOnly paymentRead { get; set; }
+        public IPaymentWriteOnly paymentWrite { get; set; }
 
         public UnitOfWork(PaymentDbContext dbContext, IOrderReadOnly orderRead, IOrderWriteOnly orderWrite)
         {

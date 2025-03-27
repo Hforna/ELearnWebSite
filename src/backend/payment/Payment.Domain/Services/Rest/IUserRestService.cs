@@ -10,5 +10,6 @@ namespace Payment.Domain.Services.Rest
     public interface IUserRestService
     {
         public Task<UserInfoDto> GetUserInfos();
+        public Task<ProfileDto> GetUserProfile(string userId);  
     }
 }

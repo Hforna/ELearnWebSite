@@ -70,6 +70,24 @@ namespace Payment.Domain.Exceptions {
         }
         
         /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Cpf format is not valid.
+        /// </summary>
+        public static string CPF_FORMAT_NOT_VALID {
+            get {
+                return ResourceManager.GetString("CPF_FORMAT_NOT_VALID", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a The current currency is not allowed to this method.
+        /// </summary>
+        public static string CURRENCY_NOT_ALLOWED {
+            get {
+                return ResourceManager.GetString("CURRENCY_NOT_ALLOWED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a User still doesn&apos;t have a order.
         /// </summary>
         public static string ORDER_DOESNT_EXISTS {

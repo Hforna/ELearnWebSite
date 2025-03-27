@@ -13,5 +13,6 @@ namespace Payment.Domain.DTOs
         public string email { get; set; }
         public string? phoneNumber { get; set; }
         public bool is2fa { get; set; }
+        public string cpf { get; set; }
     }
 }

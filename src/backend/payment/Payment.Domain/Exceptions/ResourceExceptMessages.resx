@@ -126,4 +126,10 @@
   <data name="ORDER_DOESNT_EXISTS" xml:space="preserve">
     <value>User still doesn't have a order</value>
   </data>
+  <data name="CURRENCY_NOT_ALLOWED" xml:space="preserve">
+    <value>The current currency is not allowed to this method</value>
+  </data>
+  <data name="CPF_FORMAT_NOT_VALID" xml:space="preserve">
+    <value>Cpf format is not valid</value>
+  </data>
 </root>

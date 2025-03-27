@@ -12,8 +12,8 @@ using User.Api.DbContext;
 namespace User.Api.Migrations
 {
     [DbContext(typeof(UserDbContext))]
-    [Migration("20250325054142_UpdateProfileModel")]
-    partial class UpdateProfileModel
+    [Migration("20250326234151_CreatCpf")]
+    partial class CreatCpf
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

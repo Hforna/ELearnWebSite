@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Payment.Infrastructure.DataContext;
 
@@ -11,9 +12,11 @@ using Payment.Infrastructure.DataContext;
 namespace Payment.Infrastructure.Migrations
 {
     [DbContext(typeof(PaymentDbContext))]
-    partial class PaymentDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250324234840_AddCurrencyOnEntities")]
+    partial class AddCurrencyOnEntities
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -59,9 +62,6 @@ namespace Payment.Infrastructure.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
-
-                    b.Property<int>("Currency")
-                        .HasColumnType("int");
 
                     b.Property<decimal>("TotalPrice")
                         .HasColumnType("decimal(18,2)");
@@ -175,11 +175,7 @@ namespace Payment.Infrastructure.Migrations
                     b.Property<int>("Currency")
                         .HasColumnType("int");
 
-                    b.Property<string>("GatewayTransactionId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid>("OrderId")
+                    b.Property<Guid>("PaymentId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("TransactionStatus")
@@ -187,7 +183,7 @@ namespace Payment.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("OrderId");
+                    b.HasIndex("PaymentId");
 
                     b.ToTable("Transactions");
                 });
@@ -205,13 +201,13 @@ namespace Payment.Infrastructure.Migrations
 
             modelBuilder.Entity("Payment.Domain.Entities.Transaction", b =>
                 {
-                    b.HasOne("Payment.Domain.Entities.Order", "Order")
+                    b.HasOne("Payment.Domain.Entities.PaymentEntity", "Payment")
                         .WithMany()
-                        .HasForeignKey("OrderId")
+                        .HasForeignKey("PaymentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Order");
+                    b.Navigation("Payment");
                 });
 
             modelBuilder.Entity("Payment.Domain.Entities.Order", b =>

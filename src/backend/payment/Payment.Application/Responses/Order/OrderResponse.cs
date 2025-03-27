@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Payment.Application.Responses
+namespace Payment.Application.Responses.Order
 {
     public class OrderResponse
     {

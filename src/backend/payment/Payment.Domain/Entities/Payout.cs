@@ -13,6 +13,7 @@ namespace Payment.Domain.Entities
         public long UserId { get; set; }
         public decimal Amount { get; set; }
         public TransactionStatusEnum TransactionStatus { get; set; }
+        public CurrencyEnum Currency { get; set; }
         public DateTime RequestedAt { get; set; } = DateTime.UtcNow;
         public DateTime ProcessedAt { get; set; }
     }

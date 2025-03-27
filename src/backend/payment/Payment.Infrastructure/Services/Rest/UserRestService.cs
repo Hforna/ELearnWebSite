@@ -42,5 +42,22 @@ namespace Payment.Infrastructure.Services.Rest
             }
             throw new RestException(await response.Content.ReadAsStringAsync(), response.StatusCode);
         }
+
+        public async Task<ProfileDto> GetUserProfile(string userId)
+        {
+            var client = _httpClient.CreateClient("user.api");
+
+            var request = await client.GetAsync($"api/profile/{userId}");
+
+            var response = await request.Content.ReadAsStringAsync();
+
+            if(request.IsSuccessStatusCode)
+            {
+                var deserialize = JsonSerializer.Deserialize<ProfileDto>(response);
+
+                return deserialize!;
+            }
+            throw new RestException(response);
+        }
     }
 }

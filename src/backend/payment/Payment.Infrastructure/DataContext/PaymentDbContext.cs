@@ -23,7 +23,7 @@ namespace Payment.Infrastructure.DataContext
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<Transaction>().HasOne(d => d.Payment);
+            modelBuilder.Entity<Transaction>().HasOne(d => d.Order);
             modelBuilder.Entity<Order>().HasMany(d => d.OrderItems).WithOne(d => d.Order);
 
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(PaymentDbContext).Assembly);

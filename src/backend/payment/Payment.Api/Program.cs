@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.OpenApi.Models;
 using Payment.Api.Filters;
 using Payment.Api.Middlewares;
@@ -51,10 +52,12 @@ builder.Services.AddRouting(d => d.LowercaseUrls = true);
 
 builder.Services.AddMvc(d => d.Filters.Add(typeof(FilterException)));
 
+builder.Services.AddHttpContextAccessor();
+
+builder.Services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
+
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddApplication(builder.Configuration);
-
-builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddScoped<ITokenReceptor, TokenReceptor>();
 
