@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Payment.Application.Requests
 {
-    public class PixPaymentRequest : PaymentBaseRequest
+    public class PixPaymentRequest
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }

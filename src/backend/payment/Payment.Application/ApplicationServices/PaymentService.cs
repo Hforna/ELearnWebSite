@@ -76,7 +76,7 @@ namespace Payment.Application.ApplicationServices
                 PaymentMethodType = PaymentMethodEnum.Pix,
             };
 
-            var sendPayment = await _pixService.ProcessPixTransaction(user.cpf, user.email, request.FirstName, request.LastName, payment.Amount);
+            var sendPayment = await _pixService.ProcessPixTransaction(request.Cpf, user.email, request.FirstName, request.LastName, payment.Amount);
             TransactionStatusEnum statusTransaction;
 
             _logger.LogInformation($"Pix payment status: {sendPayment.Status}");
@@ -93,7 +93,7 @@ namespace Payment.Application.ApplicationServices
                     statusTransaction = TransactionStatusEnum.Canceled;
                     break;
                 default:
-                    statusTransaction = TransactionStatusEnum.Canceled;
+                    statusTransaction = TransactionStatusEnum.Pending;
                     break;
             }
 
@@ -102,7 +102,8 @@ namespace Payment.Application.ApplicationServices
                 Amount = userOrder.TotalPrice,
                 Currency = CurrencyEnum.BRL,
                 OrderId = userOrder.Id,
-                TransactionStatus = statusTransaction
+                TransactionStatus = statusTransaction,
+                GatewayTransactionId = sendPayment.Id
             };
 
             await _uof.transactionWrite.Add(transaction);

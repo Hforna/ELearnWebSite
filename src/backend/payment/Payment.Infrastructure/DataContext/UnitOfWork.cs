@@ -17,11 +17,17 @@ namespace Payment.Infrastructure.DataContext
         public IPaymentReadOnly paymentRead { get; set; }
         public IPaymentWriteOnly paymentWrite { get; set; }
 
-        public UnitOfWork(PaymentDbContext dbContext, IOrderReadOnly orderRead, IOrderWriteOnly orderWrite)
+        public UnitOfWork(PaymentDbContext dbContext, IOrderReadOnly orderRead, IOrderWriteOnly orderWrite,
+            ITransactionReadOnly transactionRead, ITransactionWriteOnly transactionWrite, 
+            IPaymentReadOnly paymentRead, IPaymentWriteOnly paymentWrite)
         {
             _dbContext = dbContext;
-            this.orderRead = orderRead;
             this.orderWrite = orderWrite;
+            this.orderRead = orderRead;
+            this.transactionRead = transactionRead;
+            this.transactionWrite = transactionWrite;
+            this.paymentWrite = paymentWrite;
+            this.paymentRead = paymentRead;
         }
 
         public async Task Commit()
