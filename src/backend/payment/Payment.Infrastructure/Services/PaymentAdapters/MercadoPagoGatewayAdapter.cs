@@ -42,7 +42,7 @@ namespace Payment.Infrastructure.Services.PaymentAdapters
             var payment = await client.CreateAsync(request, requestOptions);
             return new PixPaymentResponseDto()
             {
-                CodeToSend = payment.PointOfInteraction.TransactionData.QrCode,
+                Hash = payment.PointOfInteraction.TransactionData.QrCode,
                 Id = payment.Id.ToString(),
                 QrCodeBase64 = payment.PointOfInteraction.TransactionData.QrCodeBase64,
                 Status = payment.Status,

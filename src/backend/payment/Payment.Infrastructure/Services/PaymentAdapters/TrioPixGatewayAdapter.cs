@@ -68,7 +68,7 @@ namespace Payment.Infrastructure.Services.PaymentAdapters
 
             return new PixPaymentResponseDto()
             {
-                CodeToSend = qrCode,
+                Hash = qrCode,
                 ExpiresOn = expiresOn,
                 QrCodeBase64 = qrCode,
                 Status = status,

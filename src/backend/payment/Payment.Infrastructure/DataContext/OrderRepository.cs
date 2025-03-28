@@ -27,7 +27,7 @@ namespace Payment.Infrastructure.DataContext
 
         public async Task<Order?> OrderByUserId(long userId)
         {
-            return await _dbContext.Orders.Include(d => d.OrderItems).SingleOrDefaultAsync(d => d.UserId == userId);
+            return await _dbContext.Orders.Include(d => d.OrderItems).SingleOrDefaultAsync(d => d.UserId == userId && d.Active);
         }
 
         public async Task<bool> OrderItemExists(long courseId, long userId)
@@ -35,6 +35,11 @@ namespace Payment.Infrastructure.DataContext
             return await _dbContext.OrderItems
                 .Include(d => d.Order)
                 .AnyAsync(d => d.Order.UserId == userId && d.CourseId == courseId);
+        }
+
+        public void UpdateOrder(Order order)
+        {
+            _dbContext.Orders.Update(order);
         }
     }
 }

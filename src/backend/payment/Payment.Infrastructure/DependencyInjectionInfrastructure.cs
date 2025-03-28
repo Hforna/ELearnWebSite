@@ -1,13 +1,17 @@
-﻿using MercadoPago.Config;
+﻿using MassTransit;
+using MercadoPago.Config;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Payment.Domain.Repositories;
 using Payment.Domain.Services.PaymentInterfaces;
+using Payment.Domain.Services.RabbitMq;
 using Payment.Domain.Services.Rest;
 using Payment.Infrastructure.DataContext;
 using Payment.Infrastructure.Services.PaymentAdapters;
+using Payment.Infrastructure.Services.RabbitMq;
 using Payment.Infrastructure.Services.Rest;
+using SharedMessages.PaymentMessages;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,6 +29,7 @@ namespace Payment.Infrastructure
             AddRestService(services, configuration);
             AddRepositories(services);
             AddPaymentServices(services, configuration);
+            RabbitMq(services, configuration);
         }
 
         static void AddDbContext(IServiceCollection services, IConfiguration configuration)
@@ -42,6 +47,30 @@ namespace Payment.Infrastructure
             services.AddScoped<ITransactionWriteOnly, TransactionRepository>();
             services.AddScoped<IPaymentReadOnly, PaymentRepository>();
             services.AddScoped<IPaymentWriteOnly, PaymentRepository>();
+        }
+
+        static void RabbitMq(IServiceCollection services, IConfiguration configuration)
+        {
+            var rabbitMqServer = configuration.GetConnectionString("rabbitmq");
+            services.AddMassTransit(x =>
+            {
+                x.UsingRabbitMq((context, cfg) =>
+                {
+                    cfg.ConfigureEndpoints(context);
+                    cfg.Host(new Uri(rabbitMqServer), f =>
+                    {
+                        f.Username("guest");
+                        f.Password("guest");
+                    });
+                    cfg.Message<AllowCourseToUserMessage>(d => d.SetEntityName("payment_exchange"));
+                    cfg.Publish<AllowCourseToUserMessage>(d => d.ExchangeType = "direct");
+                });
+            });
+        }
+
+        static void AddProducers(IServiceCollection services)
+        {
+            services.AddScoped<ICourseProducerService, CourseProducerService>();
         }
 
         static void AddPaymentServices(IServiceCollection services, IConfiguration configuration)
