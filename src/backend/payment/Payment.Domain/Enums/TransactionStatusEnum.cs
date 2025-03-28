@@ -10,6 +10,7 @@ namespace Payment.Domain.Enums
     {
         Canceled,
         Pending,
+        Processing,
         Approved
     }
 }

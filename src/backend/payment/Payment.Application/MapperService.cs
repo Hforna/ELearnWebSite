@@ -4,6 +4,7 @@ using Payment.Application.Responses.Payment;
 using Payment.Domain.DTOs;
 using Payment.Domain.Entities;
 using Sqids;
+using Stripe;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -41,6 +42,12 @@ namespace Payment.Application
         void DtoToResponse()
         {
             CreateMap<PixPaymentResponseDto, PaymentPixResponse>();
+
+            CreateMap<StripeDebitDto, PaymentCardResponse>();
+
+            CreateMap<PaymentIntent, StripeDebitDto>()
+                .ForMember(d => d.RequiresAction, f => f.Condition(d => d.Status == "requires_action"))
+                .ForMember(d => d.Success, f => f.Condition(d => d.Status == "succeeded"));
         }
     }
 }

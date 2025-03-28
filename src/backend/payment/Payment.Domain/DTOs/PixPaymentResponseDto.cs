@@ -11,7 +11,7 @@ namespace Payment.Domain.DTOs
     {
         public string? Id { get; set; }
         public string Status { get; set; }
-        public string CodeToSend { get; set; }
+        public string Hash { get; set; }
         public string QrCodeBase64 { get; set; }
         public DateTime ExpiresOn { get; set; }
     }

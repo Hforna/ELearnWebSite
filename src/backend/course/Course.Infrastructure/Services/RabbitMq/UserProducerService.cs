@@ -10,11 +10,11 @@ using System.Threading.Tasks;
 
 namespace Course.Infrastructure.Services.RabbitMq
 {
-    public class UserSenderService : IUserSenderService
+    public class UserProducerService : IUserSenderService
     {
         private readonly IBus _bus;
 
-        public UserSenderService(IBus bus)
+        public UserProducerService(IBus bus)
         {
             _bus = bus;
         }

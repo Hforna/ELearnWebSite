@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Payment.Domain.Cons;
+using Payment.Domain.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,6 +14,7 @@ namespace Payment.Domain.Entities
         public long TeacherId { get; set; }
         public decimal AvaliableBalance { get; set; }
         public decimal BlockedBalance { get; set; }
+        public CurrencyEnum Currency { get; set; } = DefaultCurrency.Currency;
         public DateTime CreatedOn { get; set; } = DateTime.UtcNow;
         public DateTime UpdatedOn { get; set; }
     }

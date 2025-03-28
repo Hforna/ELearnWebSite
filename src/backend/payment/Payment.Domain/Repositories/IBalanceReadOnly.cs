@@ -7,10 +7,9 @@ using System.Threading.Tasks;
 
 namespace Payment.Domain.Repositories
 {
-    public interface IOrderWriteOnly
+    public interface IBalanceReadOnly
     {
-        public Task AddOrderItem(OrderItem orderItem);
-        public Task AddOrder(Order order);
-        public void UpdateOrder(Order order);
+        public Task<bool> TeacherBalanceExists(long teacherId);
+        public Task<Balance?> BalanceByTeacherId(long teacherId);
     }
 }

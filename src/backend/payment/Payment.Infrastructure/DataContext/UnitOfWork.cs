@@ -16,13 +16,17 @@ namespace Payment.Infrastructure.DataContext
         public ITransactionWriteOnly transactionWrite { get; set; }
         public IPaymentReadOnly paymentRead { get; set; }
         public IPaymentWriteOnly paymentWrite { get; set; }
+        public IBalanceReadOnly balanceRead { get; set; }
+        public IBalanceWriteOnly balanceWrite { get; set; }
 
         public UnitOfWork(PaymentDbContext dbContext, IOrderReadOnly orderRead, IOrderWriteOnly orderWrite,
             ITransactionReadOnly transactionRead, ITransactionWriteOnly transactionWrite, 
-            IPaymentReadOnly paymentRead, IPaymentWriteOnly paymentWrite)
+            IPaymentReadOnly paymentRead, IPaymentWriteOnly paymentWrite, IBalanceReadOnly balanceRead, IBalanceWriteOnly balanceWrite)
         {
             _dbContext = dbContext;
             this.orderWrite = orderWrite;
+            this.balanceWrite = balanceWrite;
+            this.balanceRead = balanceRead;
             this.orderRead = orderRead;
             this.transactionRead = transactionRead;
             this.transactionWrite = transactionWrite;

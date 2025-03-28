@@ -4,13 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Payment.Application.Responses.Payment
+namespace Payment.Domain.DTOs
 {
-    public class PaymentCardResponse : PaymentBaseResponse
+    public sealed record StripeDebitDto
     {
-        public decimal Amount { get; set; }
         public bool Success { get; set; }
         public string Status { get; set; }
+        public string Id { get; set; }
         public bool RequiresAction { get; set; }
         public string ClientSecret { get; set; }
     }

@@ -104,5 +104,14 @@ namespace Payment.Domain.Exceptions {
                 return ResourceManager.GetString("ORDER_ITEM_EXISTS", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Payment canceled verify the payment infos or try again later.
+        /// </summary>
+        public static string PAYMENT_CANCELED {
+            get {
+                return ResourceManager.GetString("PAYMENT_CANCELED", resourceCulture);
+            }
+        }
     }
 }

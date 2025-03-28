@@ -77,6 +77,9 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Payment.Domain", "src\backend\payment\Payment.Domain\Payment.Domain.csproj", "{25EBE3E5-3AE2-4867-96C0-2DA5395D16B1}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Payment.Infrastructure", "src\backend\payment\Payment.Infrastructure\Payment.Infrastructure.csproj", "{CA9630EC-31C5-4C00-98F6-38FD400D6CE1}"
+	ProjectSection(ProjectDependencies) = postProject
+		{C7E63DD5-4E9A-4A14-A9EF-758AD53443EF} = {C7E63DD5-4E9A-4A14-A9EF-758AD53443EF}
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{6275082E-9994-450A-99BA-8E630BE15E8B}"
 EndProject
@@ -84,7 +87,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommonUtilities", "src\back
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTests", "src\backend\payment\tests\UnitTests\UnitTests.csproj", "{49F8B9CA-C610-4F6C-A4A0-809A24BE3728}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApiTests", "src\backend\payment\tests\WebApiTests\WebApiTests.csproj", "{C13C5D01-0232-4F9D-9DBC-CF0AF69A547E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApiTests", "src\backend\payment\tests\WebApiTests\WebApiTests.csproj", "{C13C5D01-0232-4F9D-9DBC-CF0AF69A547E}"
 	ProjectSection(ProjectDependencies) = postProject
 		{F3D84CEC-9059-410C-8AAA-15D054DA7B8E} = {F3D84CEC-9059-410C-8AAA-15D054DA7B8E}
 	EndProjectSection

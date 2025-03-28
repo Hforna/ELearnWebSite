@@ -1,4 +1,5 @@
-﻿using Payment.Domain.Enums;
+﻿using Payment.Domain.Cons;
+using Payment.Domain.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +13,7 @@ namespace Payment.Domain.Entities
     {
         public long UserId { get; set; }
         public bool Active { get; set; } = true;
-        public CurrencyEnum Currency { get; set; }
+        public CurrencyEnum Currency { get; set; } = DefaultCurrency.Currency;
         public decimal TotalPrice { get; set; } = 0;
         public ICollection<OrderItem>? OrderItems { get; set; }
     }

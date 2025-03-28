@@ -20,5 +20,13 @@ namespace Payment.Api.Controllers
 
             return Ok(result);
         }
+
+        [HttpPost("card")]
+        public async Task<IActionResult> ProcessCardPayment([FromBody]CardPaymentRequest request)
+        {
+            var result = await _paymentService.ProcessCardPayment(request);
+
+            return Ok(result);
+        }
     }
 }

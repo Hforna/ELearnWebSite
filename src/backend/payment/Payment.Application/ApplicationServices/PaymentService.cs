@@ -3,13 +3,16 @@ using Microsoft.Extensions.Logging;
 using Payment.Application.ApplicationServices.Interfaces;
 using Payment.Application.Requests;
 using Payment.Application.Responses.Payment;
+using Payment.Domain.Cons;
 using Payment.Domain.Entities;
 using Payment.Domain.Enums;
 using Payment.Domain.Exceptions;
 using Payment.Domain.Repositories;
 using Payment.Domain.Services.Payment.PaymentInterfaces;
 using Payment.Domain.Services.PaymentInterfaces;
+using Payment.Domain.Services.RabbitMq;
 using Payment.Domain.Services.Rest;
+using SharedMessages.PaymentMessages;
 using Sqids;
 using System;
 using System.Collections.Generic;
@@ -30,18 +33,158 @@ namespace Payment.Application.ApplicationServices
         private readonly ILocationRestService _locationRest;
         private readonly IMapper _mapper;
         private readonly ILogger<PaymentService> _logger;
+        private readonly ICourseProducerService _courseProducer;
+        private readonly IPaymentGatewayService _paymentGateway;
+        private readonly ICourseRestService _courseRest;
+        private readonly ICurrencyExchangeService _currencyExchange;
 
         public PaymentService(IUnitOfWork uof, SqidsEncoder<long> sqids, 
-            IPixGatewayService pixService, 
-            IUserRestService userService, ILocationRestService locationRest, IMapper mapper, ILogger<PaymentService> logger)
+            IPixGatewayService pixService,
+            IUserRestService userService, ILocationRestService locationRest,
+            IMapper mapper, ILogger<PaymentService> logger,
+            ICourseProducerService courseProducer, IPaymentGatewayService paymentGateway, 
+            ICourseRestService courseRest, ICurrencyExchangeService currencyExchange)
         {
             _uof = uof;
             _sqids = sqids;
+            _courseRest = courseRest;
+            _currencyExchange = currencyExchange;
+            _courseProducer = courseProducer;
             _logger = logger;
             _pixService = pixService;
             _userService = userService;
             _locationRest = locationRest;
             _mapper = mapper;
+            _paymentGateway = paymentGateway;
+        }
+
+        public async Task<PaymentCardResponse> ProcessCardPayment(CardPaymentRequest request)
+        {
+            var user = await _userService.GetUserInfos();
+            var userId = _sqids.Decode(user.id).Single();
+
+            var userOrder = await _uof.orderRead.OrderByUserId(userId);
+
+            if (userOrder is null || userOrder.OrderItems is null || userOrder.OrderItems.Any() == false)
+                throw new OrderException(ResourceExceptMessages.ORDER_DOESNT_EXISTS, System.Net.HttpStatusCode.NotFound);
+
+            var userCurrency = await _locationRest.GetCurrencyByUserLocation();
+            var sumOrder = userOrder.OrderItems.Sum(d => d.Price);
+
+            var currencyPayment = Enum.TryParse(typeof(CurrencyEnum), userCurrency.Code, true, out var result) ? (CurrencyEnum)result : DefaultCurrency.Currency;
+            var amountPayment = sumOrder;
+
+            if(currencyPayment != userOrder.Currency)
+            {
+                var exchange = await _currencyExchange.GetCurrencyRates(userOrder.Currency);
+
+                switch(currencyPayment)
+                {
+                    case CurrencyEnum.BRL:
+                        amountPayment *= (decimal)exchange.BRL;
+                        break;
+                    case CurrencyEnum.EUR:
+                        amountPayment *= (decimal)exchange.EUR;
+                        break;
+                    case CurrencyEnum.USD:
+                        amountPayment *= (decimal)exchange.USD;
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            var payment = await _paymentGateway.DebitCardPayment(request.FirstName, request.LastName, request.CardToken, amountPayment, currencyPayment);
+
+            var transaction = new Transaction()
+            {
+                Amount = amountPayment,
+                Currency = currencyPayment,
+                OrderId = userOrder.Id,
+                TransactionStatus = Enum.TryParse(typeof(TransactionStatusEnum), payment.Status, true, out var status) ? (TransactionStatusEnum)status : TransactionStatusEnum.Processing,
+                GatewayTransactionId = payment.Id,
+            };
+            await _uof.transactionWrite.Add(transaction);
+
+            if (payment.Status == "canceled")
+            {
+                await _uof.Commit();
+                throw new PaymentException(ResourceExceptMessages.PAYMENT_CANCELED, System.Net.HttpStatusCode.InternalServerError);
+            }
+
+            var paymentEntity = new PaymentEntity()
+            {
+                Amount = amountPayment,
+                Currency = currencyPayment,
+                CustomerId = userId,
+                PaymentMethodType = PaymentMethodEnum.Debit,
+                TokenizedData = request.CardToken
+            };
+            await _uof.paymentWrite.Add(paymentEntity);
+            await _uof.Commit();
+
+            var response = new PaymentCardResponse()
+            {
+                Amount = amountPayment,
+                Currency = currencyPayment,
+                PaymentId = paymentEntity.Id,
+                TransactionId = transaction.Id,
+            };
+
+            if(payment.Success)
+            {
+                var allowCourseMessage = new AllowCourseToUserMessage()
+                {
+                    CoursesIds = userOrder.OrderItems.Select(d => d.CourseId).ToList(),
+                    UserId = userId
+                };
+                await _courseProducer.SendAllowCourseToUser(allowCourseMessage);
+
+                userOrder.Active = false;
+                Dictionary<long, decimal> teacherCourses = new Dictionary<long, decimal>();
+
+                foreach (var item in userOrder.OrderItems)
+                {
+                    item.Active = false;
+
+                    var encodeCourseId = _sqids.Encode(item.CourseId);
+
+                    var course = await _courseRest.GetCourse(encodeCourseId);
+                    var teacherId = _sqids.Decode(course.teacherId).Single();
+
+                    decimal priceToUser = (decimal)Math.Round((double)item.Price * 0.60, 2);
+                    teacherCourses[teacherId] = teacherCourses.ContainsKey(teacherId) ? teacherCourses[teacherId] += priceToUser : priceToUser;
+                }
+
+                foreach(var teacher in teacherCourses)
+                {
+                    var balanceExists = await _uof.balanceRead.TeacherBalanceExists(teacher.Key);
+
+                    Balance balance;
+
+                    if(!balanceExists)
+                    {
+                        balance = new Balance()
+                        {
+                            BlockedBalance = teacher.Value,
+                            UpdatedOn = DateTime.UtcNow,
+                            TeacherId = teacher.Key,
+                            AvaliableBalance = 0
+                        };
+                        await _uof.balanceWrite.Add(balance);
+                    } else
+                    {
+                        balance = await _uof.balanceRead.BalanceByTeacherId(teacher.Key);
+                        balance.AvaliableBalance += teacher.Value;
+                        _uof.balanceWrite.Update(balance);
+                    }
+                }
+
+                _uof.orderWrite.UpdateOrder(userOrder);
+                await _uof.Commit();
+            }
+
+            return response;
         }
 
         public async Task<PaymentPixResponse> ProcessPixPayment(PixPaymentRequest request)
@@ -62,8 +205,10 @@ namespace Payment.Application.ApplicationServices
             if (userOrder is null)
                 throw new OrderException(ResourceExceptMessages.ORDER_DOESNT_EXISTS, System.Net.HttpStatusCode.NotFound);
 
+            userOrder.Active = false;
+
             var userCurrency = await _locationRest.GetCurrencyByUserLocation();
-            var userCurrencyAsEnum = (CurrencyEnum)Enum.Parse(typeof(CurrencyEnum), userCurrency.Code);
+            var userCurrencyAsEnum = Enum.TryParse(typeof(CurrencyEnum), userCurrency.Code, out var result) ? (CurrencyEnum)result : DefaultCurrency.Currency;
 
             if (userCurrencyAsEnum != CurrencyEnum.BRL)
                 throw new PaymentException(ResourceExceptMessages.CURRENCY_NOT_ALLOWED, System.Net.HttpStatusCode.Unauthorized);
@@ -100,7 +245,7 @@ namespace Payment.Application.ApplicationServices
             var transaction = new Transaction()
             {
                 Amount = userOrder.TotalPrice,
-                Currency = CurrencyEnum.BRL,
+                Currency = userCurrencyAsEnum,
                 OrderId = userOrder.Id,
                 TransactionStatus = statusTransaction,
                 GatewayTransactionId = sendPayment.Id
@@ -108,6 +253,7 @@ namespace Payment.Application.ApplicationServices
 
             await _uof.transactionWrite.Add(transaction);
             await _uof.paymentWrite.Add(payment);
+            _uof.orderWrite.UpdateOrder(userOrder);
 
             await _uof.Commit();
 

@@ -26,12 +26,15 @@ namespace Payment.Application.Services
         private readonly IUserRestService _userRest;
         private readonly IUnitOfWork _uow;
         private readonly ILogger<OrderService> _logger;
+        private readonly ICurrencyExchangeService _currencyExchange;
 
         public OrderService(IUnitOfWork uow, SqidsEncoder<long> sqids, ICourseRestService courseRest, 
-            IUserRestService userRest, IMapper mapper, ILogger<OrderService> logger)
+            IUserRestService userRest, IMapper mapper, 
+            ILogger<OrderService> logger, ICurrencyExchangeService currencyExchange)
         {
             _courseRest = courseRest;
             _uow = uow;
+            _currencyExchange = currencyExchange;
             _userRest = userRest;
             _mapper = mapper;
             _sqids = sqids;
@@ -60,6 +63,20 @@ namespace Payment.Application.Services
                 await _uow.Commit();
             }
             userOrder.TotalPrice += (decimal)course.price;
+            var currencyExchange = await _currencyExchange.GetCurrencyRates(course.currencyType);
+            switch(DefaultCurrency.Currency)
+            {
+                case CurrencyEnum.BRL:
+                    course.price *= currencyExchange.BRL;
+                    break;
+                case CurrencyEnum.USD:
+                    course.price *= currencyExchange.USD;
+                    break;
+                case CurrencyEnum.EUR:
+                    course.price *= currencyExchange.EUR;
+                default:
+                    break;
+            }
 
             var orderItem = new OrderItem()
             {

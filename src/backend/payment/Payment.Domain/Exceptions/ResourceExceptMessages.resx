@@ -132,4 +132,7 @@
   <data name="CPF_FORMAT_NOT_VALID" xml:space="preserve">
     <value>Cpf format is not valid</value>
   </data>
+  <data name="PAYMENT_CANCELED" xml:space="preserve">
+    <value>Payment canceled verify the payment infos or try again later</value>
+  </data>
 </root>

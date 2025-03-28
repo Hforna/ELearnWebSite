@@ -7,10 +7,12 @@ using System.Threading.Tasks;
 
 namespace Payment.Application.Requests
 {
-    public class CardPaymentRequest : PaymentBaseRequest
+    public class CardPaymentRequest
     {
         public string CardToken { get; set; }
-        public int Installments { get; set; }
-        public bool Credit { get; set; } = false;
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public int? Installments { get; set; }
+        public bool OnCredit { get; set; } = false;
     }
 }

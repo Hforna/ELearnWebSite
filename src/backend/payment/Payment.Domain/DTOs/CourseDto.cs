@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Payment.Domain.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,6 +15,7 @@ namespace Payment.Domain.DTOs
         public int? enrollments { get; set; }
         public double? duration { get; set; }
         public string title { get; set; }
+        public CurrencyEnum currencyType { get; set; }
         public string description { get; set; }
         public double price { get; set; }
     }

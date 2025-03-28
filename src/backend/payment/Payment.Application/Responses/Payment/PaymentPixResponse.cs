@@ -12,7 +12,7 @@ namespace Payment.Application.Responses.Payment
         public Guid TransactionId { get; set; }
         public string? GatewayId { get; set; }
         public string QrCode { get; set; }
-        public string CodeToSend { get; set; }
+        public string Hash { get; set; }
         public string Status { get; set; }
         public DateTime ExpiresOn { get; set; }
     }

@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Payment.Domain.Repositories;
+using Payment.Domain.Services.Payment.PaymentInterfaces;
 using Payment.Domain.Services.PaymentInterfaces;
 using Payment.Domain.Services.RabbitMq;
 using Payment.Domain.Services.Rest;
@@ -12,6 +13,7 @@ using Payment.Infrastructure.Services.PaymentAdapters;
 using Payment.Infrastructure.Services.RabbitMq;
 using Payment.Infrastructure.Services.Rest;
 using SharedMessages.PaymentMessages;
+using Stripe;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,6 +32,7 @@ namespace Payment.Infrastructure
             AddRepositories(services);
             AddPaymentServices(services, configuration);
             RabbitMq(services, configuration);
+            AddProducers(services);
         }
 
         static void AddDbContext(IServiceCollection services, IConfiguration configuration)
@@ -47,6 +50,8 @@ namespace Payment.Infrastructure
             services.AddScoped<ITransactionWriteOnly, TransactionRepository>();
             services.AddScoped<IPaymentReadOnly, PaymentRepository>();
             services.AddScoped<IPaymentWriteOnly, PaymentRepository>();
+            services.AddScoped<IBalanceReadOnly, BalanceRepository>();
+            services.AddScoped<IBalanceWriteOnly, BalanceRepository>();
         }
 
         static void RabbitMq(IServiceCollection services, IConfiguration configuration)
@@ -86,6 +91,12 @@ namespace Payment.Infrastructure
             services.AddScoped<IPixGatewayService>(d => new TrioPixGatewayAdapter(services.BuildServiceProvider()
                 .CreateScope().ServiceProvider.GetRequiredService<IHttpClientFactory>(), 
                 trioClientId!, trioClientSecret!));
+
+            var stripeApiKey = configuration.GetValue<string>("apis:stripe:apiKey");
+
+            StripeConfiguration.ApiKey = stripeApiKey;
+
+            services.AddScoped<IPaymentGatewayService, StripePaymentAdapter>();
         }
 
         static void AddRestService(IServiceCollection services, IConfiguration configuration)

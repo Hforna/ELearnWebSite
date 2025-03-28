@@ -18,9 +18,9 @@ namespace Payment.Infrastructure.Services.RabbitMq
             _bus = bus;
         }
 
-        public Task SendAllowCourseToUser(AllowCourseToUserMessage message)
+        public async Task SendAllowCourseToUser(AllowCourseToUserMessage message)
         {
-            _bus.Publish(message, cfg =>
+            await _bus.Publish(message, cfg =>
             {
                 cfg.SetRoutingKey("allow.course");
             });

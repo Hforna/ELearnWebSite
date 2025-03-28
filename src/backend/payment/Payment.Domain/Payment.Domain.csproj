@@ -11,6 +11,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\SharedMessages\SharedMessages.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Update="Exceptions\ResourceExceptMessages.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>

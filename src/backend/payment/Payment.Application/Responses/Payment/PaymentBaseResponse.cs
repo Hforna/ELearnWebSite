@@ -11,6 +11,7 @@ namespace Payment.Application.Responses.Payment
     {
         public Guid PaymentId { get; set; }
         public TransactionStatusEnum Status { get; set; }
+        public Guid TransactionId { get; set; }
         public CurrencyEnum Currency { get; set; }
         public decimal Amount { get; set; }
     }
