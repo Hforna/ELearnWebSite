@@ -19,13 +19,52 @@ namespace Payment.Infrastructure.Services.PaymentAdapters
 
         public StripePaymentAdapter(IMapper mapper) => _mapper = mapper;
 
-        public async Task<StripeDebitDto> DebitCardPayment(string firstName, string lastName, string cardToken, decimal amount, CurrencyEnum currency)
+        public async Task<StripeCreditDto> CreditCardPayment(string firstName, string lastName, string cardToken, decimal amount, CurrencyEnum currency, string userId, int installments = 1)
         {
-            var currencyFormat = currency.ToString().ToLower();
+            var currencyFormat = CurrencyFormat(currency);
             var options = new PaymentIntentCreateOptions()
             {
-                Amount = (long?)amount,
+                Amount = (long)amount * 100,
                 Currency = currencyFormat,
+                PaymentMethod = cardToken,
+                Confirm = true,
+                Customer = userId,
+                PaymentMethodOptions = new PaymentIntentPaymentMethodOptionsOptions()
+                {
+                    Card = new PaymentIntentPaymentMethodOptionsCardOptions()
+                    {
+                        Installments = new PaymentIntentPaymentMethodOptionsCardInstallmentsOptions()
+                        {
+                            Enabled = true,
+                            Plan = new PaymentIntentPaymentMethodOptionsCardInstallmentsPlanOptions()
+                            {
+                                Count = installments,
+                                Type = "fixed_count"
+                            }
+                        }
+                    }
+                },
+                Metadata = new Dictionary<string, string>()
+                {
+                    { "installments", installments.ToString() }
+                }
+            };
+
+            var service = new PaymentIntentService();
+
+            var paymentIntent = await service.CreateAsync(options);
+
+            return _mapper.Map<StripeCreditDto>(paymentIntent);
+        }
+
+        public async Task<StripeDebitDto> DebitCardPayment(string firstName, string lastName, string cardToken, decimal amount, CurrencyEnum currency, string userId)
+        {
+            var currencyFormat = CurrencyFormat(currency);
+            var options = new PaymentIntentCreateOptions()
+            {
+                Amount = (long?)amount * 100,
+                Currency = currencyFormat,
+                Customer = userId,
                 PaymentMethod = cardToken,
                 Confirm = true,
                 AutomaticPaymentMethods = new PaymentIntentAutomaticPaymentMethodsOptions()
@@ -42,5 +81,7 @@ namespace Payment.Infrastructure.Services.PaymentAdapters
 
             return response;
         }
+
+        string CurrencyFormat(CurrencyEnum currency) => currency.ToString().ToLower();
     }
 }

@@ -10,6 +10,7 @@ namespace Payment.Domain.Services.Payment.PaymentInterfaces
 {
     public interface IPaymentGatewayService
     {
-        public Task<StripeDebitDto> DebitCardPayment(string firstName, string lastName, string cardToken, decimal amount, CurrencyEnum currency);
+        public Task<StripeDebitDto> DebitCardPayment(string firstName, string lastName, string cardToken, decimal amount, CurrencyEnum currency, string userId);
+        public Task<StripeCreditDto> CreditCardPayment(string firstName, string lastName, string cardToken, decimal amount, CurrencyEnum currency, string userId, int installments = 1);
     }
 }

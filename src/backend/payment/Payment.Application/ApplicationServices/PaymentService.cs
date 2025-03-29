@@ -94,14 +94,17 @@ namespace Payment.Application.ApplicationServices
                 }
             }
 
-            var payment = await _paymentGateway.DebitCardPayment(request.FirstName, request.LastName, request.CardToken, amountPayment, currencyPayment);
+
+            dynamic payment = request.OnCredit ? await _paymentGateway.CreditCardPayment(request.FirstName, request.LastName, 
+                request.CardToken, amountPayment, currencyPayment, user.id, request.Installments) : 
+                await _paymentGateway.DebitCardPayment(request.FirstName, request.LastName, request.CardToken, amountPayment, currencyPayment, user.id);
 
             var transaction = new Transaction()
             {
                 Amount = amountPayment,
                 Currency = currencyPayment,
                 OrderId = userOrder.Id,
-                TransactionStatus = Enum.TryParse(typeof(TransactionStatusEnum), payment.Status, true, out var status) ? (TransactionStatusEnum)status : TransactionStatusEnum.Processing,
+                TransactionStatus = Enum.TryParse(typeof(TransactionStatusEnum), payment.Status, true, out dynamic status) ? (TransactionStatusEnum)status : TransactionStatusEnum.Processing,
                 GatewayTransactionId = payment.Id,
             };
             await _uof.transactionWrite.Add(transaction);
@@ -117,7 +120,7 @@ namespace Payment.Application.ApplicationServices
                 Amount = amountPayment,
                 Currency = currencyPayment,
                 CustomerId = userId,
-                PaymentMethodType = PaymentMethodEnum.Debit,
+                PaymentMethodType = request.OnCredit ? PaymentMethodEnum.Credit : PaymentMethodEnum.Debit,
                 TokenizedData = request.CardToken
             };
             await _uof.paymentWrite.Add(paymentEntity);
@@ -129,7 +132,11 @@ namespace Payment.Application.ApplicationServices
                 Currency = currencyPayment,
                 PaymentId = paymentEntity.Id,
                 TransactionId = transaction.Id,
+                Installments = request.Installments
             };
+
+            if(payment.Status == "requires_action")
+                return response;
 
             if(payment.Success)
             {

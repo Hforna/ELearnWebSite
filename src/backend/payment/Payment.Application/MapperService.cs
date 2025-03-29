@@ -48,6 +48,11 @@ namespace Payment.Application
             CreateMap<PaymentIntent, StripeDebitDto>()
                 .ForMember(d => d.RequiresAction, f => f.Condition(d => d.Status == "requires_action"))
                 .ForMember(d => d.Success, f => f.Condition(d => d.Status == "succeeded"));
+
+            CreateMap<PaymentIntent, StripeCreditDto>()
+                .ForMember(d => d.RequiresAction, f => f.Condition(d => d.Status == "requires_action"))
+                .ForMember(d => d.Success, f => f.Condition(d => d.Status == "succeeded"))
+                .ForMember(d => d.Installments, f => f.MapFrom(d => d.PaymentMethodOptions.Card.Installments.Plan.Count));
         }
     }
 }
