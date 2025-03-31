@@ -13,6 +13,7 @@ using Payment.Infrastructure.Services.PaymentAdapters;
 using Payment.Infrastructure.Services.RabbitMq;
 using Payment.Infrastructure.Services.Rest;
 using SharedMessages.PaymentMessages;
+using SharedMessages.UserMessages;
 using Stripe;
 using System;
 using System.Collections.Generic;
@@ -59,8 +60,11 @@ namespace Payment.Infrastructure
             var rabbitMqServer = configuration.GetConnectionString("rabbitmq");
             services.AddMassTransit(x =>
             {
+                x.AddConsumer<UserConsumerService>();
+
                 x.UsingRabbitMq((context, cfg) =>
                 {
+                    ///PRODUCERS
                     cfg.ConfigureEndpoints(context);
                     cfg.Host(new Uri(rabbitMqServer), f =>
                     {
@@ -69,6 +73,18 @@ namespace Payment.Infrastructure
                     });
                     cfg.Message<AllowCourseToUserMessage>(d => d.SetEntityName("payment_exchange"));
                     cfg.Publish<AllowCourseToUserMessage>(d => d.ExchangeType = "direct");
+
+                    ///CONSUMERS
+                    cfg.ReceiveEndpoint("user-created", f =>
+                    {
+                        f.ConfigureConsumer<UserConsumerService>(context);
+
+                        f.ExchangeType = "direct";
+                        f.Bind("user_exchange", d =>
+                        {
+                            d.RoutingKey = "user.created";
+                        });
+                    });
                 });
             });
         }

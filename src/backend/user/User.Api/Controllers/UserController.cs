@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
 using FluentValidation;
+using MassTransit;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using SharedMessages.UserMessages;
 using Sqids;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
@@ -36,13 +38,16 @@ namespace User.Api.Controllers
         private readonly ITokenService _tokenService;
         private readonly ITokenReceptor _tokenReceptor;
         private readonly ILogger<UserController> _logger;
+        private readonly IBus _bus;
 
         public UserController(IUnitOfWork uof, IBcryptCryptography cryptography, 
             EmailService emailService, IMapper mapper, 
             UserManager<UserModel> userManager, IConfiguration configuration, 
-            ITokenService tokenService, ITokenReceptor tokenReceptor, ILogger<UserController> logger)
+            ITokenService tokenService, ITokenReceptor tokenReceptor, 
+            ILogger<UserController> logger, IBus bus)
         {
             _uof = uof;
+            _bus = bus;
             _logger = logger;
             _cryptography = cryptography;
             _emailService = emailService;
@@ -137,7 +142,7 @@ namespace User.Api.Controllers
         }
 
         [AuthenticationUser]
-        [HttpPut]
+        [HttpPut("update-phone")]
         public async Task<IActionResult> UpdatePhoneNumber([FromQuery]string phone)
         {
             var user = await _tokenService.UserByToken(_tokenReceptor.GetToken());
@@ -195,6 +200,19 @@ namespace User.Api.Controllers
             user.EmailConfirmed = true;
 
             await _uof.Commit();
+
+            var userRoles = await _userManager.GetRolesAsync(user);
+            var userIsTeacher = userRoles.Contains("teacher");
+
+            var userCreatedMessage = new UserCreatedMessage()
+            {
+                Teacher = userIsTeacher,
+                UserId = user.Id
+            };
+            await _bus.Publish(userCreatedMessage, cfg =>
+            {
+                cfg.SetRoutingKey("user.created");
+            });
 
             return Ok("E-mail confirmed");
         }
@@ -287,7 +305,7 @@ namespace User.Api.Controllers
             var user = await _tokenService.UserByToken(_tokenReceptor.GetToken());
 
             if (user.TwoFactorEnabled)
-                throw new RequestException("Two factor already is enabled in this account");
+                throw new Excpetions.RequestException("Two factor already is enabled in this account");
 
             var twofaCode = await _userManager.GenerateTwoFactorTokenAsync(user, "Email");
 
@@ -438,7 +456,7 @@ namespace User.Api.Controllers
             if(result.IsValid == false)
             {
                 var errorMessages = result.Errors.Select(d => d.ErrorMessage).ToList();
-                throw new RequestException(errorMessages);
+                throw new Excpetions.RequestException(errorMessages);
             }
         }
     }

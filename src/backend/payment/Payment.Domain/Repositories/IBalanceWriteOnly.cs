@@ -11,5 +11,6 @@ namespace Payment.Domain.Repositories
     {
         public Task Add(Balance balance);
         public void Update(Balance balance);
+        public void UpdateRange(ICollection<Balance> balances);
     }
 }

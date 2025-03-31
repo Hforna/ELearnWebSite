@@ -94,7 +94,6 @@ namespace Payment.Application.ApplicationServices
                 }
             }
 
-
             dynamic payment = request.OnCredit ? await _paymentGateway.CreditCardPayment(request.FirstName, request.LastName, 
                 request.CardToken, amountPayment, currencyPayment, user.id, request.Installments) : 
                 await _paymentGateway.DebitCardPayment(request.FirstName, request.LastName, request.CardToken, amountPayment, currencyPayment, user.id);
@@ -165,28 +164,16 @@ namespace Payment.Application.ApplicationServices
 
                 foreach(var teacher in teacherCourses)
                 {
-                    var balanceExists = await _uof.balanceRead.TeacherBalanceExists(teacher.Key);
-
-                    Balance balance;
-
-                    if(!balanceExists)
-                    {
-                        balance = new Balance()
-                        {
-                            BlockedBalance = teacher.Value,
-                            UpdatedOn = DateTime.UtcNow,
-                            TeacherId = teacher.Key,
-                            AvaliableBalance = 0
-                        };
-                        await _uof.balanceWrite.Add(balance);
-                    } else
-                    {
-                        balance = await _uof.balanceRead.BalanceByTeacherId(teacher.Key);
-                        balance.AvaliableBalance += teacher.Value;
-                        _uof.balanceWrite.Update(balance);
-                    }
+                    var balance = await _uof.balanceRead.BalanceByTeacherId(teacher.Key);
+                    balance.AvaliableBalance += teacher.Value;
+                    _uof.balanceWrite.Update(balance);
                 }
 
+                transaction.TransactionStatus = TransactionStatusEnum.Approved;
+
+                _uof.paymentWrite.Delete(payment);
+                _uof.transactionWrite.Update(transaction);
+                _uof.balanceWrite.Update(payment);
                 _uof.orderWrite.UpdateOrder(userOrder);
                 await _uof.Commit();
             }
@@ -211,8 +198,6 @@ namespace Payment.Application.ApplicationServices
 
             if (userOrder is null)
                 throw new OrderException(ResourceExceptMessages.ORDER_DOESNT_EXISTS, System.Net.HttpStatusCode.NotFound);
-
-            userOrder.Active = false;
 
             var userCurrency = await _locationRest.GetCurrencyByUserLocation();
             var userCurrencyAsEnum = Enum.TryParse(typeof(CurrencyEnum), userCurrency.Code, out var result) ? (CurrencyEnum)result : DefaultCurrency.Currency;

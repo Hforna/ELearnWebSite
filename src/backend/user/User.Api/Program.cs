@@ -21,6 +21,7 @@ using User.Api.BackgroundServices;
 using Twilio;
 using MassTransit;
 using User.Api.Services.Consumers;
+using SharedMessages.UserMessages;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -105,6 +106,7 @@ builder.Services.AddMassTransit(x =>
 
     x.UsingRabbitMq((context, cfg) =>
     {
+        // CONSUMERS
         cfg.Host(builder.Configuration.GetConnectionString("rabbitmq"));
         cfg.ReceiveEndpoint("course-note-queue", e =>
         {
@@ -125,6 +127,10 @@ builder.Services.AddMassTransit(x =>
                 f.ExchangeType = "direct";
             });
         });
+
+        /// PRODUCERS
+        cfg.Message<UserCreatedMessage>(d => d.SetEntityName("user_exchange"));
+        cfg.Publish<UserCreatedMessage>(d => d.ExchangeType = "direct");
     });
 });
 

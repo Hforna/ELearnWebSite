@@ -37,5 +37,10 @@ namespace Payment.Infrastructure.DataContext
         {
             _dbContext.Balances.Update(balance);
         }
+
+        public void UpdateRange(ICollection<Balance> balances)
+        {
+            _dbContext.Balances.UpdateRange(balances);
+        }
     }
 }

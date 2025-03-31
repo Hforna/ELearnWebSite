@@ -12,8 +12,8 @@ namespace Payment.Domain.Entities
     {
         public Guid Id { get; set; } = Guid.NewGuid();
         public long TeacherId { get; set; }
-        public decimal AvaliableBalance { get; set; }
-        public decimal BlockedBalance { get; set; }
+        public decimal AvaliableBalance { get; set; } = 0;
+        public decimal BlockedBalance { get; set; } = 0;
         public CurrencyEnum Currency { get; set; } = DefaultCurrency.Currency;
         public DateTime CreatedOn { get; set; } = DateTime.UtcNow;
         public DateTime UpdatedOn { get; set; }

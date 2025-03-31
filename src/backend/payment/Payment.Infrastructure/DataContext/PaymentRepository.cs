@@ -1,4 +1,5 @@
-﻿using Payment.Domain.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using Payment.Domain.Entities;
 using Payment.Domain.Repositories;
 using System;
 using System.Collections.Generic;
@@ -18,5 +19,15 @@ namespace Payment.Infrastructure.DataContext
         }
 
         public async Task Add(PaymentEntity payment) => await _dbContext.Payments.AddAsync(payment);
+
+        public void Delete(PaymentEntity payment)
+        {
+            _dbContext.Payments.Remove(payment);
+        }
+
+        public async Task<PaymentEntity?> PaymentByUser(long userId)
+        {
+            return await _dbContext.Payments.SingleOrDefaultAsync(d => d.CustomerId == userId);
+        }
     }
 }

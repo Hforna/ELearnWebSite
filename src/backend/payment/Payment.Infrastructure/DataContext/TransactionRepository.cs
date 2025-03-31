@@ -25,5 +25,22 @@ namespace Payment.Infrastructure.DataContext
             return await _dbContext.Transactions
                 .AnyAsync(d => d.OrderId == orderId && d.TransactionStatus == Domain.Enums.TransactionStatusEnum.Pending);
         }
+
+        public async Task<Transaction?> TransactionByGatewayId(string gatewayId)
+        {
+            return await _dbContext.Transactions.Include(d => d.Order).ThenInclude(d => d.OrderItems).SingleOrDefaultAsync(d => d.GatewayTransactionId == gatewayId);
+        }
+
+        public async Task<Transaction?> TransactionByUserId(long userId)
+        {
+            var order = await _dbContext.Orders.SingleOrDefaultAsync(d => d.UserId == userId && d.Active);
+
+            return await _dbContext.Transactions.FirstOrDefaultAsync(d => d.OrderId == order.Id && d.TransactionStatus == Domain.Enums.TransactionStatusEnum.Pending);
+        }
+
+        public void Update(Transaction transaction)
+        {
+            _dbContext.Transactions.Update(transaction);
+        }
     }
 }

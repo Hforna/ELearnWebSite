@@ -25,12 +25,14 @@ namespace Payment.Infrastructure.Services.PaymentAdapters
             _clientSecret = clientSecret;
         }
 
-        public async Task<PixPaymentResponseDto> ProcessPixTransaction(string cpf, string email, string firstName, string lastName, decimal amountOrder)
+        public async Task<PixPaymentResponseDto> ProcessPixTransaction(string cpf, string email, string firstName, string lastName, decimal amountOrder, string? userId = null)
         {
             var client = _httpClient.CreateClient();
 
             var authToken = Convert.ToBase64String(Encoding.UTF8.GetBytes($"{_clientId}:{_clientSecret}"));
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", authToken);
+
+            var externalId = userId ?? email;
 
             var request = new
             {
@@ -41,7 +43,7 @@ namespace Payment.Infrastructure.Services.PaymentAdapters
                     name = $"{firstName} {lastName}"
                 },
                 amount = Math.Round(amountOrder) * 100,
-                external_id = Guid.NewGuid().ToString().ToUpper(),
+                external_id = externalId,
                 description = "pay course",
                 expiration_datetime = DateTime.UtcNow.AddMinutes(30).ToString("yyyy-MM-ddTHH:mm:ss.fffZ"),
                 options = new

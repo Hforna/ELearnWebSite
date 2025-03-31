@@ -1,5 +1,6 @@
-﻿using Moq;
-using Payment.Domain.Repositories;
+﻿using Castle.Core.Logging;
+using Microsoft.Extensions.Logging;
+using Moq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,8 +9,8 @@ using System.Threading.Tasks;
 
 namespace CommonUtilities.Builds.Repositories.Commands
 {
-    public static class OrderWriteOnlyMock
+    public class LoggerMock<T>
     {
-        public static IOrderWriteOnly Build() => new Mock<IOrderWriteOnly>().Object;
+        public ILogger<T> Build() => new Mock<ILogger<T>>().Object;
     }
 }

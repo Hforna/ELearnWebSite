@@ -10,6 +10,6 @@ namespace Payment.Domain.Services.PaymentInterfaces
 {
     public interface IPixGatewayService
     {
-        public Task<PixPaymentResponseDto> ProcessPixTransaction(string cpf, string email, string firstName, string lastName, decimal amount); 
+        public Task<PixPaymentResponseDto> ProcessPixTransaction(string cpf, string email, string firstName, string lastName, decimal amount, string? userId = null); 
     }
 }

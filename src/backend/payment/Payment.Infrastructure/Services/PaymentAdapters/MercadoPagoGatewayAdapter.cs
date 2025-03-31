@@ -15,7 +15,7 @@ namespace Payment.Infrastructure.Services.PaymentAdapters
 {
     public class MercadoPagoGatewayAdapter : IPixGatewayService
     {
-        public async Task<PixPaymentResponseDto> ProcessPixTransaction(string cpf, string email, string firstName, string lastName, decimal amount)
+        public async Task<PixPaymentResponseDto> ProcessPixTransaction(string cpf, string email, string firstName, string lastName, decimal amount, string? userId = null)
         {
             var requestOptions = new RequestOptions();
 

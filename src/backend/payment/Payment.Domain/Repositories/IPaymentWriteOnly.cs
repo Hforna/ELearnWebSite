@@ -10,5 +10,6 @@ namespace Payment.Domain.Repositories
     public interface IPaymentWriteOnly
     {
         public Task Add(PaymentEntity payment);
+        public void Delete(PaymentEntity payment);
     }
 }
