@@ -39,15 +39,17 @@ namespace User.Api.Controllers
         private readonly ITokenReceptor _tokenReceptor;
         private readonly ILogger<UserController> _logger;
         private readonly IBus _bus;
+        private readonly SqidsEncoder<long> _sqids;
 
         public UserController(IUnitOfWork uof, IBcryptCryptography cryptography, 
             EmailService emailService, IMapper mapper, 
             UserManager<UserModel> userManager, IConfiguration configuration, 
             ITokenService tokenService, ITokenReceptor tokenReceptor, 
-            ILogger<UserController> logger, IBus bus)
+            ILogger<UserController> logger, IBus bus, SqidsEncoder<long> sqids)
         {
             _uof = uof;
             _bus = bus;
+            _sqids = sqids;
             _logger = logger;
             _cryptography = cryptography;
             _emailService = emailService;
@@ -277,7 +279,8 @@ namespace User.Api.Controllers
         [HttpGet("user-infos/{id}")]
         public async Task<IActionResult> UserInfosById([FromRoute] string id)
         {
-            var user = await _uof.userReadOnly.UserByUid(Guid.Parse(id));
+            var userId = _sqids.Decode(id).Single();
+            var user = await _uof.userReadOnly.UserById(userId);
 
             if (user is null)
                 throw new BadHttpRequestException("User doesn't exists");
