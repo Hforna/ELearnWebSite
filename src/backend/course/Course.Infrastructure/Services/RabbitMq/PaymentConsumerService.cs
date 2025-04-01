@@ -17,16 +17,18 @@ namespace Course.Infrastructure.Services.RabbitMq
     {
         private readonly IUnitOfWork _uof;
         private readonly IUserService _userService;
+        private readonly SqidsEncoder<long> _sqids;
 
-        public PaymentConsumerService(IUnitOfWork uof, IUserService userService)
+        public PaymentConsumerService(IUnitOfWork uof, IUserService userService, SqidsEncoder<long> sqids)
         {
             _uof = uof;
             _userService = userService;
+            _sqids = sqids;
         }
 
         public async Task Consume(ConsumeContext<AllowCourseToUserMessage> context)
         {
-            var user = await _userService.GetUserInfosById(context.Message.UserId);
+            var user = await _userService.GetUserInfosById(_sqids.Encode(context.Message.UserId));
             var courses = await _uof.courseRead.GetCoursesByIds(context.Message.CoursesIds);
 
             if(courses is not null)

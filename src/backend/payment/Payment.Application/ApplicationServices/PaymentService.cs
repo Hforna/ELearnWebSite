@@ -131,7 +131,11 @@ namespace Payment.Application.ApplicationServices
                 Currency = currencyPayment,
                 PaymentId = paymentEntity.Id,
                 TransactionId = transaction.Id,
-                Installments = request.Installments
+                Installments = request.Installments,
+                Status = payment.Status,
+                Success = payment.Success,
+                ClientSecret = payment.ClientSecret,
+                RequiresAction = payment.RequiresAction
             };
 
             if(payment.Status == "requires_action")
@@ -171,9 +175,8 @@ namespace Payment.Application.ApplicationServices
 
                 transaction.TransactionStatus = TransactionStatusEnum.Approved;
 
-                _uof.paymentWrite.Delete(payment);
+                _uof.paymentWrite.Delete(paymentEntity);
                 _uof.transactionWrite.Update(transaction);
-                _uof.balanceWrite.Update(payment);
                 _uof.orderWrite.UpdateOrder(userOrder);
                 await _uof.Commit();
             }

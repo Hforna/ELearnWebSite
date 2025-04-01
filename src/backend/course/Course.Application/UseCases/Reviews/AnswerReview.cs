@@ -64,7 +64,7 @@ namespace Course.Application.UseCases.Reviews
             await _uof.reviewWrite.AddReviewResponse(reviewResponse);
             await _uof.Commit();
 
-            var customer = await _userService.GetUserInfosById(review.Id);
+            var customer = await _userService.GetUserInfosById(_sqids.Encode(review.CustomerId));
 
             await _emailService.SendEmail(customer.userName, customer.email, $"You review has just been answered by: {course.TeacherId}", 
                 $"Message: {request.Text}");

@@ -43,7 +43,7 @@ namespace Course.Infrastructure.Services.Rest
             throw new RestException(await response.Content.ReadAsStringAsync());    
         }
 
-        public async Task<UserInfosDto?> GetUserInfosById(long id)
+        public async Task<UserInfosDto?> GetUserInfosById(string id)
         {
             var client = _httpClient.CreateClient("user.api");
 

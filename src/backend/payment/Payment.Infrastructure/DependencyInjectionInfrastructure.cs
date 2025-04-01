@@ -64,13 +64,14 @@ namespace Payment.Infrastructure
 
                 x.UsingRabbitMq((context, cfg) =>
                 {
-                    ///PRODUCERS
                     cfg.ConfigureEndpoints(context);
                     cfg.Host(new Uri(rabbitMqServer), f =>
                     {
                         f.Username("guest");
                         f.Password("guest");
                     });
+
+                    ///PRODUCERS
                     cfg.Message<AllowCourseToUserMessage>(d => d.SetEntityName("payment_exchange"));
                     cfg.Publish<AllowCourseToUserMessage>(d => d.ExchangeType = "direct");
 

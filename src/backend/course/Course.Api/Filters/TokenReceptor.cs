@@ -10,10 +10,15 @@ namespace Course.Api.Filters
 
         public string? GetToken()
         {
-            var token = _httpContext.HttpContext!.Request.Headers.Authorization.ToString();
+            var httpContext = _httpContext.HttpContext!;
+
+            if (httpContext is null)
+                return "";
+
+            var token = httpContext.Request.Headers.Authorization.ToString();
 
             if (string.IsNullOrEmpty(token))
-                return null;
+                throw new BadHttpRequestException("No token");
 
             return token["Bearer ".Length..].Trim();
         }

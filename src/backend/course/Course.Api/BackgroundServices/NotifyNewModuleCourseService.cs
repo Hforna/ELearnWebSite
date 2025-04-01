@@ -4,6 +4,7 @@ using Course.Application.Services;
 using Course.Domain.Repositories;
 using Course.Domain.Services.Rest;
 using Course.Infrastructure.Services.Azure;
+using Sqids;
 
 namespace Course.Api.BackgroundServices
 {
@@ -11,10 +12,12 @@ namespace Course.Api.BackgroundServices
     {
         private readonly ServiceBusProcessor _processor;
         private readonly IServiceProvider _serviceProvider;
+        private readonly SqidsEncoder<long> _sqids;
 
-        public NotifyNewModuleCourseService(NewModuleProcessor processor, IServiceProvider serviceProvider)
+        public NotifyNewModuleCourseService(NewModuleProcessor processor, IServiceProvider serviceProvider, SqidsEncoder<long> sqids)
         {
             _serviceProvider = serviceProvider;
+            _sqids = sqids;
             _processor = processor.GetProcessor();
         }
 
@@ -45,7 +48,8 @@ namespace Course.Api.BackgroundServices
 
                 foreach(long id in usersId)
                 {
-                    var userInfos = await userService.GetUserInfosById(id);
+                    var userIdEncode = _sqids.Encode(id);
+                    var userInfos = await userService.GetUserInfosById(userIdEncode);
                     var userEmail = userInfos.email;
                     var userName = userInfos.userName;
 

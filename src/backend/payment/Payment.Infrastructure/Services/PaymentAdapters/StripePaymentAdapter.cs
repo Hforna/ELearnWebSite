@@ -64,8 +64,7 @@ namespace Payment.Infrastructure.Services.PaymentAdapters
             {
                 Amount = (long?)amount * 100,
                 Currency = currencyFormat,
-                Customer = userId,
-                PaymentMethod = cardToken,
+                PaymentMethod = "pm_card_visa",
                 Confirm = true,
                 AutomaticPaymentMethods = new PaymentIntentAutomaticPaymentMethodsOptions()
                 {
@@ -78,6 +77,7 @@ namespace Payment.Infrastructure.Services.PaymentAdapters
             var paymentIntent = await service.CreateAsync(options);
 
             var response = _mapper.Map<StripeDebitDto>(paymentIntent);
+            response.Success = paymentIntent.Status == "succeeded";
 
             return response;
         }

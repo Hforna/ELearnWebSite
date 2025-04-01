@@ -15,6 +15,11 @@ namespace Payment.Infrastructure.Services.RabbitMq
     {
         private readonly IUnitOfWork _uof;
 
+        public UserConsumerService(IUnitOfWork uof)
+        {
+            _uof = uof;
+        }
+
         public async Task Consume(ConsumeContext<UserCreatedMessage> context)
         {
             if(context.Message.Teacher)

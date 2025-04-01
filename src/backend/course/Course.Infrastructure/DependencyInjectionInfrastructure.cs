@@ -63,8 +63,10 @@ namespace Course.Infrastructure
             var rabbitmqServer = configuration.GetConnectionString("rabbitmq");
             services.AddMassTransit((x) =>
             {
+                x.AddConsumer<PaymentConsumerService>();
                 x.UsingRabbitMq((context, cfg) =>
                 {
+
                     cfg.ConfigureEndpoints(context);
                     cfg.Host(new Uri(rabbitmqServer!), f =>
                     {
@@ -76,6 +78,17 @@ namespace Course.Infrastructure
 
                     cfg.Message<CourseCreatedMessage>(x => x.SetEntityName("course-exchange"));
                     cfg.Publish<CourseCreatedMessage>(x => x.ExchangeType = "direct");
+
+                    cfg.ReceiveEndpoint("allow-course", f =>
+                    {
+                        f.ConfigureConsumer<PaymentConsumerService>(context);
+
+                        f.Bind("payment_exchange", d =>
+                        {
+                            d.RoutingKey = "allow.course";
+                            d.ExchangeType = "direct";
+                        });
+                    });
                 });
             });
         }
@@ -83,6 +96,7 @@ namespace Course.Infrastructure
         static void AddMessagingServices(IServiceCollection services)
         {
             services.AddScoped<IUserSenderService, UserProducerService>();
+            services.AddScoped<PaymentConsumerService>();
         }
 
         static void AddRepositories(IServiceCollection services)
