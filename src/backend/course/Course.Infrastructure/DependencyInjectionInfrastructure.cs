@@ -66,13 +66,16 @@ namespace Course.Infrastructure
                 x.AddConsumer<PaymentConsumerService>();
                 x.UsingRabbitMq((context, cfg) =>
                 {
+                    cfg.UseMessageRetry(c => c.Interval(4, 10));
+
+                    cfg.UseMessageRetry(cfg => cfg.Interval(4, TimeSpan.FromSeconds(3)));
 
                     cfg.ConfigureEndpoints(context);
                     cfg.Host(new Uri(rabbitmqServer!), f =>
                     {
                         f.Username("guest");
                         f.Password("guest");
-                    });
+                     });
                     cfg.Message<CourseNoteMessage>(x => x.SetEntityName("course-exchange"));
                     cfg.Publish<CourseNoteMessage>(x => x.ExchangeType = "direct");
 
@@ -88,6 +91,10 @@ namespace Course.Infrastructure
                             d.RoutingKey = "allow.course";
                             d.ExchangeType = "direct";
                         });
+                        f.UseKillSwitch(cfg => cfg
+                        .SetActivationThreshold(10)
+                        .SetTripThreshold(0.3)
+                        .SetRestartTimeout(m: 5));
                     });
                 });
             });

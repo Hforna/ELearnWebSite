@@ -85,6 +85,10 @@ namespace Payment.Infrastructure
                         {
                             d.RoutingKey = "user.created";
                         });
+                        f.UseKillSwitch(d => d
+                        .SetActivationThreshold(10)
+                        .SetTripThreshold(0.30)
+                        .SetRestartTimeout(m: 5));
                     });
                 });
             });
