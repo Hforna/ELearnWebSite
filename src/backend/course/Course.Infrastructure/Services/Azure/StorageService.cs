@@ -29,6 +29,13 @@ namespace Course.Infrastructure.Services.Azure
             await blob.DeleteIfExistsAsync();
         }
 
+        public async Task DeleteContainer(Guid courseIdentifier)
+        {
+            var container = _blobClient.GetBlobContainerClient(courseIdentifier.ToString());
+
+            await container.DeleteIfExistsAsync();
+        }
+
         public async Task DeleteThumbnailVideo(string videoId)
         {
             await _blobClient.DeleteBlobContainerAsync(videoId);

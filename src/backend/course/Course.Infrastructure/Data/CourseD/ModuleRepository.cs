@@ -31,6 +31,11 @@ namespace Course.Infrastructure.Data.Course
             _dbContext.Modules.Remove(module);
         }
 
+        public async Task<List<Module>?> GetAllCourseModules(long courseId)
+        {
+            return await _dbContext.Modules.Where(d => d.CourseId == courseId).ToListAsync();
+        }
+
         public async Task<IList<Module>> GetNotActiveModules()
         {
             return await _dbContext.Modules.Include(d => d.Course).Include(d => d.Lessons).Where(d => d.Active == false).ToListAsync();

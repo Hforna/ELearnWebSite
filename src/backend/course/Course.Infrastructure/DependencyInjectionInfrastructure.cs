@@ -64,6 +64,8 @@ namespace Course.Infrastructure
             services.AddMassTransit((x) =>
             {
                 x.AddConsumer<PaymentConsumerService>();
+                x.AddConsumer<UserConsumerService>();
+
                 x.UsingRabbitMq((context, cfg) =>
                 {
                     cfg.UseMessageRetry(c => c.Interval(4, 10));
@@ -95,6 +97,21 @@ namespace Course.Infrastructure
                         .SetActivationThreshold(10)
                         .SetTripThreshold(0.3)
                         .SetRestartTimeout(m: 5));
+                    });
+
+                    cfg.ReceiveEndpoint("user-deleted", f =>
+                    {
+                        f.ConfigureConsumer<UserConsumerService>(context);
+
+                        f.Bind("user_exchange", d =>
+                        {
+                            d.RoutingKey = "user.deleted";
+                            d.ExchangeType = "direct";
+                        });
+                        f.UseKillSwitch(cfg => cfg
+                        .SetActivationThreshold(10)
+                        .SetTripThreshold(0.3)
+                        .SetRestartTimeout(h: 1));
                     });
                 });
             });

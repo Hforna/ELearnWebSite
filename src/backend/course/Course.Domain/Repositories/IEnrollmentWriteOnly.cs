@@ -10,5 +10,6 @@ namespace Course.Domain.Repositories
     public interface IEnrollmentWriteOnly
     {
         public Task AddEnrollment(Enrollment enrollment);
+        public void DeleteEnrollment(Enrollment enrollment);
     }
 }

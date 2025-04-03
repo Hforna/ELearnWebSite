@@ -21,6 +21,11 @@ namespace Course.Infrastructure.Data.VideoD
             await _dbContext.Videos.InsertOneAsync(video);
         }
 
+        public async Task DeleteRangeVideos(List<string> ids)
+        {
+            await _dbContext.Videos.DeleteManyAsync(d => ids.Contains(d.Id));
+        }
+
         public async Task DeleteVideo(string id)
         {
             await GetVideo(id);

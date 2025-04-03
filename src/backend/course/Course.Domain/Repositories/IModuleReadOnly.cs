@@ -11,6 +11,7 @@ namespace Course.Domain.Repositories
     {
         public Task<Module?> ModuleById(long id);
         public Task<List<Module>?> ModulesByCourseId(long courseId);
+        public Task<List<Module>?> GetAllCourseModules(long courseId);
         public Task<Module?> ModuleByCourseAndModuleIds(long courseId, long moduleId);
         public Task<IList<Module>> GetNotActiveModules();
     }

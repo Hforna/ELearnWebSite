@@ -1,4 +1,5 @@
 ﻿using Course.Domain.Entitites;
+using Microsoft.VisualBasic.FileIO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,5 +12,6 @@ namespace Course.Domain.Repositories
     {
         public Task DeleteVideo(string id);
         public Task AddVideo(Video video);
+        public Task DeleteRangeVideos(List<string> ids);
     }
 }

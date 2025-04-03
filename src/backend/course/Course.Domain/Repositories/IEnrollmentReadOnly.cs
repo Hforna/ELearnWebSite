@@ -13,5 +13,6 @@ namespace Course.Domain.Repositories
         public Task<bool> UserGotCourse(long courseId, long userId);
         public Task<List<long>> GetCourseUsersId(long courseId);
         public IPagedList<Enrollment> GetPagedEnrollments(long courseId, int page, int quantity);
+        public Task<List<Enrollment>?> UserEnrollments(long userId);
     }
 }

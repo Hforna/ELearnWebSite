@@ -23,6 +23,11 @@ namespace Course.Infrastructure.Data.CourseD
             await _dbContext.Enrollments.AddAsync(enrollment);
         }
 
+        public void DeleteEnrollment(Enrollment enrollment)
+        {
+            _dbContext.Enrollments.Remove(enrollment);
+        }
+
         public async Task<List<long>> GetCourseUsersId(long courseId)
         {
             return await _dbContext.Enrollments.Where(d => d.CourseId == courseId && d.Active).Select(d => d.CustomerId).ToListAsync();
@@ -33,6 +38,11 @@ namespace Course.Infrastructure.Data.CourseD
             var query = _dbContext.Enrollments.Where(d => d.CourseId == courseId && d.Active);
 
             return query.ToPagedList(page, quantity);
+        }
+
+        public async Task<List<Enrollment>?> UserEnrollments(long userId)
+        {
+            return await _dbContext.Enrollments.Include(d => d.Course).Where(d => d.CustomerId == userId).ToListAsync();
         }
 
         public async Task<bool> UserGotCourse(long courseId, long userId)
