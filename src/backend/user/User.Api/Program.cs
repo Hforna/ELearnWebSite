@@ -131,6 +131,9 @@ builder.Services.AddMassTransit(x =>
         /// PRODUCERS
         cfg.Message<UserCreatedMessage>(d => d.SetEntityName("user_exchange"));
         cfg.Publish<UserCreatedMessage>(d => d.ExchangeType = "direct");
+
+        cfg.Message<UserDeletedMessage>(d => d.SetEntityName("user_exchange"));
+        cfg.Publish<UserDeletedMessage>(d => d.ExchangeType = "direct");
     });
 });
 

@@ -1,4 +1,8 @@
-﻿using User.Api.Models.Repositories;
+﻿using MassTransit;
+using Microsoft.AspNetCore.Identity;
+using SharedMessages.UserMessages;
+using User.Api.Models;
+using User.Api.Models.Repositories;
 
 namespace User.Api.BackgroundServices
 {
@@ -24,6 +28,8 @@ namespace User.Api.BackgroundServices
                     using (var scope = _serviceProvider.CreateScope())
                     {
                         var uof = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
+                        var bus = scope.ServiceProvider.GetRequiredService<IBus>();
+                        var userManager = scope.ServiceProvider.GetRequiredService<UserManager<UserModel>>();
 
                         var users = await uof.userReadOnly.GetUsersNotActive();
                         if (users == null || !users.Any())
@@ -36,6 +42,11 @@ namespace User.Api.BackgroundServices
                             {
                                 if (user.TimeDisabled <= DateTime.UtcNow)
                                 {
+                                    var roles = await userManager.GetRolesAsync(user);
+                                    await bus.Publish(new UserDeletedMessage() { UserId = user.Id, 
+                                        Teacher = roles.Contains("teacher") }, 
+                                        d => d.SetRoutingKey("user.deleted"));
+
                                     uof.userWriteOnly.DeleteUser(user);
                                     await uof.Commit();
                                     _logger.LogInformation("User {UserId} deleted", user.Id);
