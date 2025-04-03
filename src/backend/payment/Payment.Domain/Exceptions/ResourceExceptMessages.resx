@@ -135,4 +135,7 @@
   <data name="PAYMENT_CANCELED" xml:space="preserve">
     <value>Payment canceled verify the payment infos or try again later</value>
   </data>
+  <data name="ORDERS_DONT_EXISTS" xml:space="preserve">
+    <value>Orders don't exists</value>
+  </data>
 </root>

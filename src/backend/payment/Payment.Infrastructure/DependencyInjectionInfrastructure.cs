@@ -90,6 +90,17 @@ namespace Payment.Infrastructure
                         .SetTripThreshold(0.30)
                         .SetRestartTimeout(m: 5));
                     });
+
+                    cfg.ReceiveEndpoint("user-deleted", f =>
+                    {
+                        f.ConfigureConsumer<UserConsumerService>(context);
+
+                        f.ExchangeType = "direct";
+                        f.Bind("user_exchange", d =>
+                        {
+                            d.RoutingKey = "user.deleted";
+                        });
+                    });
                 });
             });
         }

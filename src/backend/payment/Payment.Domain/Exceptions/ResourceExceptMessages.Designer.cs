@@ -106,6 +106,15 @@ namespace Payment.Domain.Exceptions {
         }
         
         /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Orders don&apos;t exists.
+        /// </summary>
+        public static string ORDERS_DONT_EXISTS {
+            get {
+                return ResourceManager.GetString("ORDERS_DONT_EXISTS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a Payment canceled verify the payment infos or try again later.
         /// </summary>
         public static string PAYMENT_CANCELED {

@@ -11,5 +11,6 @@ namespace Payment.Domain.Repositories
     {
         public Task<bool> TeacherBalanceExists(long teacherId);
         public Task<Balance?> BalanceByTeacherId(long teacherId);
+        public Task<List<Payout>?> PayoutsByUser(long userId);
     }
 }

@@ -13,6 +13,16 @@ namespace Payment.Api.Controllers
 
         public PaymentController(IPaymentService paymentService) => _paymentService = paymentService;
 
+
+        /// <summary>
+        /// process user purchase by pix, a brazilian method for process payment.
+        /// user's courses will be allowed after he make the purchase on their account
+        /// </summary>
+        /// <param name="request">infos about account that user will make the purchase</param>
+        /// <returns>hash: contains the key that user will need to make the purchase.
+        /// qrcode: the qr code in text format for user make the purchase
+        /// expired on: user will has a specific time to make the purchase, otherwise the transaction will fail
+        /// </returns>
         [HttpPost("pix")]
         public async Task<IActionResult> ProcessPixPayment([FromBody]PixPaymentRequest request)
         {
@@ -21,6 +31,13 @@ namespace Payment.Api.Controllers
             return Ok(result);
         }
 
+
+        /// <summary>
+        /// make the purchase of user order by card.
+        /// user can choose if wanna pay on credit card or debt card choosing the installments that they prefer
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns>return the response containing infos about transaction</returns>
         [HttpPost("card")]
         public async Task<IActionResult> ProcessCardPayment([FromBody]CardPaymentRequest request)
         {

@@ -4,6 +4,7 @@ using Payment.Application.ApplicationServices.Interfaces;
 using Payment.Application.Requests;
 using Payment.Application.Responses.Order;
 using Payment.Domain.Cons;
+using Payment.Domain.DTOs;
 using Payment.Domain.Entities;
 using Payment.Domain.Enums;
 using Payment.Domain.Exceptions;
@@ -27,13 +28,15 @@ namespace Payment.Application.Services
         private readonly IUnitOfWork _uow;
         private readonly ILogger<OrderService> _logger;
         private readonly ICurrencyExchangeService _currencyExchange;
+        private readonly ILocationRestService _locationRest;
 
         public OrderService(IUnitOfWork uow, SqidsEncoder<long> sqids, ICourseRestService courseRest, 
             IUserRestService userRest, IMapper mapper, 
-            ILogger<OrderService> logger, ICurrencyExchangeService currencyExchange)
+            ILogger<OrderService> logger, ICurrencyExchangeService currencyExchange, ILocationRestService locationRest)
         {
             _courseRest = courseRest;
             _uow = uow;
+            _locationRest = locationRest;
             _currencyExchange = currencyExchange;
             _userRest = userRest;
             _mapper = mapper;
@@ -93,6 +96,50 @@ namespace Payment.Application.Services
             return response;
         }
 
+        public async Task<OrderHistoryResponse> GetOrderHistory(int page, int quantity)
+        {
+            var user = await _userRest.GetUserInfos();
+            var userId = _sqids.Decode(user.id).Single();
+
+            var orderHistory = _uow.orderRead.GetOrdersNotActive(page, quantity, userId);
+
+            if (orderHistory is null)
+                throw new OrderException(ResourceExceptMessages.ORDERS_DONT_EXISTS, System.Net.HttpStatusCode.NotFound);
+
+            var getUserCurrency = await _locationRest.GetCurrencyByUserLocation();
+            var userCurrency = Enum.TryParse(typeof(CurrencyEnum), getUserCurrency.Code, out var result)
+                ? (CurrencyEnum)result
+                : DefaultCurrency.Currency;
+            var currencyExchange = await _currencyExchange.GetCurrencyRates(userCurrency);
+
+            var transactions = await _uow.transactionRead.TransactionsByOrderIds(orderHistory.Select(d => d.Id).ToList());
+            var dictTransactions = transactions.ToDictionary(d => d.OrderId);
+
+            var orderResponse = _mapper.Map<List<OrderShortResponse>>(orderHistory);
+            var selectOrder = orderResponse.Select(order =>
+            {
+                var transaction = dictTransactions[order.Id];
+
+                order.PurchaseDate = transaction.TransactionStatus == TransactionStatusEnum.Approved ? transaction.UpdatedOn : null;
+                order.Status = transaction.TransactionStatus;
+                order.TotalPrice *= (decimal)GetCurrencyRate(order.Currency, currencyExchange)!;
+
+                return order;
+            });
+
+            var response = new OrderHistoryResponse()
+            {
+                Orders = selectOrder.ToList(),
+                Count = orderHistory.Count,
+                IsFirstPage = orderHistory.IsFirstPage,
+                IsLastPage = orderHistory.IsLastPage,
+                PageNumber = orderHistory.PageNumber,
+                TotalItemCount = orderHistory.TotalItemCount
+            };
+
+            return response;
+        }
+
         public async Task<OrderResponse> GetUserOrder()
         {
             var user = await _userRest.GetUserInfos();
@@ -115,6 +162,21 @@ namespace Payment.Application.Services
             }).ToList();
 
             return response;
+        }
+
+        decimal? GetCurrencyRate(CurrencyEnum currency, RateExchangeDto rateExchange)
+        {
+            switch(currency)
+            {
+                case CurrencyEnum.USD:
+                    return (decimal)rateExchange.USD;
+                case CurrencyEnum.EUR:
+                    return (decimal)rateExchange.EUR;
+                case CurrencyEnum.BRL:
+                    return (decimal)rateExchange.BRL;
+                default:
+                    return null;
+            }
         }
     }
 }

@@ -13,6 +13,7 @@ namespace Payment.Domain.Entities
         public Guid OrderId { get; set; }
         public Order Order { get; set; }
         public decimal Amount { get; set; }
+        public DateTime? UpdatedOn { get; set; }
         public string GatewayTransactionId { get; set; }
         public CurrencyEnum Currency { get; set; }
         public TransactionStatusEnum TransactionStatus { get; set; }

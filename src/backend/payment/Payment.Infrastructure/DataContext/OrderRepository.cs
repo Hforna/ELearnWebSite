@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using X.PagedList;
+using X.PagedList.Extensions;
 
 namespace Payment.Infrastructure.DataContext
 {
@@ -23,6 +25,21 @@ namespace Payment.Infrastructure.DataContext
         public async Task AddOrderItem(OrderItem orderItem)
         {
             await _dbContext.OrderItems.AddAsync(orderItem);
+        }
+
+        public void DeleteOrderRange(List<Order> orders)
+        {
+            _dbContext.Orders.RemoveRange(orders);
+        }
+
+        public async Task<List<Order>?> GetOrdersByUserId(long userId)
+        {
+            return await _dbContext.Orders.Include(d => d.OrderItems).Where(d => d.UserId == userId).ToListAsync();
+        }
+
+        public IPagedList<Order> GetOrdersNotActive(int page, int quantity, long userId)
+        {
+            return _dbContext.Orders.AsNoTracking().Where(d => d.Active == false && d.UserId == userId).ToPagedList(page, quantity);
         }
 
         public async Task<Order?> OrderByUserId(long userId)

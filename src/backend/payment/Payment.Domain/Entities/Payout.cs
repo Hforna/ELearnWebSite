@@ -10,6 +10,7 @@ namespace Payment.Domain.Entities
     public class Payout
     {
         public Guid Id { get; set; } = Guid.NewGuid();
+        public bool Active { get; set; } = true;
         public long UserId { get; set; }
         public decimal Amount { get; set; }
         public TransactionStatusEnum TransactionStatus { get; set; }

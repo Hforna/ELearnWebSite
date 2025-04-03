@@ -174,6 +174,7 @@ namespace Payment.Application.ApplicationServices
                 }
 
                 transaction.TransactionStatus = TransactionStatusEnum.Approved;
+                transaction.UpdatedOn = DateTime.UtcNow;
 
                 _uof.paymentWrite.Delete(paymentEntity);
                 _uof.transactionWrite.Update(transaction);

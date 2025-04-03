@@ -51,6 +51,7 @@ namespace Payment.Application.ApplicationServices
         private async Task ProcessSettledTransaction(long userId, Payment.Domain.Entities.Transaction transaction)
         {
             transaction.TransactionStatus = Domain.Enums.TransactionStatusEnum.Approved;
+            transaction.UpdatedOn = DateTime.UtcNow;
             _uof.transactionWrite.Update(transaction);
 
             var payment = await _uof.paymentRead.PaymentByUser(userId);

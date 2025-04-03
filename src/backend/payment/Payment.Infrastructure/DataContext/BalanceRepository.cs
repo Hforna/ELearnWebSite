@@ -42,5 +42,20 @@ namespace Payment.Infrastructure.DataContext
         {
             _dbContext.Balances.UpdateRange(balances);
         }
+
+        public void Delete(Balance balance)
+        {
+            _dbContext.Balances.Remove(balance);
+        }
+
+        public async Task<List<Payout>?> PayoutsByUser(long userId)
+        {
+            return await _dbContext.Payouts.Where(d => d.UserId == userId).ToListAsync();
+        }
+
+        public void DeletePayoutRange(List<Payout> payouts)
+        {
+            _dbContext.Payouts.RemoveRange(payouts);
+        }
     }
 }

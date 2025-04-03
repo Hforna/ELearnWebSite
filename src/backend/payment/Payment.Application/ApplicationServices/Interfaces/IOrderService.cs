@@ -12,5 +12,6 @@ namespace Payment.Application.ApplicationServices.Interfaces
     {
         public Task<OrderItemResponse> AddCourseToOrder(AddCourseToOrderRequest request);
         public Task<OrderResponse> GetUserOrder();
+        public Task<OrderHistoryResponse> GetOrderHistory(int page, int quantity);
     }
 }

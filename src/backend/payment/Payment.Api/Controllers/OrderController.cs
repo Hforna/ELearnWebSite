@@ -42,5 +42,17 @@ namespace Payment.Api.Controllers
 
             return Ok(result);
         }
+
+        [HttpGet("order-history")]
+        [ProducesResponseType(typeof(OrderException), StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> OrderHistory([FromQuery]int page, [FromQuery]int quantity)
+        {
+            var result = await _orderService.GetOrderHistory(page, quantity);
+
+            if (result.Orders is null || !result.Orders.Any())
+                return NoContent();
+
+            return Ok(result);
+        }
     }
 }
