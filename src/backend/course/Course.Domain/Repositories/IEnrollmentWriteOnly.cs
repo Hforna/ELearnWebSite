@@ -11,5 +11,6 @@ namespace Course.Domain.Repositories
     {
         public Task AddEnrollment(Enrollment enrollment);
         public void DeleteEnrollment(Enrollment enrollment);
+        public void DeleteEnrollmentsRange(List<Enrollment> enrollments);
     }
 }

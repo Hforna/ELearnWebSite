@@ -138,4 +138,7 @@
   <data name="ORDERS_DONT_EXISTS" xml:space="preserve">
     <value>Orders don't exists</value>
   </data>
+  <data name="BALANCE_DOESNT_EXISTS" xml:space="preserve">
+    <value>User balance doesn't exists</value>
+  </data>
 </root>

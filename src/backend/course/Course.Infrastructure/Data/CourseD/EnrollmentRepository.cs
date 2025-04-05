@@ -28,9 +28,19 @@ namespace Course.Infrastructure.Data.CourseD
             _dbContext.Enrollments.Remove(enrollment);
         }
 
+        public void DeleteEnrollmentsRange(List<Enrollment> enrollments)
+        {
+            _dbContext.Enrollments.RemoveRange(enrollments);
+        }
+
         public async Task<List<long>> GetCourseUsersId(long courseId)
         {
             return await _dbContext.Enrollments.Where(d => d.CourseId == courseId && d.Active).Select(d => d.CustomerId).ToListAsync();
+        }
+
+        public async Task<List<Enrollment>?> GetEnrollmentsByUserIdAndCoursesIds(long userId, List<long> courses)
+        {
+            return await _dbContext.Enrollments.Where(d => d.CustomerId == userId && courses.Contains(d.CourseId)).ToListAsync();
         }
 
         public IPagedList<Enrollment> GetPagedEnrollments(long courseId, int page, int quantity)

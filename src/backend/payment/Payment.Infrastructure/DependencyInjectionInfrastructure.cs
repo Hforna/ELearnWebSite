@@ -75,6 +75,9 @@ namespace Payment.Infrastructure
                     cfg.Message<AllowCourseToUserMessage>(d => d.SetEntityName("payment_exchange"));
                     cfg.Publish<AllowCourseToUserMessage>(d => d.ExchangeType = "direct");
 
+                    cfg.Message<UserGotRefundMessage>(d => d.SetEntityName("payment_exchange"));
+                    cfg.Publish<UserGotRefundMessage>(d => d.ExchangeType = "direct");
+
                     ///CONSUMERS
                     cfg.ReceiveEndpoint("user-created", f =>
                     {

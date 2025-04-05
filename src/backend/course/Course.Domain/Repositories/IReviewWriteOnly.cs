@@ -12,6 +12,7 @@ namespace Course.Domain.Repositories
         public void Add(Review review);
         public void DeleteReview(Review review);
         public void DeleteCourseReviews(long courseId);
+        public void DeleteReviewsRange(List<Review> reviews);
         public Task AddReviewResponse(ReviewResponseEntity reviewResponse);
     }
 }

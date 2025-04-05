@@ -28,6 +28,7 @@ namespace Payment.Application
             services.AddScoped<IOrderService, OrderService>();
             services.AddScoped<IPaymentService, PaymentService>();
             services.AddScoped<IWebhookService, WebhookService>();
+            services.AddScoped<IBalanceService, BalanceService>();
         }
 
         static void AddSqids(IServiceCollection services, IConfiguration configuration)

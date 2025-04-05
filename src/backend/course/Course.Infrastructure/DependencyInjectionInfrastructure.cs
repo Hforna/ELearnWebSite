@@ -68,7 +68,12 @@ namespace Course.Infrastructure
 
                 x.UsingRabbitMq((context, cfg) =>
                 {
-                    cfg.UseMessageRetry(c => c.Interval(4, 10));
+                    cfg.UseCircuitBreaker(cfg =>
+                    {
+                        cfg.ActiveThreshold = 10;
+                        cfg.TripThreshold = 30;
+                        cfg.ResetInterval = TimeSpan.FromMinutes(30);
+                    });
 
                     cfg.UseMessageRetry(cfg => cfg.Interval(4, TimeSpan.FromSeconds(3)));
 
@@ -78,6 +83,7 @@ namespace Course.Infrastructure
                         f.Username("guest");
                         f.Password("guest");
                      });
+
                     cfg.Message<CourseNoteMessage>(x => x.SetEntityName("course-exchange"));
                     cfg.Publish<CourseNoteMessage>(x => x.ExchangeType = "direct");
 
@@ -112,6 +118,19 @@ namespace Course.Infrastructure
                         .SetActivationThreshold(10)
                         .SetTripThreshold(0.3)
                         .SetRestartTimeout(h: 1));
+                    });
+
+
+
+                    cfg.ReceiveEndpoint("user-refund", cfg =>
+                    {
+                        cfg.ConfigureConsumer<PaymentConsumerService>(context);
+
+                        cfg.Bind("payment_exchange", d =>
+                        {
+                            d.RoutingKey = "user.refund";
+                            d.ExchangeType = "direct";
+                        });
                     });
                 });
             });

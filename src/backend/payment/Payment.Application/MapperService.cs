@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Payment.Application.Responses.Balance;
 using Payment.Application.Responses.Order;
 using Payment.Application.Responses.Payment;
 using Payment.Domain.DTOs;
@@ -37,6 +38,9 @@ namespace Payment.Application
 
             CreateMap<Order, OrderResponse>()
                 .ForMember(d => d.UserId, f => f.MapFrom(d => _sqids.Encode(d.UserId)));
+
+            CreateMap<Domain.Entities.Balance, BalanceResponse>()
+                .ForMember(d => d.UserId, f => f.MapFrom(d => _sqids.Encode(d.TeacherId)));
         }
 
         void DtoToResponse()

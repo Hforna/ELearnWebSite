@@ -10,18 +10,21 @@ using System.Text;
 using System.Threading.Tasks;
 using Sqids;
 using Course.Domain.Entitites;
+using Course.Domain.Services.RabbitMq;
 
 namespace Course.Infrastructure.Services.RabbitMq
 {
-    public class PaymentConsumerService : IConsumer<AllowCourseToUserMessage>
+    public class PaymentConsumerService : IConsumer<AllowCourseToUserMessage>, IConsumer<UserGotRefundMessage>
     {
         private readonly IUnitOfWork _uof;
         private readonly IUserService _userService;
         private readonly SqidsEncoder<long> _sqids;
+        private readonly IUserSenderService _userSender;
 
-        public PaymentConsumerService(IUnitOfWork uof, IUserService userService, SqidsEncoder<long> sqids)
+        public PaymentConsumerService(IUnitOfWork uof, IUserService userService, SqidsEncoder<long> sqids, IUserSenderService userSender)
         {
             _uof = uof;
+            _userSender = userSender;
             _userService = userService;
             _sqids = sqids;
         }
@@ -50,6 +53,49 @@ namespace Course.Infrastructure.Services.RabbitMq
                 }
             }
             
+        }
+
+        public async Task Consume(ConsumeContext<UserGotRefundMessage> context)
+        {
+            var userId = context.Message.UserId;
+
+            var userEnrollments = await _uof.enrollmentRead.GetEnrollmentsByUserIdAndCoursesIds(userId, context.Message.CourseIds);
+
+            foreach(var course in userEnrollments.Select(d => d.Course))
+            {
+                course.Enrollments -= 1;
+
+                var userReviews = await _uof.reviewRead.UserReviews(userId, course.Id);
+
+                if(userReviews is not null)
+                {
+                    var sumNotes = userReviews.Sum(d => (int)d.Rating);
+
+                    var courseNotesCount = await _uof.reviewRead.ReviewsCount(course.Id);
+                    var courseSum = await _uof.reviewRead.GetReviewSum(course.Id);
+
+                    courseNotesCount -= userReviews.Count;
+                    courseSum -= sumNotes;
+
+                    var calcNote = courseSum / courseNotesCount;
+                    var roundNote = Math.Round(calcNote, 2);
+                    course.Note = roundNote;
+
+                    var courseNumber = await _uof.courseRead.GetQuantityUserCourse(userId);
+
+                    await _userSender.SendCourseNote(new SharedMessages.CourseMessages.CourseNoteMessage()
+                    {
+                        CourseNumber = courseNumber,
+                        Note = roundNote,
+                        UserId = _sqids.Encode(course.TeacherId)
+                    });
+
+                    _uof.reviewWrite.DeleteReviewsRange(userReviews);
+                }
+                _uof.courseWrite.UpdateCourse(course);
+            }
+            _uof.enrollmentWrite.DeleteEnrollmentsRange(userEnrollments);
+            await _uof.Commit();
         }
     }
 }

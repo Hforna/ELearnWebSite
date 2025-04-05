@@ -22,21 +22,21 @@ namespace Payment.Domain.Exceptions {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    public class ResourceExceptMessages {
+    internal class ResourceExceptMessages {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        public ResourceExceptMessages() {
+        internal ResourceExceptMessages() {
         }
         
         /// <summary>
         ///   Retorna a instância de ResourceManager armazenada em cache usada por essa classe.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        public static global::System.Resources.ResourceManager ResourceManager {
+        internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Payment.Domain.Exceptions.ResourceExceptMessages", typeof(ResourceExceptMessages).Assembly);
@@ -51,7 +51,7 @@ namespace Payment.Domain.Exceptions {
         ///   pesquisas de recursos que usam essa classe de recurso de tipo de alta segurança.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        public static global::System.Globalization.CultureInfo Culture {
+        internal static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -61,9 +61,18 @@ namespace Payment.Domain.Exceptions {
         }
         
         /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a User balance doesn&apos;t exists.
+        /// </summary>
+        internal static string BALANCE_DOESNT_EXISTS {
+            get {
+                return ResourceManager.GetString("BALANCE_DOESNT_EXISTS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a Course not found.
         /// </summary>
-        public static string COURSE_NOT_FOUND {
+        internal static string COURSE_NOT_FOUND {
             get {
                 return ResourceManager.GetString("COURSE_NOT_FOUND", resourceCulture);
             }
@@ -72,7 +81,7 @@ namespace Payment.Domain.Exceptions {
         /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a Cpf format is not valid.
         /// </summary>
-        public static string CPF_FORMAT_NOT_VALID {
+        internal static string CPF_FORMAT_NOT_VALID {
             get {
                 return ResourceManager.GetString("CPF_FORMAT_NOT_VALID", resourceCulture);
             }
@@ -81,7 +90,7 @@ namespace Payment.Domain.Exceptions {
         /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a The current currency is not allowed to this method.
         /// </summary>
-        public static string CURRENCY_NOT_ALLOWED {
+        internal static string CURRENCY_NOT_ALLOWED {
             get {
                 return ResourceManager.GetString("CURRENCY_NOT_ALLOWED", resourceCulture);
             }
@@ -90,7 +99,7 @@ namespace Payment.Domain.Exceptions {
         /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a User still doesn&apos;t have a order.
         /// </summary>
-        public static string ORDER_DOESNT_EXISTS {
+        internal static string ORDER_DOESNT_EXISTS {
             get {
                 return ResourceManager.GetString("ORDER_DOESNT_EXISTS", resourceCulture);
             }
@@ -99,7 +108,7 @@ namespace Payment.Domain.Exceptions {
         /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a Course is already on user order.
         /// </summary>
-        public static string ORDER_ITEM_EXISTS {
+        internal static string ORDER_ITEM_EXISTS {
             get {
                 return ResourceManager.GetString("ORDER_ITEM_EXISTS", resourceCulture);
             }
@@ -108,7 +117,7 @@ namespace Payment.Domain.Exceptions {
         /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a Orders don&apos;t exists.
         /// </summary>
-        public static string ORDERS_DONT_EXISTS {
+        internal static string ORDERS_DONT_EXISTS {
             get {
                 return ResourceManager.GetString("ORDERS_DONT_EXISTS", resourceCulture);
             }
@@ -117,7 +126,7 @@ namespace Payment.Domain.Exceptions {
         /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a Payment canceled verify the payment infos or try again later.
         /// </summary>
-        public static string PAYMENT_CANCELED {
+        internal static string PAYMENT_CANCELED {
             get {
                 return ResourceManager.GetString("PAYMENT_CANCELED", resourceCulture);
             }

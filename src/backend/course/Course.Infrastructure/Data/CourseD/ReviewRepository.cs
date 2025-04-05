@@ -38,6 +38,11 @@ namespace Course.Infrastructure.Data.CourseD
             _dbContext.Reviews.Remove(review);
         }
 
+        public void DeleteReviewsRange(List<Review> reviews)
+        {
+            _dbContext.Reviews.RemoveRange(reviews);
+        }
+
         public async Task<decimal> GetReviewSum(long courseId)
         {
             var reviews = _dbContext.Reviews.Where(d => d.CourseId == courseId && d.Active);
@@ -55,11 +60,6 @@ namespace Course.Infrastructure.Data.CourseD
             return await _dbContext.Reviews.AnyAsync(d => d.CustomerId == userId && d.Id == reviewId && d.Active);
         }
 
-        public Task<ReviewResponseEntity> ReviewResponseById(long reviewId)
-        {
-            throw new NotImplementedException();
-        }
-
         public async Task<List<Review>> ReviewsByCourse(long courseId)
         {
             return await _dbContext.Reviews.Where(d => d.Active && d.CourseId == courseId).ToListAsync();
@@ -68,5 +68,9 @@ namespace Course.Infrastructure.Data.CourseD
         public async Task<int> ReviewsCount(long courseId) => await _dbContext.Reviews
             .Where(d => d.CourseId == courseId && d.Active).CountAsync();
 
+        public async Task<List<Review>?> UserReviews(long userId, long courseId)
+        {
+            return await _dbContext.Reviews.Where(d => d.CustomerId == userId && d.CourseId == courseId).ToListAsync();
+        }
     }
 }
