@@ -28,7 +28,6 @@ namespace Payment.Infrastructure.Services.PaymentAdapters
                 Currency = currencyFormat,
                 PaymentMethod = cardToken,
                 Confirm = true,
-                Customer = userId,
                 PaymentMethodOptions = new PaymentIntentPaymentMethodOptionsOptions()
                 {
                     Card = new PaymentIntentPaymentMethodOptionsCardOptions()
@@ -46,7 +45,10 @@ namespace Payment.Infrastructure.Services.PaymentAdapters
                 },
                 Metadata = new Dictionary<string, string>()
                 {
-                    { "installments", installments.ToString() }
+                    { "installments", installments.ToString() },
+                    { "user_id", userId },
+                    { "first_name", firstName },
+                    { "last_name", lastName }
                 }
             };
 
@@ -66,6 +68,12 @@ namespace Payment.Infrastructure.Services.PaymentAdapters
                 Currency = currencyFormat,
                 PaymentMethod = "pm_card_visa",
                 Confirm = true,
+                Metadata = new Dictionary<string, string>()
+                {
+                    { "user_id", userId },
+                    { "first_name", firstName },
+                    { "last_name", lastName }
+                },
                 AutomaticPaymentMethods = new PaymentIntentAutomaticPaymentMethodsOptions()
                 {
                     AllowRedirects = "never",

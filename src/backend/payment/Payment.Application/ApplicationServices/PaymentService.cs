@@ -137,51 +137,6 @@ namespace Payment.Application.ApplicationServices
                 ClientSecret = payment.ClientSecret,
                 RequiresAction = payment.RequiresAction
             };
-
-            if(payment.Status == "requires_action")
-                return response;
-
-            if(payment.Success)
-            {
-                var allowCourseMessage = new AllowCourseToUserMessage()
-                {
-                    CoursesIds = userOrder.OrderItems.Select(d => d.CourseId).ToList(),
-                    UserId = userId
-                };
-                await _courseProducer.SendAllowCourseToUser(allowCourseMessage);
-
-                userOrder.Active = false;
-                Dictionary<long, decimal> teacherCourses = new Dictionary<long, decimal>();
-
-                foreach (var item in userOrder.OrderItems)
-                {
-                    item.Active = false;
-
-                    var encodeCourseId = _sqids.Encode(item.CourseId);
-
-                    var course = await _courseRest.GetCourse(encodeCourseId);
-                    var teacherId = _sqids.Decode(course.teacherId).Single();
-
-                    decimal priceToUser = (decimal)Math.Round((double)item.Price * 0.60, 2);
-                    teacherCourses[teacherId] = teacherCourses.ContainsKey(teacherId) ? teacherCourses[teacherId] += priceToUser : priceToUser;
-                }
-
-                foreach(var teacher in teacherCourses)
-                {
-                    var balance = await _uof.balanceRead.BalanceByTeacherId(teacher.Key);
-                    balance.AvaliableBalance += teacher.Value;
-                    _uof.balanceWrite.Update(balance);
-                }
-
-                transaction.TransactionStatus = TransactionStatusEnum.Approved;
-                transaction.UpdatedOn = DateTime.UtcNow;
-
-                _uof.paymentWrite.Delete(paymentEntity);
-                _uof.transactionWrite.Update(transaction);
-                _uof.orderWrite.UpdateOrder(userOrder);
-                await _uof.Commit();
-            }
-
             return response;
         }
 

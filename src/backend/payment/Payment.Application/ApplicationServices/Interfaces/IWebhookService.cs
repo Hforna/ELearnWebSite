@@ -1,4 +1,5 @@
 ﻿using Payment.Application.Requests;
+using Stripe;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,5 +11,6 @@ namespace Payment.Application.ApplicationServices.Interfaces
     public interface IWebhookService
     {
         public Task PixTrioWebhook(TrioWebhookPayload payload);
+        public Task CardStripeWebhook(Event payload);
     }
 }

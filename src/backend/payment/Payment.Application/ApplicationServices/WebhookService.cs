@@ -2,11 +2,13 @@
 using Payment.Application.ApplicationServices.Interfaces;
 using Payment.Application.Requests;
 using Payment.Domain.Entities;
+using Payment.Domain.Exceptions;
 using Payment.Domain.Repositories;
 using Payment.Domain.Services.RabbitMq;
 using Payment.Domain.Services.Rest;
 using SharedMessages.PaymentMessages;
 using Sqids;
+using Stripe;
 using Stripe.Issuing;
 using System;
 using System.Collections.Concurrent;
@@ -36,6 +38,22 @@ namespace Payment.Application.ApplicationServices
             _courseProducer = courseProducer;
             _sqids = sqids;
             _courseRest = courseRest;
+        }
+
+        public async Task CardStripeWebhook(Stripe.Event payload)
+        {
+            if(payload.Type == EventTypes.PaymentIntentSucceeded)
+            {
+                var content = payload.Data.Object as PaymentIntent;
+                var userId = content.Metadata.GetValueOrDefault("user_id");
+
+                var transaction = await _uof.transactionRead.TransactionByGatewayId(content.Id);
+
+                if (transaction is null)
+                    throw new PaymentException("Transaction doesn't exists", System.Net.HttpStatusCode.InternalServerError);
+
+                await ProcessSettledTransaction(int.Parse(userId!), transaction!);
+            }
         }
 
         public async Task PixTrioWebhook(TrioWebhookPayload payload)
@@ -93,7 +111,7 @@ namespace Payment.Application.ApplicationServices
 
             await Task.WhenAll(courseTasks);
 
-            var balances = new List<Balance>();
+            var balances = new List<Payment.Domain.Entities.Balance>();
             foreach (var teacher in teacherPrices)
             {
                 var balance = await _uof.balanceRead.BalanceByTeacherId(teacher.Key);

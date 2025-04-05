@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Payment.Application.ApplicationServices.Interfaces;
 using Payment.Application.Requests;
 using Payment.Domain.Exceptions;
+using Stripe;
 using System.Text.Json;
 
 namespace Payment.Api.Controllers
@@ -45,11 +47,22 @@ namespace Payment.Api.Controllers
             return Ok();
         }
 
-        //[HttpPost]
-        //[Route("stripe-api")]
-        //public async Task<IActionResult> CardStripeWebhook()
-        //{
-        //
-        //}
+        [HttpPost]
+        [Route("stripe-api")]
+        [EnableCors("StripeWebhook")]
+        public async Task<IActionResult> CardStripeWebhook()
+        {
+            var body = await new StreamReader(HttpContext.Request.Body).ReadToEndAsync();
+
+            try
+            {
+                var formatBody = EventUtility.ParseEvent(body);
+
+                return Ok();
+            }catch(StripeException ex)
+            {
+                return BadRequest();
+            }
+        }
     }
 }
