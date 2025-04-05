@@ -30,7 +30,6 @@ namespace Payment.Infrastructure.Services.RabbitMq
                 var balance = new Balance()
                 {
                     AvaliableBalance = 0,
-                    BlockedBalance = 0,
                     TeacherId = context.Message.UserId
                 };
 
@@ -49,7 +48,7 @@ namespace Payment.Infrastructure.Services.RabbitMq
                 if (balance is null)
                     throw new Exception("User balance doesn't exists");
 
-                if (balance.BlockedBalance > 0 || balance.AvaliableBalance > 0)
+                if (balance.AvaliableBalance > 0)
                     throw new Exception("User can't delete account with a money amount in their balance");
 
                 _uof.balanceWrite.Delete(balance);
