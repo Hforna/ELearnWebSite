@@ -11,5 +11,6 @@ namespace Payment.Domain.Repositories
     {
         public Task Add(PaymentEntity payment);
         public void Delete(PaymentEntity payment);
+
     }
 }

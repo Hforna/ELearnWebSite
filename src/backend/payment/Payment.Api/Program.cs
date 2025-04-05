@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.OpenApi.Models;
 using Payment.Api.Filters;
 using Payment.Api.Middlewares;
@@ -56,6 +57,33 @@ builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
 
+builder.Services.AddRateLimiter(cfg =>
+{
+    cfg.AddFixedWindowLimiter("PixPayment", cfg =>
+    {
+        cfg.PermitLimit = 3;
+        cfg.Window = TimeSpan.FromMinutes(2);
+        cfg.QueueProcessingOrder = System.Threading.RateLimiting.QueueProcessingOrder.OldestFirst;
+        cfg.QueueLimit = 3;
+    });
+});
+
+builder.Services.AddRateLimiter(cfg =>
+{
+    cfg.AddFixedWindowLimiter("CardPayment", cfg =>
+    {
+        cfg.Window = TimeSpan.FromMinutes(2);
+        cfg.PermitLimit = 4;
+        cfg.QueueProcessingOrder = System.Threading.RateLimiting.QueueProcessingOrder.OldestFirst;
+        cfg.QueueLimit = 4;
+    });
+});
+
+builder.Services.AddCors(cfg =>
+{
+    cfg.AddPolicy("StripeWebhook", policy => policy.WithOrigins("3.18.12.0/23", "3.130.192.0/22").WithMethods("POST"));
+});
+
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddApplication(builder.Configuration);
 
@@ -99,6 +127,8 @@ app.UseMiddleware<CultureInfoMiddleware>();
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+
+app.UseCors();
 
 app.MapControllers();
 

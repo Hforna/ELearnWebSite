@@ -80,8 +80,11 @@ namespace UnitTests.Services
             var currencyExchange = new CurrencyExchangeMock();
             currencyExchange.GetCurrencyRates(Payment.Domain.Enums.CurrencyEnum.BRL);
             var logger = new LoggerMock<OrderService>();
-
-            return new OrderService(uow, sqids, courseRest.Build(), userRest.Build(), mapper, logger.Build(), currencyExchange.Build());
+            var location = new LocationRestServiceMock();
+            var locationDto = new CurrencyByLocationDtoFaker().Build();
+            location.CurrencyByUserLocation(locationDto);
+            
+            return new OrderService(uow, sqids, courseRest.Build(), userRest.Build(), mapper, logger.Build(), currencyExchange.Build(), location.Build());
         }
     }
 }

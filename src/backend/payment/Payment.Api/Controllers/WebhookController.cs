@@ -44,5 +44,12 @@ namespace Payment.Api.Controllers
 
             return Ok();
         }
+
+        //[HttpPost]
+        //[Route("stripe-api")]
+        //public async Task<IActionResult> CardStripeWebhook()
+        //{
+        //
+        //}
     }
 }

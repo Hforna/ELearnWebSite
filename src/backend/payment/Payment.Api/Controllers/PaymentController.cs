@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Payment.Application.ApplicationServices.Interfaces;
 using Payment.Application.Requests;
 
@@ -24,6 +25,7 @@ namespace Payment.Api.Controllers
         /// expired on: user will has a specific time to make the purchase, otherwise the transaction will fail
         /// </returns>
         [HttpPost("pix")]
+        [EnableRateLimiting("PixPayment")]
         public async Task<IActionResult> ProcessPixPayment([FromBody]PixPaymentRequest request)
         {
             var result = await _paymentService.ProcessPixPayment(request);
@@ -38,6 +40,7 @@ namespace Payment.Api.Controllers
         /// </summary>
         /// <param name="request"></param>
         /// <returns>return the response containing infos about transaction</returns>
+        [EnableRateLimiting("CardPayment")]
         [HttpPost("card")]
         public async Task<IActionResult> ProcessCardPayment([FromBody]CardPaymentRequest request)
         {
