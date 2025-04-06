@@ -121,7 +121,9 @@ namespace Payment.Application.ApplicationServices
                     continue;
                 }
 
-                balance.BlockedBalance += teacher.Value;
+                var blockedBalance = new BlockedBalance() { Amount = teacher.Value, Id = balance.Id };
+                await _uof.balanceWrite.AddBlockedBalance(blockedBalance);
+
                 balance.UpdatedOn = DateTime.UtcNow;
                 balances.Add(balance);
             }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SharedMessages.PaymentMessages
 {
-    public class UserGotRefound
+    public class UserGotRefundMessage
     {
         public long UserId { get; set; }
         public List<long> CourseIds { get; set; }

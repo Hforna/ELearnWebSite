@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.OpenApi.Models;
+using Payment.Api.BackgroundServices;
 using Payment.Api.Filters;
 using Payment.Api.Middlewares;
 using Payment.Application;
@@ -52,6 +53,8 @@ builder.Services.AddSwaggerGen(options =>
 builder.Services.AddRouting(d => d.LowercaseUrls = true);
 
 builder.Services.AddMvc(d => d.Filters.Add(typeof(FilterException)));
+
+builder.Services.AddHostedService<AllowBalanceService>();
 
 builder.Services.AddHttpContextAccessor();
 

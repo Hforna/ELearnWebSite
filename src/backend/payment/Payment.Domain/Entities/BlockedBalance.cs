@@ -8,11 +8,12 @@ using System.Threading.Tasks;
 
 namespace Payment.Domain.Entities
 {
-    public class BaseEntity
+    [Table("blocked-balances")]
+    public class BlockedBalance : BaseEntity
     {
-        [Key]
-        public Guid Id { get; set; } = Guid.NewGuid();
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public decimal Amount { get; set; } = 0;
+        [ForeignKey("BalanceId")]
+        public Balance Balance { get; set; }
+        public Guid BalanceId { get; set; }
     }
 }

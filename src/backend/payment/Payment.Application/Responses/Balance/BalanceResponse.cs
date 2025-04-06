@@ -12,7 +12,7 @@ namespace Payment.Application.Responses.Balance
         public Guid Id { get; set; }
         public string UserId { get; set; }
         public decimal AvaliableBalance { get; set; }
-        public decimal BlockedBalance { get; set; }
+        public decimal? BlockedBalance { get; set; }
         public CurrencyEnum Currency { get; set; }
     }
 }

@@ -58,7 +58,6 @@ namespace Course.Application.UseCases.Reviews
             await _uof.Commit();
 
             var courseNumber = await _uof.courseRead.GetQuantityUserCourse(course.TeacherId);
-            var coursesSumNote = await _uof.courseRead.CoursesNoteSum(course.TeacherId);
 
             var sendCourseNoteMessage = new CourseNoteMessage()
             {

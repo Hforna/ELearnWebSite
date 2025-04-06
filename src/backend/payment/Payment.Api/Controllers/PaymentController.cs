@@ -33,7 +33,6 @@ namespace Payment.Api.Controllers
             return Ok(result);
         }
 
-
         /// <summary>
         /// make the purchase of user order by card.
         /// user can choose if wanna pay on credit card or debt card choosing the installments that they prefer

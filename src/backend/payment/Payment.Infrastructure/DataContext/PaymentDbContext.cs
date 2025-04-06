@@ -18,6 +18,7 @@ namespace Payment.Infrastructure.DataContext
         public DbSet<Transaction> Transactions { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderItem> OrderItems { get; set; }
+        public DbSet<BlockedBalance> BlockedBalances { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

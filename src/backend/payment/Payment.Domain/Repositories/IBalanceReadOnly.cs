@@ -12,5 +12,8 @@ namespace Payment.Domain.Repositories
         public Task<bool> TeacherBalanceExists(long teacherId);
         public Task<Balance?> BalanceByTeacherId(long teacherId);
         public Task<List<Payout>?> PayoutsByUser(long userId);
+        public Task<Balance?> BalanceById(Guid balanceId);
+        public Task<decimal?> GetBlockedBalanceAmount(Guid balanceId);
+        public Task<Dictionary<Guid, List<BlockedBalance>>?> GetAllBlockedBalancesGroupedByBalance();
     }
 }

@@ -45,6 +45,7 @@ namespace Payment.Application.ApplicationServices
                 throw new PaymentException(ResourceExceptMessages.BALANCE_DOESNT_EXISTS, System.Net.HttpStatusCode.InternalServerError);
 
             var response = _mapper.Map<BalanceResponse>(balance);
+            var blockedBalanceAmount = await _uof.balanceRead.GetBlockedBalanceAmount(balance.Id);
 
             var userCurrency = await UserCurrencyAsEnumExtension.GetCurrency(_locationRest);
             var currencyRates = await _exchangeService.GetCurrencyRates(balance.Currency);
@@ -65,7 +66,7 @@ namespace Payment.Application.ApplicationServices
             }
 
             response.Currency = userCurrency;
-            response.BlockedBalance *= rate;
+            response.BlockedBalance = blockedBalanceAmount is not null ? (decimal)blockedBalanceAmount * rate : null;
             response.AvaliableBalance *= rate;
 
             return response;

@@ -8,11 +8,13 @@ using System.Threading.Tasks;
 
 namespace Payment.Domain.Entities
 {
+    [Table("transactions")]
     public class Transaction : BaseEntity
     {
         public Guid OrderId { get; set; }
+        [ForeignKey("OrderId")]
         public Order Order { get; set; }
-        public decimal Amount { get; set; }
+        public decimal Amount { get; set; } = 0;
         public DateTime? UpdatedOn { get; set; }
         public string GatewayTransactionId { get; set; }
         public CurrencyEnum Currency { get; set; }

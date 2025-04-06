@@ -20,7 +20,7 @@ namespace Payment.Api.Controllers
         {
             var result = await _balanceService.GetBalance();
 
-            return Ok();
+            return Ok(result);
         }
     }
 }

@@ -57,5 +57,30 @@ namespace Payment.Infrastructure.DataContext
         {
             _dbContext.Payouts.RemoveRange(payouts);
         }
+
+        public async Task<Dictionary<Guid, List<BlockedBalance>>?> GetAllBlockedBalancesGroupedByBalance()
+        {
+            return await _dbContext.BlockedBalances.Include(d => d.Balance).GroupBy(d => d.BalanceId).ToDictionaryAsync(d => d.Key, f => f.ToList());
+        }
+
+        public async Task<Balance?> BalanceById(Guid balanceId)
+        {
+            return await _dbContext.Balances.SingleOrDefaultAsync(d => d.Id == balanceId);
+        }
+
+        public void DeleteBlockedBalance(BlockedBalance blockedBalance)
+        {
+            _dbContext.BlockedBalances.Remove(blockedBalance);
+        }
+
+        public async Task<decimal?> GetBlockedBalanceAmount(Guid balanceId)
+        {
+            return await _dbContext.BlockedBalances.Where(d => d.BalanceId == balanceId).SumAsync(d => d.Amount);
+        }
+
+        public async Task AddBlockedBalance(BlockedBalance blockedBalance)
+        {
+            await _dbContext.BlockedBalances.AddAsync(blockedBalance);
+        }
     }
 }

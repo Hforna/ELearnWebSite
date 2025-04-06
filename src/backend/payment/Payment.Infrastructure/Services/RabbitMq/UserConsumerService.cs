@@ -51,6 +51,11 @@ namespace Payment.Infrastructure.Services.RabbitMq
                 if (balance.AvaliableBalance > 0)
                     throw new Exception("User can't delete account with a money amount in their balance");
 
+                var blockedBalance = await _uof.balanceRead.GetBlockedBalanceAmount(balance.Id);
+
+                if (blockedBalance != null || blockedBalance > 0)
+                    throw new Exception("User still has amount on their blocked balance");
+
                 _uof.balanceWrite.Delete(balance);
             }
             var transaction = await _uof.transactionRead.TransactionsByUserId(userId);
