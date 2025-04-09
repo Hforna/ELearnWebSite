@@ -53,6 +53,10 @@ namespace Payment.Infrastructure
             services.AddScoped<IPaymentWriteOnly, PaymentRepository>();
             services.AddScoped<IBalanceReadOnly, BalanceRepository>();
             services.AddScoped<IBalanceWriteOnly, BalanceRepository>();
+            services.AddScoped<IUserBankAccountReadOnly, UserBankAccountRepository>();
+            services.AddScoped<IUserBankAccountWriteOnly, UserBankAccountRepository>();
+            services.AddScoped<IPayoutReadOnly, PayoutRepository>();
+            services.AddScoped<IPayoutWriteOnly, PayoutRepository>();
         }
 
         static void RabbitMq(IServiceCollection services, IConfiguration configuration)

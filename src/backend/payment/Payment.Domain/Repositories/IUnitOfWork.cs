@@ -16,6 +16,10 @@ namespace Payment.Domain.Repositories
         public IPaymentWriteOnly paymentWrite { get; set; }
         public IBalanceReadOnly balanceRead { get; set; }
         public IBalanceWriteOnly balanceWrite { get; set; }
+        public IUserBankAccountReadOnly bankAccountRead { get; set; }
+        public IUserBankAccountWriteOnly bankAccountWrite { get; set; }
+        public IPayoutWriteOnly payoutWrite { get; set; }
+        public IPayoutReadOnly payoutRead { get; set; }
 
         public Task Commit();
     }

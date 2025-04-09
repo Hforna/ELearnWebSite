@@ -1,4 +1,5 @@
-﻿using Payment.Application.Responses.Balance;
+﻿using Payment.Application.Requests;
+using Payment.Application.Responses.Balance;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,5 +11,6 @@ namespace Payment.Application.ApplicationServices.Interfaces
     public interface IBalanceService
     {
         public Task<BalanceResponse> GetBalance();
+        public Task UserCashOut(CashoutRequest request);
     }
 }

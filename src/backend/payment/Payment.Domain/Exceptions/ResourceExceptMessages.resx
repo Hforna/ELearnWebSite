@@ -141,4 +141,7 @@
   <data name="BALANCE_DOESNT_EXISTS" xml:space="preserve">
     <value>User balance doesn't exists</value>
   </data>
+  <data name="INVALID_AMOUNT_IN_BALANCE" xml:space="preserve">
+    <value>Value to cashout cannot be greather than balance amount</value>
+  </data>
 </root>

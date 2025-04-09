@@ -1,10 +1,12 @@
 ﻿using AutoMapper;
+using MassTransit.Saga;
 using Payment.Domain.DTOs;
 using Payment.Domain.Enums;
 using Payment.Domain.Exceptions;
 using Payment.Domain.Services.Payment;
 using Payment.Domain.Services.Payment.PaymentInterfaces;
 using Stripe;
+using Stripe.FinancialConnections;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,12 +21,61 @@ namespace Payment.Infrastructure.Services.PaymentAdapters
 
         public StripePaymentAdapter(IMapper mapper) => _mapper = mapper;
 
-        public async Task<StripeCreditDto> CreditCardPayment(string firstName, string lastName, string cardToken, decimal amount, CurrencyEnum currency, string userId, int installments = 1)
+        public async Task<StripeCashOutDto> CashoutAsTedMethod(decimal amount, long userId, string countryCode, CurrencyEnum currency,
+        string accountName, string agencyNumber, string accountType, string taxId,
+        string firstName, string lastName, string email)
+        {
+            try
+            {
+                var account = CreateUserAccount(countryCode.ToUpper(), email, firstName, lastName, taxId);
+
+                var bankAccountOptions = new AccountExternalAccountBankAccountOptions()
+                {
+                    AccountHolderName = $"{firstName} {lastName}".Trim(),
+                    AccountHolderType = "individual",
+                    Country = countryCode,
+                    Currency = currency.ToString().ToLower(),
+                    RoutingNumber = agencyNumber,
+                    AccountNumber = accountName,
+                };
+
+                var externalAccountService = new AccountExternalAccountService();
+                var bankAccount = await externalAccountService.CreateAsync(
+                    account.Id,
+                    new AccountExternalAccountCreateOptions
+                    {
+                        ExternalAccount = bankAccountOptions
+                    }
+                );
+
+                var transferService = new TransferService();
+                var transfer = await transferService.CreateAsync(new TransferCreateOptions
+                {
+                    Amount = Convert.ToInt64(amount * 100),
+                    Currency = currency.ToString().ToLower(),
+                    Destination = account.Id,
+                    Description = $"TED transfer for user {userId}"
+                });
+
+                return new StripeCashOutDto()
+                {
+                    GatewayId = transfer.Id,
+                    Status = transfer.SourceTransaction.Status
+                };
+            }
+            catch (StripeException e)
+            {
+                throw new Exception($"Stripe error: {e.StripeError.Message}");
+            }
+        }
+
+        public async Task<StripeCreditDto> CreditCardPayment(string firstName, string lastName, string cardToken, 
+            decimal amount, CurrencyEnum currency, string userId, int installments = 1)
         {
             var currencyFormat = CurrencyFormat(currency);
             var options = new PaymentIntentCreateOptions()
             {
-                Amount = (long)amount * 100,
+                Amount = (long)amount * 10,
                 Currency = currencyFormat,
                 PaymentMethod = cardToken,
                 Confirm = true,
@@ -59,12 +110,13 @@ namespace Payment.Infrastructure.Services.PaymentAdapters
             return _mapper.Map<StripeCreditDto>(paymentIntent);
         }
 
-        public async Task<StripeDebitDto> DebitCardPayment(string firstName, string lastName, string cardToken, decimal amount, CurrencyEnum currency, string userId)
+        public async Task<StripeDebitDto> DebitCardPayment(string firstName, string lastName, string cardToken, 
+            decimal amount, CurrencyEnum currency, string userId)
         {
             var currencyFormat = CurrencyFormat(currency);
             var options = new PaymentIntentCreateOptions()
             {
-                Amount = (long?)amount * 100,
+                Amount = (long?)amount * 10,
                 Currency = currencyFormat,
                 PaymentMethod = "pm_card_visa",
                 Confirm = true,
@@ -88,6 +140,32 @@ namespace Payment.Infrastructure.Services.PaymentAdapters
             response.Success = paymentIntent.Status == "succeeded";
 
             return response;
+        }
+
+        Stripe.Account? CreateUserAccount(string country, string email, string firstName, string lastName, string taxId)
+        {
+            var accountOptions = new AccountCreateOptions
+            {
+                Type = "custom",
+                Country = country,
+                Email = email,
+                BusinessType = "individual",
+                Individual = new AccountIndividualOptions
+                {
+                    FirstName = firstName,
+                    LastName = lastName,
+                    IdNumber = taxId,
+                },
+                Capabilities = new AccountCapabilitiesOptions
+                {
+                    Transfers = new AccountCapabilitiesTransfersOptions { Requested = true },
+                },
+            };
+
+            var accountService = new Stripe.AccountService();
+            var account = accountService.Create(accountOptions);
+
+            return account;
         }
 
         string CurrencyFormat(CurrencyEnum currency) => currency.ToString().ToLower();

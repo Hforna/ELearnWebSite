@@ -18,12 +18,20 @@ namespace Payment.Infrastructure.DataContext
         public IPaymentWriteOnly paymentWrite { get; set; }
         public IBalanceReadOnly balanceRead { get; set; }
         public IBalanceWriteOnly balanceWrite { get; set; }
+        public IUserBankAccountReadOnly bankAccountRead { get; set; }
+        public IUserBankAccountWriteOnly bankAccountWrite { get; set; }
+        public IPayoutReadOnly payoutRead { get; set; }
+        public IPayoutWriteOnly payoutWrite { get; set; }
 
         public UnitOfWork(PaymentDbContext dbContext, IOrderReadOnly orderRead, IOrderWriteOnly orderWrite,
             ITransactionReadOnly transactionRead, ITransactionWriteOnly transactionWrite, 
-            IPaymentReadOnly paymentRead, IPaymentWriteOnly paymentWrite, IBalanceReadOnly balanceRead, IBalanceWriteOnly balanceWrite)
+            IPaymentReadOnly paymentRead, IPaymentWriteOnly paymentWrite,
+            IBalanceReadOnly balanceRead, IBalanceWriteOnly balanceWrite,
+            IUserBankAccountReadOnly userBankAccountRead, IUserBankAccountWriteOnly userBankAccountWrite, IPayoutReadOnly payoutRead, IPayoutWriteOnly payoutWrite)
         {
             _dbContext = dbContext;
+            bankAccountRead = userBankAccountRead;
+            bankAccountWrite = userBankAccountWrite;
             this.orderWrite = orderWrite;
             this.balanceWrite = balanceWrite;
             this.balanceRead = balanceRead;
@@ -32,6 +40,8 @@ namespace Payment.Infrastructure.DataContext
             this.transactionWrite = transactionWrite;
             this.paymentWrite = paymentWrite;
             this.paymentRead = paymentRead;
+            this.payoutRead = payoutRead;
+            this.payoutWrite = payoutWrite;
         }
 
         public async Task Commit()

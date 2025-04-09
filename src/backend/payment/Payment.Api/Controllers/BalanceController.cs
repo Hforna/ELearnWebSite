@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Payment.Application.ApplicationServices.Interfaces;
+using Payment.Application.Requests;
 
 namespace Payment.Api.Controllers
 {
@@ -21,6 +22,12 @@ namespace Payment.Api.Controllers
             var result = await _balanceService.GetBalance();
 
             return Ok(result);
+        }
+
+        [HttpPost("CashOut")]
+        public async Task<IActionResult> CashOutAmountFromBalance([FromBody]CashoutRequest request)
+        {
+
         }
     }
 }
