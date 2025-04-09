@@ -144,4 +144,16 @@
   <data name="INVALID_AMOUNT_IN_BALANCE" xml:space="preserve">
     <value>Value to cashout cannot be greather than balance amount</value>
   </data>
+  <data name="PAYOUT_FAILED" xml:space="preserve">
+    <value>Payout failed, try again later</value>
+  </data>
+  <data name="USER_BANK_NOT_EXISTS" xml:space="preserve">
+    <value>User bank account is invalid or doesn't exists</value>
+  </data>
+  <data name="BALANCE_NOT_EXISTS_OR_TRANSACTION_PENDING" xml:space="preserve">
+    <value>User balance not exists, or a transaction modified the balance now, try again</value>
+  </data>
+  <data name="PAYOUT_MADE_FEW_TIMES_AGO" xml:space="preserve">
+    <value>Payout pending or made a few times, wait one day for request again</value>
+  </data>
 </root>

@@ -30,8 +30,8 @@ namespace Payment.Infrastructure.DataContext
 
         public async Task<Balance?> BalanceByTeacherId(long teacherId)
         {
-            return await _dbContext.Balances.SingleOrDefaultAsync(d => d.TeacherId == teacherId);
-        }
+            return await _dbContext.Balances.FromSqlInterpolated($"SELECT * FROM balances WITH (UPDLOCK) WHERE TeacherId = {teacherId}").SingleOrDefaultAsync();
+        } 
 
         public void Update(Balance balance)
         {

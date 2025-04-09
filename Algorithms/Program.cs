@@ -132,6 +132,16 @@ public static class BinarySearch
         }
         return QuickSort(less.ToArray()) + [p] + QuickSort(high.ToArray());
     }
+
+    //public static bool IsValidScheduleList(Dictionary<string, string[]> schedule, string[] scheduleWish)
+    //{
+    //    //var queue = Queue
+    //    while(schedule)
+    //    {
+    //        var step = schedule
+    //    }
+    //}
+
 }
 
 
@@ -143,7 +153,6 @@ public class Program
         //Console.WriteLine(BinarySearch.MergeAlternately("abc", "fghid"));
         Console.WriteLine(BinarySearch.SumArray(new int[6] { 1, 4, 7, 9, 5, 7 }));
         //Console.WriteLine(BinarySearch.CountNegatives(array));
-
         //Console.WriteLine(BinarySearch.MissingNumber(array));
         Console.ReadKey();
     }

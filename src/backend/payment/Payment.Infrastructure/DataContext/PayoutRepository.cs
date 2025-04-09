@@ -18,5 +18,10 @@ namespace Payment.Infrastructure.DataContext
         {
             await _dbContext.Payouts.AddAsync(payout);    
         }
+
+        public async Task<List<Payout>?> PayoutRecentsByUserAndTime(long userId, DateTime timeOfPayout)
+        {
+            return await _dbContext.Payouts.Where(d => d.UserId == userId && d.RequestedAt.AddDays(1) >= timeOfPayout);
+        }
     }
 }

@@ -81,7 +81,7 @@ namespace Payment.Application.ApplicationServices
             return response;
         }
 
-        public async Task UserCashOut(CashoutRequest request)
+        public async Task<CashoutResponse> UserCashOut(CashoutRequest request)
         {
             var user = await _userRest.GetUserInfos();
             var userId = _sqids.Decode(user.id).Single();
@@ -89,15 +89,17 @@ namespace Payment.Application.ApplicationServices
             var userBalance = await _uof.balanceRead.BalanceByTeacherId(userId);
 
             if (userBalance is null)
-                throw new BalanceException(ResourceExceptMessages.BALANCE_DOESNT_EXISTS, System.Net.HttpStatusCode.NotFound);
-
-            if (request.Amount > userBalance.AvaliableBalance)
-                throw new BalanceException(ResourceExceptMessages.INVALID_AMOUNT_IN_BALANCE, System.Net.HttpStatusCode.Unauthorized);
+                throw new BalanceException(ResourceExceptMessages.BALANCE_NOT_EXISTS_OR_TRANSACTION_PENDING, System.Net.HttpStatusCode.NotFound);
 
             var bankAccount = await _uof.bankAccountRead.UserBankAccountByIdAndUserId(request.BankAccountId, userId);
 
             if (bankAccount is null)
-                throw new BalanceException();
+                throw new BalanceException(ResourceExceptMessages.USER_BANK_NOT_EXISTS, System.Net.HttpStatusCode.NotFound);
+
+            var recentPayouts = await _uof.payoutRead.PayoutRecentsByUserAndTime(userId, DateTime.UtcNow);
+
+            if (recentPayouts is not null)
+                throw new BalanceException(ResourceExceptMessages.PAYOUT_MADE_FEW_TIMES_AGO, System.Net.HttpStatusCode.Unauthorized);
 
             var userCurrency = await _locationRest.GetCurrencyByUserLocation();
             var currencyAsEnum = Enum.TryParse(typeof(CurrencyEnum), userCurrency.Code, out var result) ? (CurrencyEnum)result : DefaultCurrency.Currency;
@@ -105,7 +107,7 @@ namespace Payment.Application.ApplicationServices
             var rates = 0.0;
             var currencyRates = await _exchangeService.GetCurrencyRates(userBalance.Currency);
 
-            switch(currencyAsEnum)
+            switch (currencyAsEnum)
             {
                 case CurrencyEnum.USD:
                     rates = currencyRates.USD;
@@ -120,7 +122,10 @@ namespace Payment.Application.ApplicationServices
 
             decimal amount = Math.Round((decimal)request.Amount * (decimal)rates, 2);
 
-            var transfer = await _paymentService.CashoutAsTedMethod(amount, userId, userCurrency.Name, currencyAsEnum, 
+            if (amount > userBalance.AvaliableBalance)
+                throw new BalanceException(ResourceExceptMessages.INVALID_AMOUNT_IN_BALANCE, System.Net.HttpStatusCode.Unauthorized);
+
+            var transfer = await _paymentService.CashoutAsTedMethod(request.Amount, userId, userCurrency.Name, currencyAsEnum, 
                 bankAccount.AccountNumber, bankAccount.AgencyNumber, bankAccount.TypeAccount, 
                 bankAccount.TaxId, bankAccount.FirstName, bankAccount.LastName, bankAccount.Email);
 
@@ -128,16 +133,44 @@ namespace Payment.Application.ApplicationServices
             {
                 Currency = currencyAsEnum,
                 UserId = userId,
-                
-            }
+                Amount = amount
+            };
 
             if (transfer.Status == "failed")
-                throw new BalanceException(System.Net.HttpStatusCode.InternalServerError);
-
-            if(transfer.Status == "succeeded")
             {
+                payout.Active = false;
+                payout.TransactionStatus = TransactionStatusEnum.Canceled;
+                await _uof.payoutWrite.Add(payout);
+                await _uof.Commit();
 
+                throw new BalanceException(ResourceExceptMessages.PAYOUT_FAILED, System.Net.HttpStatusCode.InternalServerError);
             }
+
+            if(transfer.Status == "pending")
+            {
+                payout.TransactionStatus = TransactionStatusEnum.Pending;
+                userBalance.AvaliableBalance -= amount;
+            }
+
+            if (transfer.Status == "succeeded")
+            {
+                payout.TransactionStatus = TransactionStatusEnum.Approved;
+                userBalance.AvaliableBalance -= amount;
+            }
+            _uof.balanceWrite.Update(userBalance);
+            await _uof.payoutWrite.Add(payout);
+
+            await _uof.Commit();
+
+            return new CashoutResponse()
+            {
+                Amount = request.Amount,
+                Currency = currencyAsEnum,
+                BalanceId = userBalance.Id,
+                Id = payout.Id,
+                BankAccountId = bankAccount.Id,
+                Status = payout.TransactionStatus
+            };
         }
     }
 }

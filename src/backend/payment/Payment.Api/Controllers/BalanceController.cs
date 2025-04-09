@@ -24,10 +24,12 @@ namespace Payment.Api.Controllers
             return Ok(result);
         }
 
-        [HttpPost("CashOut")]
+        [HttpPost("cashout")]
         public async Task<IActionResult> CashOutAmountFromBalance([FromBody]CashoutRequest request)
         {
+            var result = await _balanceService.UserCashOut(request);
 
+            return Created(string.Empty, result);
         }
     }
 }

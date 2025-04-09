@@ -11,6 +11,6 @@ namespace Payment.Application.ApplicationServices.Interfaces
     public interface IBalanceService
     {
         public Task<BalanceResponse> GetBalance();
-        public Task UserCashOut(CashoutRequest request);
+        public Task<CashoutResponse> UserCashOut(CashoutRequest request);
     }
 }

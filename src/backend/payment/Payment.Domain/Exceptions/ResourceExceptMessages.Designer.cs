@@ -70,6 +70,15 @@ namespace Payment.Domain.Exceptions {
         }
         
         /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a User balance not exists, or a transaction modified the balance now, try again.
+        /// </summary>
+        internal static string BALANCE_NOT_EXISTS_OR_TRANSACTION_PENDING {
+            get {
+                return ResourceManager.GetString("BALANCE_NOT_EXISTS_OR_TRANSACTION_PENDING", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a Course not found.
         /// </summary>
         internal static string COURSE_NOT_FOUND {
@@ -138,6 +147,33 @@ namespace Payment.Domain.Exceptions {
         internal static string PAYMENT_CANCELED {
             get {
                 return ResourceManager.GetString("PAYMENT_CANCELED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Payout failed, try again later.
+        /// </summary>
+        internal static string PAYOUT_FAILED {
+            get {
+                return ResourceManager.GetString("PAYOUT_FAILED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Payout pending or made a few times, wait one day for request again.
+        /// </summary>
+        internal static string PAYOUT_MADE_FEW_TIMES_AGO {
+            get {
+                return ResourceManager.GetString("PAYOUT_MADE_FEW_TIMES_AGO", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a User bank account is invalid or doesn&apos;t exists.
+        /// </summary>
+        internal static string USER_BANK_NOT_EXISTS {
+            get {
+                return ResourceManager.GetString("USER_BANK_NOT_EXISTS", resourceCulture);
             }
         }
     }
