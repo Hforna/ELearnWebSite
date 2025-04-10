@@ -1,4 +1,5 @@
-﻿using Payment.Domain.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using Payment.Domain.Entities;
 using Payment.Domain.Repositories;
 using System;
 using System.Collections.Generic;
@@ -21,7 +22,7 @@ namespace Payment.Infrastructure.DataContext
 
         public async Task<List<Payout>?> PayoutRecentsByUserAndTime(long userId, DateTime timeOfPayout)
         {
-            return await _dbContext.Payouts.Where(d => d.UserId == userId && d.RequestedAt.AddDays(1) >= timeOfPayout);
+            return await _dbContext.Payouts.Where(d => d.UserId == userId && d.RequestedAt.AddDays(1) >= timeOfPayout).ToListAsync();
         }
     }
 }

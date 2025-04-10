@@ -12,6 +12,8 @@ namespace Payment.Domain.Repositories
         public Task AddOrderItem(OrderItem orderItem);
         public Task AddOrder(Order order);
         public void UpdateOrder(Order order);
+        public void UpdateOrderItem(OrderItem orderItem);
+        public void UpdateOrderItemRange(List<OrderItem> orderItems);
         public void DeleteOrderRange(List<Order> orders);
     }
 }

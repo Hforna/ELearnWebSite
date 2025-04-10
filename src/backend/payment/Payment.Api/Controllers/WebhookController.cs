@@ -49,14 +49,14 @@ namespace Payment.Api.Controllers
 
         [HttpPost]
         [Route("stripe-api")]
-        [EnableCors("StripeWebhook")]
         public async Task<IActionResult> CardStripeWebhook()
         {
-            var body = await new StreamReader(HttpContext.Request.Body).ReadToEndAsync();
+            var json = await new StreamReader(HttpContext.Request.Body).ReadToEndAsync();
 
             try
             {
-                var formatBody = EventUtility.ParseEvent(body);
+                var formatBody = EventUtility.ParseEvent(json, false);
+                await _webhookService.CardStripeWebhook(formatBody);
 
                 return Ok();
             }catch(StripeException ex)

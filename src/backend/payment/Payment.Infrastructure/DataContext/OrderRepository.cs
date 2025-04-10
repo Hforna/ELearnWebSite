@@ -58,5 +58,15 @@ namespace Payment.Infrastructure.DataContext
         {
             _dbContext.Orders.Update(order);
         }
+
+        public void UpdateOrderItem(OrderItem orderItem)
+        {
+            _dbContext.OrderItems.Update(orderItem);
+        }
+
+        public void UpdateOrderItemRange(List<OrderItem> orderItems)
+        {
+            _dbContext.OrderItems.UpdateRange(orderItems);
+        }
     }
 }

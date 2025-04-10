@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 
 namespace Payment.Domain.Enums
 {
-    internal class CashoutMethodsEnum
+    public enum CashoutMethodsEnum
     {
+        TED,
+        PIX
     }
 }

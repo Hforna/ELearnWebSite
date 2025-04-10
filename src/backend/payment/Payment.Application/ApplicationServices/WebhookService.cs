@@ -52,7 +52,7 @@ namespace Payment.Application.ApplicationServices
                 if (transaction is null)
                     throw new PaymentException("Transaction doesn't exists", System.Net.HttpStatusCode.InternalServerError);
 
-                await ProcessSettledTransaction(int.Parse(userId!), transaction!);
+                await ProcessSettledTransaction(_sqids.Decode(userId).Single(), transaction!);
             }
         }
 
@@ -132,6 +132,16 @@ namespace Payment.Application.ApplicationServices
             {
                 _uof.balanceWrite.UpdateRange(balances);
             }
+
+            transaction.Order.OrderItems.Select(d =>
+            {
+                d.Active = false;
+
+                return d;
+            });
+            transaction.Order.Active = false;
+            _uof.orderWrite.UpdateOrder(transaction.Order);
+            _uof.orderWrite.UpdateOrderItemRange(transaction.Order.OrderItems.ToList());
 
             await _uof.Commit();
         }

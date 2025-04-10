@@ -13,9 +13,9 @@ namespace Payment.Api.Filters
 
         public string? GetToken()
         {
-            var token = _httpContext.HttpContext.Request.Headers.Authorization.ToString();
+            var token = _httpContext.HttpContext!.Request.Headers.Authorization.ToString();
 
-            if (token is null)
+            if (string.IsNullOrEmpty(token))
                 return null;
 
             return token["Bearer ".Length..].Trim();

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Payment.Application.Requests
 {
-    public class CashoutAmountRequest
+    public class CashoutRequest
     {
         public decimal Amount { get; set; }
         public Guid BankAccountId { get; set; }
