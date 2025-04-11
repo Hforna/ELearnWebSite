@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Net.Http.Headers;
 using Payment.Application.ApplicationServices.Interfaces;
 using Payment.Application.Requests;
 using Payment.Domain.Exceptions;
@@ -56,7 +57,14 @@ namespace Payment.Api.Controllers
             try
             {
                 var formatBody = EventUtility.ParseEvent(json, false);
-                await _webhookService.CardStripeWebhook(formatBody);
+                var typeOfPayload = formatBody.Type.Split(".")[0];
+
+                switch(typeOfPayload)
+                {
+                    case "payment_intent":
+                        await _webhookService.CardStripeWebhook(formatBody);
+                        break;
+                }
 
                 return Ok();
             }catch(StripeException ex)

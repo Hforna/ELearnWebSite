@@ -10,5 +10,6 @@ namespace Payment.Domain.Repositories
     public interface IPayoutReadOnly
     {
         public Task<List<Payout>?> PayoutRecentsByUserAndTime(long userId, DateTime timeOfPayout);
+        public Task<Payout?> PayoutByUserId(long userId);
     }
 }

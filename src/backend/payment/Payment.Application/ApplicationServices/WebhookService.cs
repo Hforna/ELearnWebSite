@@ -40,6 +40,34 @@ namespace Payment.Application.ApplicationServices
             _courseRest = courseRest;
         }
 
+        public async Task BalanceTransferStripeWebhook(Event payload)
+        {
+            var content = payload.Data.Object as Transfer;
+            var userId = long.Parse(content.Metadata.GetValueOrDefault("user_id"));
+
+            var payout = await _uof.payoutRead.PayoutByUserId(userId);
+
+            if(payout.TransactionStatus == Domain.Enums.TransactionStatusEnum.Pending)
+            {
+                payout.Active = false;
+                payout.ProcessedAt = DateTime.UtcNow;
+
+                if (payload.Type == EventTypes.ChargeSucceeded)
+                {
+                    payout.TransactionStatus = Domain.Enums.TransactionStatusEnum.Approved;
+                }
+                else if (payload.Type == EventTypes.ChargeFailed)
+                {
+                    var balance = await _uof.balanceRead.BalanceByTeacherId(userId);
+                    balance.AvaliableBalance += content.Amount;
+
+                    payout.TransactionStatus = Domain.Enums.TransactionStatusEnum.Canceled;
+                }
+                _uof.payoutWrite.Update(payout);
+                await _uof.Commit();
+            }
+        }
+
         public async Task CardStripeWebhook(Stripe.Event payload)
         {
             if(payload.Type == EventTypes.PaymentIntentSucceeded)
@@ -61,6 +89,9 @@ namespace Payment.Application.ApplicationServices
             var userId = _sqids.Decode(payload.Data.ExternalId).SingleOrDefault();
 
             var transaction = await _uof.transactionRead.TransactionByGatewayId(payload.Data.Id);
+
+            if (transaction is null)
+                throw new PaymentException("Transaction doesn't exists", System.Net.HttpStatusCode.InternalServerError);
 
             if (payload.Type == "settled")
                 await ProcessSettledTransaction(userId, transaction);

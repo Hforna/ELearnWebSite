@@ -12,5 +12,6 @@ namespace Payment.Application.ApplicationServices.Interfaces
     {
         public Task PixTrioWebhook(TrioWebhookPayload payload);
         public Task CardStripeWebhook(Event payload);
+        public Task BalanceTransferStripeWebhook(Event payload);
     }
 }

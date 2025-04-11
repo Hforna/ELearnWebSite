@@ -54,7 +54,11 @@ namespace Payment.Infrastructure.Services.PaymentAdapters
                     Amount = Convert.ToInt64(amount * 100),
                     Currency = currency.ToString().ToLower(),
                     Destination = account.Id,
-                    Description = $"TED transfer for user {userId}"
+                    Description = $"TED transfer for user {userId}",
+                    Metadata = new Dictionary<string, string>()
+                    {
+                        {"user_id", userId.ToString() }
+                    }
                 });
 
                 return new StripeCashOutDto()
