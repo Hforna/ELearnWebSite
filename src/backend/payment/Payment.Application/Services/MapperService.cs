@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Payment.Application.Requests;
 using Payment.Application.Responses.Balance;
 using Payment.Application.Responses.Order;
 using Payment.Application.Responses.Payment;
@@ -28,7 +29,8 @@ namespace Payment.Application
 
         void RequestToEntity()
         {
-            
+            CreateMap<CreateBankAccountRequest, UserBankAccount>()
+                .ForMember(d => d.TeacherId, f => f.Ignore());
         }
 
         void EntityToResponse()

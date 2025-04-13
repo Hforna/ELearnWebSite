@@ -12,5 +12,6 @@ namespace Payment.Application.ApplicationServices.Interfaces
     {
         public Task<BalanceResponse> GetBalance();
         public Task<CashoutResponse> UserCashOut(CashoutRequest request);
+        public Task<BankAccountResponse> CreateBankAccount(CreateBankAccountRequest request);
     }
 }

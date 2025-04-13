@@ -64,6 +64,9 @@ namespace Payment.Api.Controllers
                     case "payment_intent":
                         await _webhookService.CardStripeWebhook(formatBody);
                         break;
+                    case "charge":
+                        await _webhookService.BalanceTransferStripeWebhook(formatBody);
+                        break;
                 }
 
                 return Ok();

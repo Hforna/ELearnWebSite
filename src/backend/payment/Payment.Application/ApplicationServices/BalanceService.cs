@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
+using FluentValidation.Internal;
 using Payment.Application.ApplicationServices.Interfaces;
 using Payment.Application.Extensions;
 using Payment.Application.Requests;
 using Payment.Application.Responses.Balance;
+using Payment.Application.Services;
 using Payment.Domain.Cons;
 using Payment.Domain.Entities;
 using Payment.Domain.Enums;
@@ -41,6 +43,29 @@ namespace Payment.Application.ApplicationServices
             _locationRest = locationRest;
             _exchangeService = exchangeService;
             _sqids = sqids;
+        }
+
+        public async Task<BankAccountResponse> CreateBankAccount(CreateBankAccountRequest request)
+        {
+            var validator = new CreateBankAccountRequestValidator();
+            var result = validator.Validate(request);
+
+            if(!result.IsValid)
+            {
+                var errorMessages = result.Errors.Select(d => d.ErrorMessage).ToList();
+                throw new BalanceException(errorMessages, System.Net.HttpStatusCode.BadRequest);
+            }
+
+            var user = await _userRest.GetUserInfos();
+            var userId = _sqids.Decode(user.id).Single();
+
+            var bankAccount = _mapper.Map<UserBankAccount>(request);
+            bankAccount.TeacherId = userId;
+
+            await _uof.bankAccountWrite.Add(bankAccount);
+            await _uof.Commit();
+
+            return _mapper.Map<BankAccountResponse>(bankAccount);
         }
 
         public async Task<BalanceResponse> GetBalance()
