@@ -82,6 +82,11 @@ builder.Services.AddRateLimiter(cfg =>
     });
 });
 
+builder.Services.AddAuthorization(d =>
+{
+    d.AddPolicy("TeacherOnly", f => f.RequireRole("teacher"));
+});
+
 builder.Services.AddCors(cfg =>
 {
     cfg.AddPolicy("StripeWebhook", policy => policy.WithOrigins("3.18.12.0/23", "3.130.192.0/22").WithMethods("POST"));

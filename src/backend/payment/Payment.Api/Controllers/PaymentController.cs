@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
+using Payment.Api.Attributes;
 using Payment.Application.ApplicationServices.Interfaces;
 using Payment.Application.Requests;
 
@@ -8,6 +9,7 @@ namespace Payment.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [AuthenticationUser]
     public class PaymentController : ControllerBase
     {
         private readonly IPaymentService _paymentService;

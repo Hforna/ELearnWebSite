@@ -3,11 +3,13 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Payment.Application.ApplicationServices.Interfaces;
 using Payment.Application.Requests;
+using X.PagedList.Extensions;
 
 namespace Payment.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Policy = "TeacherOnly")]
     public class BalanceController : ControllerBase
     {
         private readonly IBalanceService _balanceService;

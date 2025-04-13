@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Payment.Api.Attributes;
 using Payment.Application.ApplicationServices.Interfaces;
 using Payment.Application.Requests;
 using Payment.Domain.Exceptions;
@@ -44,6 +45,7 @@ namespace Payment.Api.Controllers
         }
 
         [HttpGet("order-history")]
+        [AuthenticationUser]
         [ProducesResponseType(typeof(OrderException), StatusCodes.Status404NotFound)]
         public async Task<IActionResult> OrderHistory([FromQuery]int page, [FromQuery]int quantity)
         {
