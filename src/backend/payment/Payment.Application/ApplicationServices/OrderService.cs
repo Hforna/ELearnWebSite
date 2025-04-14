@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.Extensions.Logging;
 using Payment.Application.ApplicationServices.Interfaces;
+using Payment.Application.Extensions;
 using Payment.Application.Requests;
 using Payment.Application.Responses.Order;
 using Payment.Domain.Cons;
@@ -10,6 +11,7 @@ using Payment.Domain.Enums;
 using Payment.Domain.Exceptions;
 using Payment.Domain.Repositories;
 using Payment.Domain.Services.Rest;
+using Payment.Domain.Services.Session;
 using Sqids;
 using System;
 using System.Collections.Generic;
@@ -29,13 +31,16 @@ namespace Payment.Application.Services
         private readonly ILogger<OrderService> _logger;
         private readonly ICurrencyExchangeService _currencyExchange;
         private readonly ILocationRestService _locationRest;
+        private readonly IOrderSessionService _orderSession;
 
         public OrderService(IUnitOfWork uow, SqidsEncoder<long> sqids, ICourseRestService courseRest, 
             IUserRestService userRest, IMapper mapper, 
-            ILogger<OrderService> logger, ICurrencyExchangeService currencyExchange, ILocationRestService locationRest)
+            ILogger<OrderService> logger, ICurrencyExchangeService currencyExchange, 
+            ILocationRestService locationRest, IOrderSessionService orderSession)
         {
             _courseRest = courseRest;
             _uow = uow;
+            _orderSession = orderSession;
             _locationRest = locationRest;
             _currencyExchange = currencyExchange;
             _userRest = userRest;
@@ -46,52 +51,54 @@ namespace Payment.Application.Services
 
         public async Task<OrderItemResponse> AddCourseToOrder(AddCourseToOrderRequest request)
         {
-            var user = await _userRest.GetUserInfos();
-            var userId = _sqids.Decode(user.id).Single();
-
             var course = await _courseRest.GetCourse(request.CourseId);
             var courseId = _sqids.Decode(course.id).Single();
 
-            var orderItemExists = await _uow.orderRead.OrderItemExists(courseId, userId);
-
-            if (orderItemExists)
-                throw new OrderException(ResourceExceptMessages.ORDER_ITEM_EXISTS, System.Net.HttpStatusCode.BadRequest);
-
-            var userOrder = await _uow.orderRead.OrderByUserId(userId);
-
-            if(userOrder is null)
-            {
-                userOrder = new Order() { UserId = userId };
-                await _uow.orderWrite.AddOrder(userOrder);
-                await _uow.Commit();
-            }
-            userOrder.TotalPrice += (decimal)course.price;
             var currencyExchange = await _currencyExchange.GetCurrencyRates(course.currencyType);
-            switch(DefaultCurrency.Currency)
+            var userCurrencyAsEnum = await UserCurrencyAsEnumExtension.GetCurrency(_locationRest);
+            var priceResponse = (double)GetCurrencyRate(userCurrencyAsEnum, currencyExchange)! * course.price;
+
+            var response = new OrderItemResponse();
+
+            try
             {
-                case CurrencyEnum.BRL:
-                    course.price *= currencyExchange.BRL;
-                    break;
-                case CurrencyEnum.USD:
-                    course.price *= currencyExchange.USD;
-                    break;
-                case CurrencyEnum.EUR:
-                    course.price *= currencyExchange.EUR;
-                default:
-                    break;
+                var user = await _userRest.GetUserInfos();
+                var userId = _sqids.Decode(user.id).Single();
+
+                var orderItemExists = await _uow.orderRead.OrderItemExists(courseId, userId);
+
+                if (orderItemExists)
+                    throw new OrderException(ResourceExceptMessages.ORDER_ITEM_EXISTS, System.Net.HttpStatusCode.BadRequest);
+
+                var userOrder = await _uow.orderRead.OrderByUserId(userId);
+
+                if (userOrder is null)
+                {
+                    userOrder = new Order() { UserId = userId };
+                    await _uow.orderWrite.AddOrder(userOrder);
+                    await _uow.Commit();
+                }
+                userOrder.TotalPrice += (decimal)course.price;
+
+                var orderItem = new OrderItem()
+                {
+                    Price = (decimal)course.price,
+                    CourseId = courseId,
+                    OrderId = userOrder.Id
+                };
+
+                _mapper.Map(orderItem, response);
+
+                await _uow.orderWrite.AddOrderItem(orderItem);
+                await _uow.Commit();
+            } catch(RestException re)
+            {
+                _orderSession.AddOrderToSession(courseId);
+
+                response.CourseId = course.id;
             }
-
-            var orderItem = new OrderItem()
-            {
-                Price = (decimal)course.price,
-                CourseId = courseId,
-                OrderId = userOrder.Id
-            };
-
-            await _uow.orderWrite.AddOrderItem(orderItem);
-            await _uow.Commit();
-
-            var response = _mapper.Map<OrderItemResponse>(orderItem);
+            response.CurrencyType = DefaultCurrency.Currency;
+            response.Price = (decimal)priceResponse;
 
             return response;
         }
@@ -106,10 +113,7 @@ namespace Payment.Application.Services
             if (orderHistory is null)
                 throw new OrderException(ResourceExceptMessages.ORDERS_DONT_EXISTS, System.Net.HttpStatusCode.NotFound);
 
-            var getUserCurrency = await _locationRest.GetCurrencyByUserLocation();
-            var userCurrency = Enum.TryParse(typeof(CurrencyEnum), getUserCurrency.Code, out var result)
-                ? (CurrencyEnum)result
-                : DefaultCurrency.Currency;
+            var userCurrency = await UserCurrencyAsEnumExtension.GetCurrency(_locationRest);
             var currencyExchange = await _currencyExchange.GetCurrencyRates(userCurrency);
 
             var transactions = await _uow.transactionRead.TransactionsByOrderIds(orderHistory.Select(d => d.Id).ToList());
@@ -142,24 +146,57 @@ namespace Payment.Application.Services
 
         public async Task<OrderResponse> GetUserOrder()
         {
-            var user = await _userRest.GetUserInfos();
-            var userId = _sqids.Decode(user.id).Single();
 
-            _logger.LogInformation($"user id: {userId}");
+            var userCurrencyAsEnum = await UserCurrencyAsEnumExtension.GetCurrency(_locationRest);
 
-            var order = await _uow.orderRead.OrderByUserId(userId);
+            var currencyExchange = await _currencyExchange.GetCurrencyRates(userCurrencyAsEnum);
 
-            if (order is null)
-                throw new OrderException(ResourceExceptMessages.ORDER_DOESNT_EXISTS, System.Net.HttpStatusCode.NotFound);
-
-            var response = _mapper.Map<OrderResponse>(order);
-
-            response.OrderItems = order.OrderItems.Select(orderItem =>
+            var response = new OrderResponse();
+            try
             {
-                var response = _mapper.Map<OrderItemResponse>(orderItem);
+                var user = await _userRest.GetUserInfos();
+                var userId = _sqids.Decode(user.id).Single();
 
-                return response;
-            }).ToList();
+                _logger.LogInformation($"user id: {userId}");
+
+                var order = await _uow.orderRead.OrderByUserId(userId);
+
+                if (order is null)
+                    throw new OrderException(ResourceExceptMessages.ORDER_DOESNT_EXISTS, System.Net.HttpStatusCode.NotFound);
+
+                response = _mapper.Map<OrderResponse>(order);
+
+                var rate = GetCurrencyRate(DefaultCurrency.Currency, currencyExchange);
+
+                response.OrderItems = order.OrderItems.Select(orderItem =>
+                {
+                    var response = _mapper.Map<OrderItemResponse>(orderItem);
+                    response.Price *= (decimal)rate!;
+
+                    return response;
+                }).ToList();
+            } catch(RestException re)
+            {
+                var sessionOrder = _orderSession.GetSessionOrder();
+
+                var orderItemResponse = sessionOrder.Select(async order =>
+                {
+                    var course = await _courseRest.GetCourse(_sqids.Encode(order.Value));
+                    var response = new OrderItemResponse()
+                    {
+                        Id = order.Key,
+                        CurrencyType = course.currencyType,
+                        CourseId = course.id,
+                        Price = (decimal)course.price
+                    };
+
+                    return response;
+                });
+
+                var processOrderItems = await Task.WhenAll(orderItemResponse);
+
+                response.OrderItems = processOrderItems.ToList();
+            }
 
             return response;
         }

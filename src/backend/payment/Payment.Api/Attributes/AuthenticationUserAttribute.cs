@@ -3,9 +3,9 @@ using Payment.Api.Filters;
 
 namespace Payment.Api.Attributes
 {
-    public class UserAuthenticatedAttribute : TypeFilterAttribute
+    public class AuthenticationUserAttribute : TypeFilterAttribute
     {
-        public UserAuthenticatedAttribute() : base(typeof(AuthorizationUser))
+        public AuthenticationUserAttribute() : base(typeof(AuthorizationUser))
         {
         }
     }

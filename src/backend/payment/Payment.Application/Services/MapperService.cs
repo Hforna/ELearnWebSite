@@ -13,7 +13,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Payment.Application
+namespace Payment.Application.Services
 {
     public class MapperService : Profile
     {

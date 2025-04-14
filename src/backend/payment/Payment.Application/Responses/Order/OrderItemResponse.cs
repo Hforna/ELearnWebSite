@@ -13,6 +13,6 @@ namespace Payment.Application.Responses.Order
         public Guid OrderId { get; set; }
         public string CourseId { get; set; }
         public decimal Price { get; set; }
-        public string CurrencyType { get; set; }
+        public CurrencyEnum CurrencyType { get; set; }
     }
 }

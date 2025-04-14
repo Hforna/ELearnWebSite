@@ -5,8 +5,10 @@ using Microsoft.OpenApi.Models;
 using Payment.Api.BackgroundServices;
 using Payment.Api.Filters;
 using Payment.Api.Middlewares;
+using Payment.Api.Sessions;
 using Payment.Application;
 using Payment.Domain.Services.Rest;
+using Payment.Domain.Services.Session;
 using Payment.Domain.Token;
 using Payment.Infrastructure;
 
@@ -95,6 +97,17 @@ builder.Services.AddCors(cfg =>
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddApplication(builder.Configuration);
 
+builder.Services.AddDistributedMemoryCache();
+
+builder.Services.AddSession(d =>
+{
+    d.IdleTimeout = TimeSpan.FromDays(7);
+    d.Cookie.HttpOnly = true;
+    d.Cookie.IsEssential = true;
+});
+
+builder.Services.AddScoped<IOrderSessionService, OrderSessionService>();
+
 builder.Services.AddScoped<ITokenReceptor, TokenReceptor>();
 
 builder.Services.AddHttpClient("user.api", client =>
@@ -137,6 +150,8 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.UseCors();
+
+app.UseSession();
 
 app.MapControllers();
 

@@ -14,7 +14,7 @@ namespace Payment.Application.Extensions
         public static async Task<CurrencyEnum> GetCurrency(ILocationRestService locationRest)
         {
             var userCurrency = await locationRest.GetCurrencyByUserLocation();
-            return Enum.TryParse(typeof(CurrencyEnum), userCurrency.Code, out var result) ? (CurrencyEnum)result : DefaultCurrency.Currency;
+            return Enum.TryParse(typeof(CurrencyEnum), userCurrency.Code, true, out var result) ? (CurrencyEnum)result : DefaultCurrency.Currency;
         }
     }
 }

@@ -21,4 +21,8 @@
   	<ProjectReference Include="..\Payment.Infrastructure\Payment.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Cache\" />
+  </ItemGroup>
+
 </Project>
