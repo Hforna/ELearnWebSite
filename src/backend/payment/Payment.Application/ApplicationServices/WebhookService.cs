@@ -1,6 +1,8 @@
 ﻿using Microsoft.Extensions.Logging;
 using Payment.Application.ApplicationServices.Interfaces;
+using Payment.Application.Extensions;
 using Payment.Application.Requests;
+using Payment.Domain.Cons;
 using Payment.Domain.Entities;
 using Payment.Domain.Exceptions;
 using Payment.Domain.Repositories;
@@ -27,12 +29,14 @@ namespace Payment.Application.ApplicationServices
         private readonly ICourseProducerService _courseProducer;
         private readonly SqidsEncoder<long> _sqids;
         private readonly ICourseRestService _courseRest;
+        private readonly ICurrencyExchangeService _currencyExchange;
 
         public WebhookService(IUnitOfWork uof, ILogger<WebhookService> logger, 
             IUserRestService userRest, ICourseProducerService courseProducer, 
-            SqidsEncoder<long> sqids, ICourseRestService courseRest)
+            SqidsEncoder<long> sqids, ICourseRestService courseRest, ICurrencyExchangeService currencyExchange)
         {
             _uof = uof;
+            _currencyExchange = currencyExchange;
             _logger = logger;
             _userRest = userRest;
             _courseProducer = courseProducer;
@@ -95,6 +99,46 @@ namespace Payment.Application.ApplicationServices
 
             if (payload.Type == "settled")
                 await ProcessSettledTransaction(userId, transaction);
+        }
+
+        public async Task RefundOrderStripeWebhook(Event payload)
+        {
+            if(payload.Type == EventTypes.RefundCreated)
+            {
+                var obj = payload.Data.Object as Refund;
+                var userId = obj.Metadata["user_id"];
+                var courseId = long.Parse(obj.Metadata["course_id"]);
+
+                var course = await _courseRest.GetCourse(_sqids.Encode(courseId));
+
+                var order = await _uof.orderRead.LastCourseOrderItem(courseId);
+
+                if (order is null)
+                    throw new Exception("Course's order item doesn't exists");
+
+                var teacherId = _sqids.Decode(course.teacherId).Single();
+                var teacherBalance = await _uof.balanceRead.BalanceByTeacherId(teacherId);
+
+                var exchange = await _currencyExchange.GetCurrencyRates(DefaultCurrency.Currency);
+
+                switch(course.currencyType)
+                {
+                    case Domain.Enums.CurrencyEnum.BRL:
+                        course.price *= exchange.BRL;
+                        break;
+                    case Domain.Enums.CurrencyEnum.EUR:
+                        course.price *= exchange.EUR;
+                        break;
+                    case Domain.Enums.CurrencyEnum.USD:
+                        course.price *= exchange.USD;
+                        break;
+                }
+
+                teacherBalance.AvaliableBalance -= (decimal)course.price;
+                
+                _uof.balanceWrite.Update(teacherBalance);
+                await _uof.Commit();
+            }
         }
 
         private async Task ProcessSettledTransaction(long userId, Payment.Domain.Entities.Transaction transaction)

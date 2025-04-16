@@ -49,5 +49,9 @@ namespace Payment.Api.Controllers
 
             return Ok(result);
         }
+
+        [HttpPost("refund")]
+        [Route("{courseId}")]
+        public async Task<IActionResult> RequestCourseRefund()
     }
 }

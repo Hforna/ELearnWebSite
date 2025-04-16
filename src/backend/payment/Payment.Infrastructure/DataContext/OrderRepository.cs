@@ -42,6 +42,11 @@ namespace Payment.Infrastructure.DataContext
             return _dbContext.Orders.AsNoTracking().Where(d => d.Active == false && d.UserId == userId).ToPagedList(page, quantity);
         }
 
+        public async Task<OrderItem?> LastCourseOrderItem(long courseId)
+        {
+            return await _dbContext.OrderItems.OrderBy(d => d.CreatedAt).LastOrDefaultAsync(d => d.CourseId == courseId && d.);
+        }
+
         public async Task<Order?> OrderByUserId(long userId)
         {
             return await _dbContext.Orders.Include(d => d.OrderItems).SingleOrDefaultAsync(d => d.UserId == userId && d.Active);
