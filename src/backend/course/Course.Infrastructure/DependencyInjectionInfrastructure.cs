@@ -128,7 +128,7 @@ namespace Course.Infrastructure
 
                         cfg.Bind("payment_exchange", d =>
                         {
-                            d.RoutingKey = "user.refund";
+                            d.RoutingKey = "payment.refunded";
                             d.ExchangeType = "direct";
                         });
                     });

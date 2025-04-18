@@ -68,7 +68,7 @@ namespace Payment.Api.Controllers
                         await _webhookService.BalanceTransferStripeWebhook(formatBody);
                         break;
                     case "refund":
-
+                        await _webhookService.RefundOrderStripeWebhook(formatBody);
                         break;
                 }
 

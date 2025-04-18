@@ -10,5 +10,6 @@ namespace Payment.Domain.Services.RabbitMq
     public interface ICourseProducerService
     {
         public Task SendAllowCourseToUser(AllowCourseToUserMessage message);
+        public Task SendCourseRefunded(UserGotRefundMessage message);
     }
 }

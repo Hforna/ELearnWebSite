@@ -25,5 +25,12 @@ namespace Payment.Infrastructure.Services.RabbitMq
                 cfg.SetRoutingKey("allow.course");
             });
         }
+
+        public async Task SendCourseRefunded(UserGotRefundMessage message)
+        {
+            await _bus.Publish(message, f => {
+                f.SetRoutingKey("payment.refunded");
+            });
+        }
     }
 }

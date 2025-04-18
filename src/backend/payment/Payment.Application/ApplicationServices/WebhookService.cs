@@ -15,6 +15,7 @@ using Stripe.Issuing;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -138,6 +139,8 @@ namespace Payment.Application.ApplicationServices
                 
                 _uof.balanceWrite.Update(teacherBalance);
                 await _uof.Commit();
+
+                await _courseProducer.SendCourseRefunded(new UserGotRefundMessage() { CourseIds = new List<long>() { courseId }, UserId = long.Parse(userId) });
             }
         }
 
