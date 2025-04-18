@@ -2,8 +2,11 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using Payment.Api.Attributes;
+using Payment.Api.Binders;
 using Payment.Application.ApplicationServices.Interfaces;
 using Payment.Application.Requests;
+using Payment.Domain.Exceptions;
+using System.Net;
 
 namespace Payment.Api.Controllers
 {
@@ -50,8 +53,21 @@ namespace Payment.Api.Controllers
             return Ok(result);
         }
 
+        /// <summary>
+        /// Request a refund of some course that user has.
+        /// </summary>
+        /// <param name="courseId">course id which user wanna get refund</param>
+        /// <returns>Return infos about refund transaction</returns>
         [HttpPost("refund")]
         [Route("{courseId}")]
-        public async Task<IActionResult> RequestCourseRefund()
+        [ProducesDefaultResponseType]
+        [ProducesResponseType(typeof(OrderException), (int)HttpStatusCode.NotFound)]
+        [ProducesResponseType(typeof(RestException), (int)HttpStatusCode.NotFound)]
+        public async Task<IActionResult> RequestCourseRefund([FromRoute][ModelBinder(typeof(BinderId))]long courseId)
+        {
+            var result = await _paymentService.RequestCourseRefund(courseId);
+
+            return Ok(result);
+        }
     }
 }

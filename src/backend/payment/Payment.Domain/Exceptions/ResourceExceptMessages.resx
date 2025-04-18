@@ -165,4 +165,7 @@
   <data name="LAST_NAME_INVALID" xml:space="preserve">
     <value>Last name length must be equal or less than 60</value>
   </data>
+  <data name="USER_DOESNT_HAVE_THE_COURSE" xml:space="preserve">
+    <value>User doesn't have this course</value>
+  </data>
 </root>

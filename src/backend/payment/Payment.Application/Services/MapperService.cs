@@ -51,6 +51,8 @@ namespace Payment.Application.Services
 
             CreateMap<StripeDebitDto, PaymentCardResponse>();
 
+            CreateMap<RefundService, RefundDto>();
+
             CreateMap<PaymentIntent, StripeDebitDto>()
                 .ForMember(d => d.RequiresAction, f => f.Condition(d => d.Status == "requires_action"))
                 .ForMember(d => d.Success, f => f.Condition(d => d.Status == "succeeded"));

@@ -216,6 +216,31 @@ namespace Payment.Application.ApplicationServices
             return response;
         }
 
+        public async Task<RefundResponse> RequestCourseRefund(long courseId)
+        {
+            var user = await _userService.GetUserInfos();
+            var userId = _sqids.Decode(user.id).Single();
+
+            var course = await _courseRest.GetCourse(_sqids.Encode(courseId));
+
+            var orderItem = await _uof.orderRead.LastCourseOrderItem(courseId);
+
+            if (orderItem is null || orderItem.Active)
+                throw new OrderException(ResourceExceptMessages.USER_DOESNT_HAVE_THE_COURSE, System.Net.HttpStatusCode.NotFound);
+
+            var transaction = await _uof.transactionRead.TransactionByOrderId(orderItem.OrderId);
+
+            var refund = await _paymentGateway.RefundUserCourse(courseId, userId, transaction.Amount, transaction.Currency, transaction.GatewayTransactionId);
+
+            return new RefundResponse()
+            {
+                CourseId = course.id,
+                GatewayId = refund.GatewayId,
+                Reason = refund.Reason,
+                Status = refund.Status
+            };
+        }
+
         string MaskCpf(string cpf) => string.Concat(cpf.AsSpan(0, 3), ".***.***-**");
     }
 }

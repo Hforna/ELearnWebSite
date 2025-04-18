@@ -146,6 +146,26 @@ namespace Payment.Infrastructure.Services.PaymentAdapters
             return response;
         }
 
+        public async Task<RefundDto> RefundUserCourse(long courseId, long userId, decimal amount, CurrencyEnum currency, string paymentIntentId)
+        {
+            var options = new RefundCreateOptions()
+            {
+                PaymentIntent = paymentIntentId,
+                Amount = (long)amount * 10,
+                Currency = currency.ToString().ToLower(),
+                Metadata = new Dictionary<string, string>()
+                {
+                    { "course_id", courseId.ToString() },
+                    { "user_id", userId.ToString() }
+                },
+                Reason = RefundReasons.RequestedByCustomer
+            };
+
+            var refundService = await new RefundService().CreateAsync(options);
+
+            return _mapper.Map<RefundDto>(refundService);
+        }
+
         Stripe.Account? CreateUserAccount(string country, string email, string firstName, string lastName, string taxId)
         {
             var accountOptions = new AccountCreateOptions
