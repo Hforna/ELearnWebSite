@@ -44,7 +44,7 @@ namespace Payment.Infrastructure.DataContext
 
         public async Task<OrderItem?> LastCourseOrderItem(long courseId)
         {
-            return await _dbContext.OrderItems.OrderBy(d => d.CreatedAt).LastOrDefaultAsync(d => d.CourseId == courseId && d.);
+            return await _dbContext.OrderItems.OrderBy(d => d.CreatedAt).LastOrDefaultAsync(d => d.CourseId == courseId);
         }
 
         public async Task<Order?> OrderByUserId(long userId)
