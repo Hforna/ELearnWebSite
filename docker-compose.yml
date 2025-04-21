@@ -29,6 +29,12 @@ services:
       context: .
       dockerfile: src/backend/payment/Payment.Api/Dockerfile
 
+  progress.api:
+    image: ${DOCKER_REGISTRY-}progressapi
+    build:
+      context: .
+      dockerfile: src/backend/progress/Progress.Api/Dockerfile
+
 networks:
   backend:
     driver: bridge
@@ -37,5 +43,6 @@ volumes:
   sqlserver_data:
   mongoserver_data:
   redisserver_data:
+
 
 

@@ -6,7 +6,8 @@
       "serviceActions": {
         "user.api": "StartDebugging",
         "course.api": "StartDebugging",
-        "payment.api": "StartDebugging"
+        "payment.api": "StartDebugging",
+        "progress.api": "StartDebugging"
       }
     }
   }
