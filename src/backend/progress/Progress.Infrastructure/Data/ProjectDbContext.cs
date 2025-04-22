@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Progress.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,18 +11,23 @@ namespace Progress.Infrastructure.Data
 {
     public class ProjectDbContext : DbContext
     {
-        protected ProjectDbContext(DbContextOptions<ProjectDbContext> dbContext) : base(dbContext)
+        public ProjectDbContext(DbContextOptions<ProjectDbContext> dbContext) : base(dbContext)
         {
         }
 
-        //public DbSet<Certificate> Certificates { get; set; }
-        //public DbSet<>
-        //
-        //protected override void OnModelCreating(ModelBuilder modelBuilder)
-        //{
-        //    base.OnModelCreating(modelBuilder);
-        //
-        //    modelBuilder.ApplyConfigurationsFromAssembly(typeof(ProjectDbContext).Assembly);
-        //}
+        public DbSet<Certificate> Certificates { get; set; }
+        public DbSet<QuizAttempts> QuizAttempts { get; set; }
+        public DbSet<UserCourseProgress> UserCourseProgresses { get; set; }
+        public DbSet<UserLessonProgress> UserLessonProgresses { get; set; }
+        public DbSet<UserQuizResponse> UserQuizResponses { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<QuizAttempts>().HasMany(d => d.QuizResponses);
+
+            modelBuilder.ApplyConfigurationsFromAssembly(typeof(ProjectDbContext).Assembly);
+        }
     }
 }
