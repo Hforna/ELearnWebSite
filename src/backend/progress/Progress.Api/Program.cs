@@ -1,3 +1,4 @@
+using Progress.Api.Middlewares;
 using Progress.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -21,6 +22,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseMiddleware<CultureInfoMiddleware>();
 
 app.UseAuthorization();
 
