@@ -18,5 +18,7 @@ namespace Progress.Domain.Entities
         public decimal Score { get; set; }
         public bool Passed { get; set; }
         public DateTime AttemptedAt { get; set; }
+        [InverseProperty("Attempt")]
+        public IList<UserQuizResponse> QuizResponses { get; set; }
     }
 }

@@ -7,16 +7,18 @@ namespace Payment.Api.Sessions
 {
     public class OrderSessionService : IOrderSessionService
     {
-        private readonly ISession _session;
+        private readonly IHttpContextAccessor _httpContext;
 
-        public OrderSessionService(ISession session)
+        public OrderSessionService(IHttpContextAccessor httpContext)
         {
-            _session = session;
+            _httpContext = httpContext;
         }
 
         public void AddOrderToSession(long courseId)
         {
-            if(_session.TryGetValue("user_order", out var orderItems))
+            var session = _httpContext.HttpContext.Session;
+
+            if(session.TryGetValue("user_order", out var orderItems))
             {
                 var toString = Encoding.UTF8.GetString(orderItems);
                 var deserialize = JsonSerializer.Deserialize<Dictionary<Guid, long>>(toString);
@@ -29,19 +31,21 @@ namespace Payment.Api.Sessions
                 deserialize!.Add(Guid.NewGuid(), courseId);
 
                 var serialize = JsonSerializer.Serialize(deserialize);
-                _session.SetString("user_order", serialize);
+                session.SetString("user_order", serialize);
             } else
             {
                 var dict = new Dictionary<Guid, long>();
                 dict.Add(Guid.NewGuid(), courseId);
 
-                _session.SetString("user_order", JsonSerializer.Serialize(dict));
+                session.SetString("user_order", JsonSerializer.Serialize(dict));
             }
         }
 
         public Dictionary<Guid, long>? GetSessionOrder()
         {
-            if(_session.TryGetValue("user_order", out var value))
+            var session = _httpContext.HttpContext.Session;
+
+            if(session.TryGetValue("user_order", out var value))
             {
                 var deserializer = JsonSerializer.Deserialize<Dictionary<Guid, long>>(value);
 

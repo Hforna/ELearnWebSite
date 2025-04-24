@@ -16,7 +16,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\" />
+  	<ProjectReference Include="..\Progress.Application\Progress.Application.csproj" />
+  	<ProjectReference Include="..\Progress.Domain\Progress.Domain.csproj" />
+  	<ProjectReference Include="..\Progress.Infrastructure\Progress.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

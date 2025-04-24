@@ -149,9 +149,9 @@ app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
-app.UseCors();
-
 app.UseSession();
+
+app.UseCors();
 
 app.MapControllers();
 
