@@ -1,4 +1,5 @@
 ﻿using Course.Domain.Entitites;
+using Course.Domain.Entitites.Quiz;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -20,6 +21,10 @@ namespace Course.Infrastructure.Data.Course
         public DbSet<CourseTopicsEntity> CourseTopics { get; set; }
         public DbSet<WishList> WishList { get; set; }
         public DbSet<ReviewResponseEntity> ReviewResponse { get; set; }
+        public DbSet<QuizEntity> Quizzes { get; set; }
+        public DbSet<QuestionEntity> Questions { get; set; }
+        public DbSet<AnswerOption> AnswerOptions { get; set; }
+        public DbSet<CorrectAnswer> CorrectAnswers { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -27,6 +32,11 @@ namespace Course.Infrastructure.Data.Course
 
             modelBuilder.Entity<CourseEntity>().HasMany(d => d.Modules).WithOne(d => d.Course);
             modelBuilder.Entity<WishList>().HasOne(d => d.Course);
+
+            modelBuilder.Entity<QuizEntity>().HasMany(d => d.Questions).WithOne(d => d.Quiz);
+            modelBuilder.Entity<QuizEntity>().HasOne(d => d.Course).WithMany().OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<QuestionEntity>().HasOne(d => d.Quiz).WithMany(d => d.Questions).OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<AnswerOption>().HasOne(d => d.Question);
 
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(CourseDbContext).Assembly);
         }
