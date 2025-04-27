@@ -6,10 +6,12 @@ using Course.Application.UseCases.Courses;
 using Course.Application.UseCases.Enrollments;
 using Course.Application.UseCases.Lessons;
 using Course.Application.UseCases.Modules;
+using Course.Application.UseCases.Quizzes;
 using Course.Application.UseCases.Repositories.Course;
 using Course.Application.UseCases.Repositories.Enrollments;
 using Course.Application.UseCases.Repositories.Lessons;
 using Course.Application.UseCases.Repositories.Modules;
+using Course.Application.UseCases.Repositories.Quizzes;
 using Course.Application.UseCases.Repositories.Reviews;
 using Course.Application.UseCases.Repositories.WishLists;
 using Course.Application.UseCases.Reviews;
@@ -74,6 +76,7 @@ namespace Course.Application
             services.AddScoped<IGetReviews, GetReviews>();
             services.AddScoped<IGetReview, GetReview>();
             services.AddScoped<IGetUserWishList, GetUserWishList>();
+            services.AddScoped<ICreateQuiz, CreateQuiz>();
 
             services.AddSingleton(new FileService());
         }

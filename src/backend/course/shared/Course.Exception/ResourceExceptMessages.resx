@@ -216,4 +216,7 @@
   <data name="ORDER_ITEM_EXISTS" xml:space="preserve">
     <value>This course is already on order user</value>
   </data>
+  <data name="INVALID_ID_FORMAT" xml:space="preserve">
+    <value>Id format is wrong</value>
+  </data>
 </root>

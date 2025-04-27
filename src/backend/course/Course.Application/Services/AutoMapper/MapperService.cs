@@ -3,6 +3,7 @@ using Course.Communication.Requests;
 using Course.Communication.Responses;
 using Course.Domain.DTOs;
 using Course.Domain.Entitites;
+using Course.Domain.Entitites.Quiz;
 using Sqids;
 using System;
 using System.Collections.Generic;
@@ -97,6 +98,10 @@ namespace Course.Application.Services.AutoMapper
             CreateMap<Collection<Module>, ModulesResponse>()
                 .ForMember(d => d.CourseId, f => f.MapFrom(m => _sqids.Encode(m.FirstOrDefault().CourseId)))
                 .ForMember(d => d.Modules, f => f.MapFrom(m => m));
+
+            CreateMap<QuizEntity, QuizResponse>()
+                .ForMember(d => d.CourseId, f => f.MapFrom(d => d.CourseId))
+                .ForMember(d => d.ModuleId, f => f.MapFrom(d => d.ModuleId));
         }
     }
 }

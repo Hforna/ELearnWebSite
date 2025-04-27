@@ -19,6 +19,8 @@ namespace Course.Infrastructure.Data
         public ILessonWriteOnly lessonWrite { get; set; }
         public IVideoReadOnly videoRead { get; set; }
         public IVideoWriteOnly videoWrite { get; set; }
+        public IQuizReadOnly quizRead { get; set; }
+        public IQuizWriteOnly quizWrite { get; set; }
         public IEnrollmentReadOnly enrollmentRead { get; set; }
         public IEnrollmentWriteOnly enrollmentWrite { get; set; }
         public IReviewReadOnly reviewRead { get; set; }
@@ -32,7 +34,8 @@ namespace Course.Infrastructure.Data
             IVideoReadOnly videoRead, IVideoWriteOnly videoWriteOnly,
             IEnrollmentReadOnly enrollmentRead, IEnrollmentWriteOnly enrollmentWrite,
             IReviewReadOnly reviewRead, IReviewWriteOnly reviewWrite,
-            IWishListReadOnly wishListRead, IWishListWriteOnly wishListWrite)
+            IWishListReadOnly wishListRead, IWishListWriteOnly wishListWrite, 
+            IQuizWriteOnly quizWrite, IQuizReadOnly quizRead)
         {
             _dbContext = dbContext;
             this.courseRead = courseRead;
@@ -49,6 +52,8 @@ namespace Course.Infrastructure.Data
             videoWrite = videoWriteOnly;
             this.wishListRead = wishListRead;
             this.wishListWrite = wishListWrite;
+            this.quizRead = quizRead;
+            this.quizWrite = quizWrite;
         }
 
         public async Task Commit()

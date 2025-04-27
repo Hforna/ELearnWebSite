@@ -159,6 +159,8 @@ namespace Course.Infrastructure
             services.AddScoped<IReviewWriteOnly, ReviewRepository>();
             services.AddScoped<IWishListReadOnly, WishListRepository>();
             services.AddScoped<IWishListWriteOnly, WishListRepository>();
+            services.AddScoped<IQuizReadOnly, QuizRepository>();
+            services.AddScoped<IQuizWriteOnly, QuizRepository>();
         }
 
         static void AddAzureStorage(IServiceCollection services, IConfiguration configuration)
