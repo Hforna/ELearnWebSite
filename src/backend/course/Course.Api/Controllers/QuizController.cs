@@ -22,5 +22,14 @@ namespace Course.Api.Controllers
 
             return Created(string.Empty, result);
         }
+
+        [HttpGet("{courseId}/{moduleId}")]
+        public async Task<IActionResult> GetQuizByModule([FromRoute][ModelBinder(typeof(BinderId))] long moduleId, 
+            [FromRoute][ModelBinder(typeof(BinderId))] long courseId, [FromServices]IGetQuizByModule useCase)
+        {
+            var result = await useCase.Execute(courseId, moduleId);
+
+            return Ok(result);
+        }
     }
 }

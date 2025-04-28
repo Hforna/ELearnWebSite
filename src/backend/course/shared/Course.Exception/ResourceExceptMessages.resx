@@ -219,4 +219,13 @@
   <data name="INVALID_ID_FORMAT" xml:space="preserve">
     <value>Id format is wrong</value>
   </data>
+  <data name="PASSING_SCORE_LESS_THAN_TEN" xml:space="preserve">
+    <value>Passing score must be less than 10</value>
+  </data>
+  <data name="TITLE_GREATER_THAN_ZERO" xml:space="preserve">
+    <value>Title cannot be null or empty</value>
+  </data>
+  <data name="TITLE_EQUAL_OR_LESS_THAN_250" xml:space="preserve">
+    <value>Title must be equal or less than 250</value>
+  </data>
 </root>

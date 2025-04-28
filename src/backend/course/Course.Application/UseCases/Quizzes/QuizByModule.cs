@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Course.Domain.Repositories
+namespace Course.Application.UseCases.Quizzes
 {
-    public interface IQuizReadOnly
+    internal class QuizByModuleId
     {
-
     }
 }

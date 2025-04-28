@@ -22,8 +22,20 @@ namespace Course.Application.UseCases.Quizzes
         private readonly IMapper _mapper;
         private readonly IUserService _userService;
 
+        public CreateQuiz(IUnitOfWork uof, SqidsEncoder<long> sqids, 
+            IMapper mapper, IUserService userService)
+        {
+            _uof = uof;
+            _sqids = sqids;
+            _mapper = mapper;
+            _userService = userService;
+        }
+
         public async Task<QuizResponse> Execute(CreateQuizRequest request)
         {
+            if (request.PassingScore > 10)
+                throw new QuizException(ResourceExceptMessages.PASSING_SCORE_LESS_THAN_TEN, System.Net.HttpStatusCode.BadRequest);
+
             var user = await _userService.GetUserInfos();
             var userId = _sqids.Decode(user.id).Single();
 

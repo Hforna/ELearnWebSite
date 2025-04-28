@@ -8,6 +8,7 @@ namespace Course.Communication.Responses
 {
     public class QuizResponse
     {
+        public string Id { get; set; }
         public string CourseId { get; set; }
         public string ModuleId { get; set; }
         public string Title { get; set; }

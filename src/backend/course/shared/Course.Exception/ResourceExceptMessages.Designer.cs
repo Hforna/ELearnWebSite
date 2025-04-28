@@ -268,6 +268,15 @@ namespace Course.Exception {
         }
         
         /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Passing score must be less than 10.
+        /// </summary>
+        internal static string PASSING_SCORE_LESS_THAN_TEN {
+            get {
+                return ResourceManager.GetString("PASSING_SCORE_LESS_THAN_TEN", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a Invalid rating type.
         /// </summary>
         internal static string RATING_OUT_ENUM {
@@ -318,6 +327,24 @@ namespace Course.Exception {
         internal static string TEXT_LENGTH_MUST_BE_LESS_THAN_300 {
             get {
                 return ResourceManager.GetString("TEXT_LENGTH_MUST_BE_LESS_THAN_300", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Title must be equal or less than 250.
+        /// </summary>
+        internal static string TITLE_EQUAL_OR_LESS_THAN_250 {
+            get {
+                return ResourceManager.GetString("TITLE_EQUAL_OR_LESS_THAN_250", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Title cannot be null or empty.
+        /// </summary>
+        internal static string TITLE_GREATER_THAN_ZERO {
+            get {
+                return ResourceManager.GetString("TITLE_GREATER_THAN_ZERO", resourceCulture);
             }
         }
         

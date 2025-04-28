@@ -101,7 +101,8 @@ namespace Course.Application.Services.AutoMapper
 
             CreateMap<QuizEntity, QuizResponse>()
                 .ForMember(d => d.CourseId, f => f.MapFrom(d => d.CourseId))
-                .ForMember(d => d.ModuleId, f => f.MapFrom(d => d.ModuleId));
+                .ForMember(d => d.ModuleId, f => f.MapFrom(d => d.ModuleId))
+                .ForMember(d => d.Id, f => f.MapFrom(d => d.Id));
         }
     }
 }
