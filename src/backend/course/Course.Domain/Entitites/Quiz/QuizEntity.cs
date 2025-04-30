@@ -15,6 +15,6 @@ namespace Course.Domain.Entitites.Quiz
         public string Title { get; set; }
         public int PassingScore { get; set; }
         public long ModuleId { get; set; }
-        public List<QuestionEntity> Questions { get; set; }
+        public List<QuestionEntity> Questions { get; set; } = [];
     }
 }

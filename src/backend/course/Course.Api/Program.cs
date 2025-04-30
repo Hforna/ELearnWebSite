@@ -101,6 +101,17 @@ builder.Services.AddRateLimiter(d =>
     });
 });
 
+builder.Services.AddRateLimiter(d =>
+{
+    d.AddFixedWindowLimiter(policyName: "getQuizLimiter", d =>
+    {
+        d.PermitLimit = 3;
+        d.QueueLimit = 2;
+        d.Window = TimeSpan.FromMinutes(2);
+        d.QueueProcessingOrder = System.Threading.RateLimiting.QueueProcessingOrder.OldestFirst;
+    });
+});
+
 builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddScoped<ITokenReceptor, TokenReceptor>();

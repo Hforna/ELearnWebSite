@@ -77,7 +77,7 @@ namespace Course.Application
             services.AddScoped<IGetReview, GetReview>();
             services.AddScoped<IGetUserWishList, GetUserWishList>();
             services.AddScoped<ICreateQuiz, CreateQuiz>();
-            services.AddScoped<IGetQuizByModule, QuizByModule>();
+            services.AddScoped<IGetQuizById, GetQuizById>();
 
             services.AddSingleton(new FileService());
         }

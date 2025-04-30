@@ -10,6 +10,6 @@ namespace Course.Application.UseCases.Repositories.Quizzes
 {
     public interface ICreateQuiz
     {
-        public async Task<QuizResponse> Execute(CreateQuizRequest request);
+        public Task<QuizResponse> Execute(CreateQuizRequest request);
     }
 }

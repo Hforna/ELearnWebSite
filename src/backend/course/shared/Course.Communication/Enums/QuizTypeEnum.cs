@@ -4,9 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Course.Application.UseCases.Quizzes
+namespace Course.Communication.Enums
 {
-    internal class QuizByModuleId
+    public enum QuizTypeEnum
     {
+        TRUE_FALSE,
+        MULTIPLE_CHOICE
     }
 }

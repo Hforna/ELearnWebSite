@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace Course.Application.UseCases.Repositories.Quizzes
 {
-    public interface IGetQuizByModule
+    public interface IGetQuizById
     {
-        public Task<QuizResponse> Execute(long courseId, long moduleId);
+        public Task<QuizResponse> Execute(long courseId, long quizId, bool includeQuestions);
     }
 }

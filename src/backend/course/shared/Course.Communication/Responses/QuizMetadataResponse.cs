@@ -4,11 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Course.Domain.Enums
+namespace Course.Communication.Responses
 {
-    public enum QuizTypeEnum
+    public class QuizMetadataResponse
     {
-        TRUE_FALSE,
-        MULTIPLE_CHOICE
+        public bool shuffledQuestions { get; set; }
     }
 }

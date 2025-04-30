@@ -228,4 +228,7 @@
   <data name="TITLE_EQUAL_OR_LESS_THAN_250" xml:space="preserve">
     <value>Title must be equal or less than 250</value>
   </data>
+  <data name="QUIZ_DOESNT_EXISTS" xml:space="preserve">
+    <value>Quiz doesn't exists</value>
+  </data>
 </root>
