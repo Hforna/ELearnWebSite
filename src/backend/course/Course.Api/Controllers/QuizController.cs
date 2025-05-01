@@ -50,5 +50,22 @@ namespace Course.Api.Controllers
 
             return Ok(result);
         }
+
+        /// <summary>
+        /// Add a question to a user's course quiz
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="useCase"></param>
+        /// <returns></returns>
+        [HttpPost("add-question")]
+        [ProducesResponseType(typeof(CourseException), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(QuizException), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(QuizException), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> AddQuestionToQuiz([FromBody]CreateQuestionRequest request, [FromServices]ICreateQuestion useCase)
+        {
+            var result = await useCase.Execute(request);
+
+            return Created(string.Empty, result);
+        }
     }
 }

@@ -24,6 +24,16 @@ namespace Course.Infrastructure.Data.CourseD
             await _dbContext.Quizzes.AddAsync(quiz);
         }
 
+        public async Task AddAnswerOptionsRange(List<AnswerOption> answerOptions)
+        {
+            await _dbContext.AnswerOptions.AddRangeAsync(answerOptions);
+        }
+
+        public async Task AddQuestion(QuestionEntity question)
+        {
+            await _dbContext.Questions.AddAsync(question);
+        }
+
         public async Task<List<AnswerOption>?> AnswerOptionsByQuestion(long questionId)
         {
             return await _dbContext.AnswerOptions.Where(d => d.QuestionId == questionId && d.Active).ToListAsync();
@@ -36,7 +46,7 @@ namespace Course.Infrastructure.Data.CourseD
 
         public async Task<QuizEntity?> QuizById(long quizId)
         {
-            return await _dbContext.Quizzes.Include(d => d.Questions).SingleOrDefaultAsync(d => d.Id == quizId && d.Active);
+            return await _dbContext.Quizzes.Include(d => d.Questions).Include(d => d.Course).SingleOrDefaultAsync(d => d.Id == quizId && d.Active);
         }
     }
 }

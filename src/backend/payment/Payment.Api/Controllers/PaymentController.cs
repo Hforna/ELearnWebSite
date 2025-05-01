@@ -58,7 +58,7 @@ namespace Payment.Api.Controllers
         /// </summary>
         /// <param name="courseId">course id which user wanna get refund</param>
         /// <returns>Return infos about refund transaction</returns>
-        [HttpPost("refund")]
+        [HttpGet("refund")]
         [Route("{courseId}")]
         [ProducesDefaultResponseType]
         [ProducesResponseType(typeof(OrderException), (int)HttpStatusCode.NotFound)]

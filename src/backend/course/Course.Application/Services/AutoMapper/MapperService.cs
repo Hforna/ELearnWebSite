@@ -100,9 +100,9 @@ namespace Course.Application.Services.AutoMapper
                 .ForMember(d => d.Modules, f => f.MapFrom(m => m));
 
             CreateMap<QuizEntity, QuizResponse>()
-                .ForMember(d => d.CourseId, f => f.MapFrom(d => d.CourseId))
-                .ForMember(d => d.ModuleId, f => f.MapFrom(d => d.ModuleId))
-                .ForMember(d => d.Id, f => f.MapFrom(d => d.Id));
+                .ForMember(d => d.CourseId, f => f.MapFrom(d => _sqids.Encode(d.CourseId)))
+                .ForMember(d => d.ModuleId, f => f.MapFrom(d => _sqids.Encode(d.ModuleId)))
+                .ForMember(d => d.Id, f => f.MapFrom(d => _sqids.Encode(d.Id)));
 
             CreateMap<QuestionEntity, QuestionResponse>()
                 .ForMember(d => d.Id, f => f.MapFrom(d => _sqids.Encode(d.Id)))
@@ -111,6 +111,9 @@ namespace Course.Application.Services.AutoMapper
             CreateMap<AnswerOption, AnswerOptionsResponse>()
                 .ForMember(d => d.QuestionId, f => f.MapFrom(d => d.QuestionId))
                 .ForMember(d => d.Id, f => f.MapFrom(d => d.Id));
+
+            CreateMap<CreateQuestionRequest, QuestionEntity>()
+                .ForMember(d => d.QuizId, f => f.MapFrom(f => f.QuizId));    
         }
     }
 }
