@@ -39,10 +39,3 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}  # Adicione esta linha
-        with:
-          args: >
-            -Dsonar.projectKey=SEU_PROJECT_KEY
-            -Dsonar.projectName=ELearnWebSite
-            -Dsonar.projectVersion=1.0
-            -Dsonar.sources=.
-            -Dsonar.sourceEncoding=UTF-8
