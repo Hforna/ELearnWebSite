@@ -13,5 +13,6 @@ namespace Course.Domain.Repositories
         public Task<QuizEntity?> QuizById(long quizId);
         public Task<List<QuestionEntity>?> QuestionsByQuiz(long quizId);
         public Task<List<AnswerOption>?> AnswerOptionsByQuestion(long questionId);
+        public Task<QuestionEntity?> QuestionByIdAndQuiz(long quizId, long questionId);
     }
 }

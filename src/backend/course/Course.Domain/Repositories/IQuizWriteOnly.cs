@@ -12,5 +12,6 @@ namespace Course.Domain.Repositories
         public Task Add(QuizEntity quiz);
         public Task AddQuestion(QuestionEntity question);
         public Task AddAnswerOptionsRange(List<AnswerOption> answerOptions);
+        public void DeleteQuestion(QuestionEntity question);
     }
 }

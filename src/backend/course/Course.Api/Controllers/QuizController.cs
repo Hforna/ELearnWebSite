@@ -67,5 +67,14 @@ namespace Course.Api.Controllers
 
             return Created(string.Empty, result);
         }
+
+        [HttpDelete("{quizId}/question/{questionId}")]
+        public async Task<IActionResult> DeleteQuestion([FromRoute][ModelBinder(typeof(BinderId))]long questionId, 
+            [FromRoute][ModelBinder(typeof(BinderId))]long quizId, [FromServices]IDeleteQuestion useCase)
+        {
+            await useCase.Execute(quizId, questionId);
+
+            return NoContent();
+        }
     }
 }

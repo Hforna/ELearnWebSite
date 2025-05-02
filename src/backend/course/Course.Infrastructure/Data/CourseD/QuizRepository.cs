@@ -39,6 +39,16 @@ namespace Course.Infrastructure.Data.CourseD
             return await _dbContext.AnswerOptions.Where(d => d.QuestionId == questionId && d.Active).ToListAsync();
         }
 
+        public void DeleteQuestion(QuestionEntity question)
+        {
+            _dbContext.Questions.Remove(question);
+        }
+
+        public async Task<QuestionEntity?> QuestionByIdAndQuiz(long quizId, long questionId)
+        {
+            return await _dbContext.Questions.Include(d => d.Quiz).ThenInclude(d => d.Course).SingleOrDefaultAsync(d => d.Active && d.QuizId == quizId && d.Id == questionId);
+        }
+
         public async Task<List<QuestionEntity>?> QuestionsByQuiz(long quizId)
         {
             return await _dbContext.Questions.Where(d => d.QuizId == quizId && d.Active).ToListAsync();

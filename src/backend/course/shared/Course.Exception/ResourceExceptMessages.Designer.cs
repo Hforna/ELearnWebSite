@@ -313,6 +313,15 @@ namespace Course.Exception {
         }
         
         /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Quiz or question doesn&apos;t exists.
+        /// </summary>
+        internal static string QUIZ_OR_QUESTION_NOT_EXISTS {
+            get {
+                return ResourceManager.GetString("QUIZ_OR_QUESTION_NOT_EXISTS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a Quiz type is out of enum.
         /// </summary>
         internal static string QUIZ_TYPE_OUT_ENUM {
