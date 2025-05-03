@@ -44,6 +44,11 @@ namespace Course.Infrastructure.Data.CourseD
             _dbContext.Questions.Remove(question);
         }
 
+        public void DeleteQuiz(QuizEntity quiz)
+        {
+            _dbContext.Quizzes.Remove(quiz);
+        }
+
         public async Task<QuestionEntity?> QuestionByIdAndQuiz(long quizId, long questionId)
         {
             return await _dbContext.Questions.Include(d => d.Quiz).ThenInclude(d => d.Course).SingleOrDefaultAsync(d => d.Active && d.QuizId == quizId && d.Id == questionId);

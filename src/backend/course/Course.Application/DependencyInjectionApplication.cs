@@ -80,6 +80,7 @@ namespace Course.Application
             services.AddScoped<IGetQuizById, GetQuizById>();
             services.AddScoped<ICreateQuestion, CreateQuestion>();
             services.AddScoped<IDeleteQuestion, DeleteQuestion>();
+            services.AddScoped<IDeleteQuiz, DeleteQuiz>();
 
             services.AddSingleton(new FileService());
         }

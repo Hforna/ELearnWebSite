@@ -3,6 +3,7 @@ using Course.Api.Binders;
 using Course.Application.UseCases.Repositories.Quizzes;
 using Course.Communication.Requests;
 using Course.Exception;
+using MassTransit.SagaStateMachine;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -49,6 +50,23 @@ namespace Course.Api.Controllers
             var result = await useCase.Execute(courseId, quizId, includeQuestions);
 
             return Ok(result);
+        }
+
+        /// <summary>
+        /// Teacher can delete a quiz from their course
+        /// </summary>
+        /// <param name="courseId">course id that contains the quiz</param>
+        /// <param name="quizId">id of quiz user that wanna delete</param>
+        [HttpDelete("{courseId}/{quizId}")]
+        [ProducesResponseType(typeof(CourseException), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(CourseException), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(QuizException), StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> DeleteQuiz([FromRoute][ModelBinder(typeof(BinderId))]long courseId, 
+            [FromRoute][ModelBinder(typeof(BinderId))] long quizId, [FromServices]IDeleteQuiz useCase)
+        {
+            await useCase.Execute(courseId, quizId);
+
+            return NoContent();
         }
 
         /// <summary>

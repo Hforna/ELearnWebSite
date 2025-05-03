@@ -103,7 +103,7 @@ namespace Payment.Application.ApplicationServices
                 Amount = amountPayment,
                 Currency = currencyPayment,
                 OrderId = userOrder.Id,
-                TransactionStatus = Enum.TryParse(typeof(TransactionStatusEnum), payment.Status, true, out dynamic status) ? (TransactionStatusEnum)status : TransactionStatusEnum.Processing,
+                TransactionStatus = Enum.TryParse(typeof(TransactionStatusEnum), payment.Status, true, out object status) ? (TransactionStatusEnum)status : TransactionStatusEnum.Processing,
                 GatewayTransactionId = payment.Id,
             };
             await _uof.transactionWrite.Add(transaction);
