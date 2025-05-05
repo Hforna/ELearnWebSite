@@ -246,4 +246,7 @@
   <data name="QUIZ_OR_QUESTION_NOT_EXISTS" xml:space="preserve">
     <value>Quiz or question doesn't exists</value>
   </data>
+  <data name="INVALID_FORMAT_ID" xml:space="preserve">
+    <value>Invalid id format on field</value>
+  </data>
 </root>

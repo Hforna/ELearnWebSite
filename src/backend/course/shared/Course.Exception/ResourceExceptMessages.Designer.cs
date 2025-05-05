@@ -169,6 +169,15 @@ namespace Course.Exception {
         }
         
         /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Invalid id format on field.
+        /// </summary>
+        public static string INVALID_FORMAT_ID {
+            get {
+                return ResourceManager.GetString("INVALID_FORMAT_ID", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a Only format image is png and jpg.
         /// </summary>
         public static string INVALID_FORMAT_IMAGE {

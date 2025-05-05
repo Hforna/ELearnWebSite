@@ -174,6 +174,8 @@ builder.Services.AddSwaggerGen(c => {
     c.IncludeXmlComments($"{Path.Combine(AppContext.BaseDirectory, xmlFile)}");
 });
 
+builder.Services.AddTransient<IdRequestValidtorMiddleware>();
+
 var app = builder.Build();
 
 app.UseRateLimiter();
@@ -188,6 +190,8 @@ if (app.Environment.IsDevelopment())
 app.UseSession();
 
 app.UseMiddleware<CultureMiddleware>();
+
+app.UseMiddleware<IdRequestValidtorMiddleware>();
 
 app.UseHealthChecks("/HealthCheck");
 

@@ -3,6 +3,7 @@ using Course.Application.UseCases.Repositories.Course;
 using Course.Domain.Repositories;
 using Course.Domain.Services.Azure;
 using Course.Infrastructure.Services.Azure;
+using Microsoft.AspNetCore.Http.Extensions;
 
 namespace Course.Api.BackgroundServices
 {
@@ -30,8 +31,8 @@ namespace Course.Api.BackgroundServices
             var body = long.Parse(eventArgs.Message.Body);
 
             var scope = _provider.CreateScope();
-            var uof = _provider.GetRequiredService<IUnitOfWork>();
-            var storage = _provider.GetRequiredService<IStorageService>();
+            var uof = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
+            var storage = scope.ServiceProvider.GetRequiredService<IStorageService>();
 
             var course = await uof.courseRead.CourseById(body);
 
