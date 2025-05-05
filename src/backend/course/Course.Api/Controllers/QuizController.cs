@@ -58,6 +58,7 @@ namespace Course.Api.Controllers
         /// <param name="courseId">course id that contains the quiz</param>
         /// <param name="quizId">id of quiz user that wanna delete</param>
         [HttpDelete("{courseId}/{quizId}")]
+        [Authorize(Policy = "TeacherOnly")]
         [ProducesResponseType(typeof(CourseException), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(CourseException), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(QuizException), StatusCodes.Status404NotFound)]
@@ -76,6 +77,7 @@ namespace Course.Api.Controllers
         /// <param name="useCase"></param>
         /// <returns></returns>
         [HttpPost("add-question")]
+        [Authorize(Policy = "TeacherOnly")]
         [ProducesResponseType(typeof(CourseException), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(QuizException), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(QuizException), StatusCodes.Status400BadRequest)]
@@ -87,6 +89,7 @@ namespace Course.Api.Controllers
         }
 
         [HttpDelete("{quizId}/question/{questionId}")]
+        [Authorize(Policy = "TeacherOnly")]
         public async Task<IActionResult> DeleteQuestion([FromRoute][ModelBinder(typeof(BinderId))]long questionId, 
             [FromRoute][ModelBinder(typeof(BinderId))]long quizId, [FromServices]IDeleteQuestion useCase)
         {
