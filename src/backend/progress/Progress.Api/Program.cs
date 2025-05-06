@@ -1,6 +1,7 @@
 using Progress.Api.Middlewares;
 using Progress.Infrastructure;
 using Progress.Application;
+using Course.Api.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,9 +24,13 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+builder.Services.AddTransient<IdValidtorMiddleware>();
+
 app.UseHttpsRedirection();
 
 app.UseMiddleware<CultureInfoMiddleware>();
+
+app.UseMiddleware<IdValidtorMiddleware>();
 
 app.UseAuthorization();
 
