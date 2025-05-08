@@ -1,0 +1,64 @@
+﻿using Progress.Domain.Rest;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Net.Http;
+using System.Text.Json;
+using Progress.Domain.Token;
+using System.Net;
+using Progress.Domain.Exceptions;
+using Progress.Domain.Dtos;
+
+namespace Progress.Infrastructure.Rest
+{
+    public class CourseRestService : ICourseRestService
+    {
+        private readonly IHttpClientFactory _httpClient;
+        private readonly ITokenReceptor _tokenReceptor;
+
+        public CourseRestService(IHttpClientFactory httpClient, ITokenReceptor tokenReceptor)
+        {
+            _httpClient = httpClient;
+            _tokenReceptor = tokenReceptor;
+        }
+
+        public async Task<QuizDto> GetQuiz(string quizId, string courseId)
+        {
+            var client = _httpClient.CreateClient("course.api");
+            client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _tokenReceptor.GetToken());
+
+            var request = await client.GetAsync($"api/quiz/{courseId}/{quizId}");
+            var response = await request.Content.ReadAsStringAsync();
+
+            if(request.IsSuccessStatusCode)
+            {
+                return JsonSerializer.Deserialize<QuizDto>(response)!;
+            }
+            throw new RestException(response, request.StatusCode);
+        }
+
+        public async Task<bool> UserGotQuiz(string quizId)
+        {
+            var client = _httpClient.CreateClient("course.api");
+            client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _tokenReceptor.GetToken());
+
+            var jsonContent = JsonSerializer.Serialize(new { quizId = quizId, });
+            var stringContent = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+            var request = await client.PostAsync("api/quiz/user-got-quiz", stringContent);
+
+            var response = await request.Content.ReadAsStringAsync();
+
+            if(request.IsSuccessStatusCode)
+            {
+                var deserialize = JsonSerializer.Deserialize<bool>(response);
+
+                return deserialize;
+            }
+            throw new RestException(response, request.StatusCode);
+        }
+
+
+    }
+}

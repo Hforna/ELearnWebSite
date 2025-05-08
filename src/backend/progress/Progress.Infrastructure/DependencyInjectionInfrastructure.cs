@@ -2,7 +2,9 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Progress.Domain.Rest;
 using Progress.Infrastructure.Data;
+using Progress.Infrastructure.Rest;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,6 +19,7 @@ namespace Progress.Infrastructure
         {
             AddDbContext(services, configuration);
             ConfigureRabbitMq(services, configuration);
+            AddRestService(services);
         }
 
         static void AddDbContext(IServiceCollection services, IConfiguration configuration)
@@ -52,6 +55,11 @@ namespace Progress.Infrastructure
                     });
                 });
             });
+        }
+
+        static void AddRestService(IServiceCollection services)
+        {
+            services.AddScoped<ICourseRestService, CourseRestService>();
         }
     }
 }

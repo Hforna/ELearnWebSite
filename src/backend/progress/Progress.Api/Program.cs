@@ -2,6 +2,8 @@ using Progress.Api.Middlewares;
 using Progress.Infrastructure;
 using Progress.Application;
 using Course.Api.Middlewares;
+using Progress.Domain.Token;
+using Progress.Api.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +13,8 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddScoped<ITokenReceptor, TokenReceptor>();
 
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddApplication(builder.Configuration);

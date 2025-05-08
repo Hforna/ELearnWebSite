@@ -8,7 +8,7 @@ namespace Progress.Api.Controllers
     [ApiController]
     public class AttemtpsController : ControllerBase
     {
-        [HttpGet("course/{courseId}/module/{moduleId}/quiz/{quizId}")]
+        [HttpGet("course/{courseId}/module/{moduleId}/quiz/{quizId}/start")]
         public async Task<IActionResult> StartQuizAttempt([FromRoute][ModelBinder(typeof(BinderId))]long courseId, 
             [FromRoute][ModelBinder(typeof(BinderId))] long moduleId, 
             [FromRoute][ModelBinder(typeof(BinderId))] long quizId)
