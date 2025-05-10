@@ -28,12 +28,6 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddSession(d =>
 {
     d.IdleTimeout = TimeSpan.FromDays(1);
-    d.Cookie = new CookieBuilder()
-    {
-        HttpOnly = true,
-        Expiration = TimeSpan.FromDays(7),
-        IsEssential = true
-    };
 });
 
 builder.Services.AddHttpClient("user.api", client =>
@@ -46,7 +40,7 @@ builder.Services.AddHttpClient("user.api", client =>
 
 builder.Services.AddHttpClient("course.api", client =>
 {
-    client.BaseAddress = new Uri("https://course.api:8081");
+    client.BaseAddress = new Uri("https://course.api:8083");
 }).ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
 {
     ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true

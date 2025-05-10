@@ -46,7 +46,7 @@ namespace Progress.Infrastructure.Rest
 
             var jsonContent = JsonSerializer.Serialize(new { courseId = courseId, });
             var stringContent = new StringContent(jsonContent, Encoding.UTF8, "application/json");
-            var request = await client.PostAsync("api/quiz/user-got-course", stringContent);
+            var request = await client.PostAsync("api/course/user-got-course", stringContent);
 
             var response = await request.Content.ReadAsStringAsync();
 
