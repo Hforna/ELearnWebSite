@@ -81,6 +81,7 @@ namespace Course.Application
             services.AddScoped<ICreateQuestion, CreateQuestion>();
             services.AddScoped<IDeleteQuestion, DeleteQuestion>();
             services.AddScoped<IDeleteQuiz, DeleteQuiz>();
+            services.AddScoped<IUserGotCourse, UserGotCourse>();
 
             services.AddSingleton(new FileService());
         }

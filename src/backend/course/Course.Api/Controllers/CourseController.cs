@@ -1,4 +1,5 @@
-﻿using Course.Api.Binders;
+﻿using Course.Api.Attributes;
+using Course.Api.Binders;
 using Course.Application.UseCases.Course;
 using Course.Application.UseCases.Modules;
 using Course.Application.UseCases.Repositories.Course;
@@ -25,6 +26,16 @@ namespace Course.Api.Controllers
             var result = await useCase.Execute(request);
 
             return Created(string.Empty, result);
+        }
+
+        [HttpPost("user-got-course")]
+        [AuthenticationUser]
+        [ProducesResponseType(typeof(CourseException), StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> UserGotCourse([FromBody]GetCourseRequest request, [FromServices]IUserGotCourse useCase)
+        {
+            var result = await useCase.Execute(request);
+
+            return Ok(result);
         }
 
         /// <summary>
