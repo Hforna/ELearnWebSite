@@ -65,7 +65,7 @@ namespace Course.Infrastructure
             {
                 x.AddConsumer<PaymentConsumerService>();
                 x.AddConsumer<UserConsumerService>();
-
+        
                 x.UsingRabbitMq((context, cfg) =>
                 {
                     cfg.UseCircuitBreaker(cfg =>
@@ -74,26 +74,26 @@ namespace Course.Infrastructure
                         cfg.TripThreshold = 30;
                         cfg.ResetInterval = TimeSpan.FromMinutes(30);
                     });
-
+        
                     cfg.UseMessageRetry(cfg => cfg.Interval(4, TimeSpan.FromSeconds(3)));
-
+        
                     cfg.ConfigureEndpoints(context);
                     cfg.Host(new Uri(rabbitmqServer!), f =>
                     {
                         f.Username("guest");
                         f.Password("guest");
                      });
-
+        
                     cfg.Message<CourseNoteMessage>(x => x.SetEntityName("course-exchange"));
                     cfg.Publish<CourseNoteMessage>(x => x.ExchangeType = "direct");
-
+        
                     cfg.Message<CourseCreatedMessage>(x => x.SetEntityName("course-exchange"));
                     cfg.Publish<CourseCreatedMessage>(x => x.ExchangeType = "direct");
-
+        
                     cfg.ReceiveEndpoint("allow-course", f =>
                     {
                         f.ConfigureConsumer<PaymentConsumerService>(context);
-
+        
                         f.Bind("payment_exchange", d =>
                         {
                             d.RoutingKey = "allow.course";
@@ -104,11 +104,11 @@ namespace Course.Infrastructure
                         .SetTripThreshold(0.3)
                         .SetRestartTimeout(m: 5));
                     });
-
+        
                     cfg.ReceiveEndpoint("user-deleted", f =>
                     {
                         f.ConfigureConsumer<UserConsumerService>(context);
-
+        
                         f.Bind("user_exchange", d =>
                         {
                             d.RoutingKey = "user.deleted";
@@ -119,13 +119,13 @@ namespace Course.Infrastructure
                         .SetTripThreshold(0.3)
                         .SetRestartTimeout(h: 1));
                     });
-
-
-
+        
+        
+        
                     cfg.ReceiveEndpoint("user-refund", cfg =>
                     {
                         cfg.ConfigureConsumer<PaymentConsumerService>(context);
-
+        
                         cfg.Bind("payment_exchange", d =>
                         {
                             d.RoutingKey = "payment.refunded";

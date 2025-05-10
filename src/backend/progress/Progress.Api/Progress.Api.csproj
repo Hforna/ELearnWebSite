@@ -23,4 +23,8 @@
   	<ProjectReference Include="..\Progress.Infrastructure\Progress.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Cache\" />
+  </ItemGroup>
+
 </Project>

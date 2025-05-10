@@ -1,5 +1,8 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Progress.Application.services;
+using Progress.Application.UseCases.Interfaces;
+using Progress.Application.UseCases.QuizAttempt;
 using Sqids;
 using System;
 using System.Collections.Generic;
@@ -14,6 +17,21 @@ namespace Progress.Application
         public static void AddApplication(this IServiceCollection services, IConfiguration configuration)
         {
             AddSqids(services, configuration);
+            ConfigureAutoMapper(services);
+            AddRepositores(services);
+        }
+
+        static void ConfigureAutoMapper(IServiceCollection services)
+        {
+            services.AddAutoMapper(d =>
+            {
+                d.AddProfile(new AutoMapperConfiguration());
+            });
+        }
+
+        static void AddRepositores(IServiceCollection services)
+        {
+            services.AddScoped<IStartQuizAttempt, StartQuizAttempt>();
         }
 
         static void AddSqids(IServiceCollection services, IConfiguration configuration)

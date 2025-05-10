@@ -1,25 +1,27 @@
-﻿
-using System.Globalization;
+﻿using System.Globalization;
 
 namespace Progress.Api.Middlewares
 {
-    public class CultureInfoMiddleware : IMiddleware
+    public class CultureInfoMiddleware
     {
-        public async Task InvokeAsync(HttpContext context, RequestDelegate next)
+        private readonly RequestDelegate _next;
+
+        public CultureInfoMiddleware(RequestDelegate next) => _next = next;
+
+        public async Task InvokeAsync(HttpContext context)
         {
-            var requestLanguage = context.Request.Headers.AcceptLanguage;
-            var acceptedLanguages = CultureInfo.GetCultures(CultureTypes.AllCultures);
+            var requestCulture = context.Request.Headers.AcceptLanguage;
+            var culturesAccepted = CultureInfo.GetCultures(CultureTypes.AllCultures);
             var currentCulture = new CultureInfo("en-US");
 
-            if(string.IsNullOrEmpty(requestLanguage) == false && acceptedLanguages.Any(d => d.Equals(acceptedLanguages)))
+            if (string.IsNullOrEmpty(requestCulture) == false && culturesAccepted.Any(d => d.Equals(requestCulture)))
             {
-                currentCulture = new CultureInfo(requestLanguage!);
+                currentCulture = new CultureInfo(requestCulture);
             }
-
-            CultureInfo.CurrentUICulture = currentCulture;
             CultureInfo.CurrentCulture = currentCulture;
+            CultureInfo.CurrentUICulture = currentCulture;
 
-            await next(context);
+            await _next(context);
         }
     }
 }

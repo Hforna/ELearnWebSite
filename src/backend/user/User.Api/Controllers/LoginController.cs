@@ -198,7 +198,7 @@ namespace User.Api.Controllers
             if (token is null)
                 return Ok(false);
 
-            var validate = _tokenService.ValidateToken(token);
+            var validate = _tokenService.ValidateToken(token["Bearer".Length..].Trim());
 
             var user = await _uof.userReadOnly.UserByUid(validate.userGuid);
 

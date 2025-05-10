@@ -23,6 +23,9 @@ services:
   redisserver:
     image: redis:latest
 
+  redisprogress:
+    image: redis:latest
+
   payment.api:
     image: ${DOCKER_REGISTRY-}paymentapi
     build:
@@ -43,6 +46,7 @@ volumes:
   sqlserver_data:
   mongoserver_data:
   redisserver_data:
+  redisprogress_data:
 
 
 

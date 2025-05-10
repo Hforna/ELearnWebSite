@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Progress.Api.Binders;
+using Progress.Application.UseCases.Interfaces;
 
 namespace Progress.Api.Controllers
 {
@@ -8,12 +9,13 @@ namespace Progress.Api.Controllers
     [ApiController]
     public class AttemtpsController : ControllerBase
     {
-        [HttpGet("course/{courseId}/module/{moduleId}/quiz/{quizId}/start")]
+        [HttpGet("course/{courseId}/quiz/{quizId}/start")]
         public async Task<IActionResult> StartQuizAttempt([FromRoute][ModelBinder(typeof(BinderId))]long courseId, 
-            [FromRoute][ModelBinder(typeof(BinderId))] long moduleId, 
-            [FromRoute][ModelBinder(typeof(BinderId))] long quizId)
+            [FromRoute][ModelBinder(typeof(BinderId))] long quizId, [FromServices]IStartQuizAttempt useCase)
         {
+            var result = await useCase.Execute(courseId, quizId);
 
+            return Created(string.Empty, result);
         }
     }
 }

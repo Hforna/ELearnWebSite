@@ -64,6 +64,16 @@ services:
       networks:
          - backend
 
+  redisprogress:
+       container_name: redisprogress
+       ports:
+        - 6380:6380
+       networks:
+        - backend
+       volumes:
+        - redisprogress_data:/data
+    
+
   redisserver:
     container_name: redisserver
     ports:
@@ -105,3 +115,4 @@ services:
        - backend
     depends_on:
        - sqlserver
+       - redisprogress

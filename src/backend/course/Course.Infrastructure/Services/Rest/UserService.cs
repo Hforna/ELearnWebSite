@@ -85,7 +85,7 @@ namespace Course.Infrastructure.Services.Rest
             var client = _httpClient.CreateClient("user.api");
             client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _token);
         
-            var response = await client.GetAsync("login/is-user-logged");
+            var response = await client.GetAsync("api/login/is-user-logged");
 
             if(response.IsSuccessStatusCode)
             {

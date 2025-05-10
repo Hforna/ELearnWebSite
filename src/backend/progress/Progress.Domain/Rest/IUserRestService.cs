@@ -7,9 +7,8 @@ using System.Threading.Tasks;
 
 namespace Progress.Domain.Rest
 {
-    public interface ICourseRestService
+    public interface IUserRestService
     {
-        public Task<bool> UserGotCourse(string courseId);
-        public Task<QuizDto> GetQuiz(string quizId, string courseId);
+        public Task<UserInfosDto> GetUserInfos();
     }
 }

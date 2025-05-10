@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Progress.Domain.Enums;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -15,9 +16,10 @@ namespace Progress.Domain.Entities
         public Guid Id { get; set; }
         public long UserId { get; set; }
         public long QuizId { get; set; }
-        public decimal Score { get; set; }
-        public bool Passed { get; set; }
-        public DateTime AttemptedAt { get; set; }
+        public decimal Score { get; set; } = 0;
+        public QuizAttemptStatusEnum Status { get; set; }
+        public bool Passed { get; set; } = false;
+        public DateTime AttemptedAt { get; set; } = DateTime.UtcNow;
         [InverseProperty("Attempt")]
         public IList<UserQuizResponse> QuizResponses { get; set; }
     }

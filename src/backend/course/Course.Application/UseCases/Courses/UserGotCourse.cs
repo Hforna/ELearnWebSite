@@ -30,7 +30,7 @@ namespace Course.Application.UseCases.Courses
             var user = await _userService.GetUserInfos();
             var userId = _sqids.Decode(user.id).Single();
 
-            var course = _uof.courseRead.CourseById(_sqids.Decode(request.courseId).Single());
+            var course = await _uof.courseRead.CourseById(_sqids.Decode(request.courseId).Single());
 
             if (course is null)
                 throw new CourseException(ResourceExceptMessages.COURSE_DOESNT_EXISTS, System.Net.HttpStatusCode.NotFound);

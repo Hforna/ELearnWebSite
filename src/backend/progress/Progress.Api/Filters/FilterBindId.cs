@@ -1,4 +1,5 @@
 ﻿using Microsoft.OpenApi.Models;
+using Progress.Api.Binders;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace Progress.Api.Filters
