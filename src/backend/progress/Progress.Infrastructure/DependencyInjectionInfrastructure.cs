@@ -2,8 +2,11 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Progress.Domain.RabbitMq;
+using Progress.Domain.Repositories;
 using Progress.Domain.Rest;
 using Progress.Infrastructure.Data;
+using Progress.Infrastructure.RabbitMq.ConsumerLogic;
 using Progress.Infrastructure.Rest;
 using System;
 using System.Collections.Generic;
@@ -18,8 +21,10 @@ namespace Progress.Infrastructure
         public static void AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
         {
             AddDbContext(services, configuration);
-            ConfigureRabbitMq(services, configuration);
+            AddRabbitMq(services, configuration);
             AddRestService(services);
+            AddRedisCache(services, configuration);
+            AddRepositories(services);
         }
 
         static void AddDbContext(IServiceCollection services, IConfiguration configuration)
@@ -28,38 +33,37 @@ namespace Progress.Infrastructure
             services.AddDbContext<ProjectDbContext>(d => d.UseSqlServer(connection));
         }
 
-        static void ConfigureRabbitMq(IServiceCollection services, IConfiguration configuration)
+        static void AddRepositories(IServiceCollection services)
         {
-            var rabbitmqConnect = configuration.GetConnectionString("rabbitmq");
-            var user = configuration.GetSection("services:rabbitmq:user").Value;
-            var password = configuration.GetSection("services:rabbitmq:password").Value;
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<IGenericRepository, GenericRepository>();
+            services.AddScoped<IQuizAttemptReadOnly, QuizAttemptRepository>();
+            services.AddScoped<IQuizAttemptWriteOnly, QuizAttemptRepository>();
+            services.AddScoped<IUserCourseProgressReadOnly, UserCourseProgressRepository>();
+            services.AddScoped<IUserCourseProgressWriteOnly, UserCourseProgressRepository>();
+            services.AddScoped<IUserLessonProgressReadOnly, UserLessonProgressRepository>();
+            services.AddScoped<IUserLessonProgressWriteOnly, UserLessonProgressRepository>();
+        }
 
-            services.AddMassTransit(x =>
+        static void AddRabbitMq(IServiceCollection services, IConfiguration configuration)
+        {
+            services.AddSingleton<IUserDeletedConsumer, UserDeletedConsumer>();
+        }
+
+        static void AddRedisCache(IServiceCollection services, IConfiguration configuration)
+        {
+            var connection = configuration.GetConnectionString("redis");
+
+            services.AddStackExchangeRedisCache(redisOpt =>
             {
-                x.UsingRabbitMq((context, cfg) =>
-                {
-                    cfg.UseCircuitBreaker(d =>
-                    {
-                        d.ActiveThreshold = 20;
-                        d.ResetInterval = TimeSpan.FromMinutes(30);
-                        d.TripThreshold = 30;
-                    });
-
-                    cfg.UseMessageRetry(d => d.Interval(5, TimeSpan.FromSeconds(4)));
-
-                    cfg.ConfigureEndpoints(context);
-                    cfg.Host(new Uri(rabbitmqConnect), d =>
-                    {
-                        d.Username(user);
-                        d.Password(password);
-                    });
-                });
+                redisOpt.Configuration = connection;
             });
         }
 
         static void AddRestService(IServiceCollection services)
         {
             services.AddScoped<ICourseRestService, CourseRestService>();
+            services.AddScoped<IUserRestService, UserRestService>();
         }
     }
 }

@@ -8,7 +8,6 @@
 
   <ItemGroup>
     <PackageReference Include="MassTransit" Version="8.4.0" />
-    <PackageReference Include="MassTransit.RabbitMQ" Version="8.4.0" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.3.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.4" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.4">
@@ -20,11 +19,14 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="9.0.2" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.4" />
     <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="9.0.4" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="9.0.4" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="9.0.3" />
     <PackageReference Include="Microsoft.IdentityModel.Clients.ActiveDirectory" Version="3.14.2" />
+    <PackageReference Include="RabbitMQ.Client" Version="7.1.2" />
+    <PackageReference Include="StackExchange.Redis" Version="2.8.37" />
   </ItemGroup>
 
   <ItemGroup>
