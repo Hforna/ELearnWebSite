@@ -30,5 +30,10 @@ namespace Progress.Infrastructure.Data
         {
             _dbContext.RemoveRange(entities);
         }
+
+        public void Update<T>(T entity)
+        {
+            _dbContext.Update(entity);
+        }
     }
 }

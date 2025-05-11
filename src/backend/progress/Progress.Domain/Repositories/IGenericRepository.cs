@@ -11,5 +11,6 @@ namespace Progress.Domain.Repositories
         public Task Add<T>(T entity);
         public void DeleteRange<T>(List<T> entities);
         public void Delete<T>(T entity);
+        public void Update<T>(T entity);
     }
 }

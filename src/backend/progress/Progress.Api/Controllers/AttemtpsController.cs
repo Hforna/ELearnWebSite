@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Progress.Api.Binders;
+using Progress.Application.Requests;
 using Progress.Application.UseCases.Interfaces;
 
 namespace Progress.Api.Controllers
@@ -16,6 +17,14 @@ namespace Progress.Api.Controllers
             var result = await useCase.Execute(courseId, quizId);
 
             return Created(string.Empty, result);
+        }
+
+        [HttpPost("submit")]
+        public async Task<IActionResult> SubmitQuizAnswers([FromBody]SubmitQuizRequest request, [FromServices]ISubmitQuizAttempt useCase)
+        {
+            var result = await useCase.Execute(request);
+
+            return Ok(result);
         }
     }
 }

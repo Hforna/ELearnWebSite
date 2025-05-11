@@ -11,5 +11,6 @@ namespace Progress.Domain.Repositories
     {
         public Task<QuizAttempts?> QuizAttemptPendingByUserId(long userId);
         public Task<List<QuizAttempts>?> UserQuizAttempts(long userId);
+        public Task<QuizAttempts?> QuizAttemptByUserAndId(long userId, Guid quizAttempt);
     }
 }

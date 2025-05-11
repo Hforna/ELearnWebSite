@@ -18,6 +18,11 @@ namespace Progress.Infrastructure.Data
             _dbContext = dbContext;
         }
 
+        public async Task<QuizAttempts?> QuizAttemptByUserAndId(long userId, Guid quizAttempt)
+        {
+            return await _dbContext.QuizAttempts.SingleOrDefaultAsync(d => d.UserId == userId && d.Id == quizAttempt);
+        }
+
         public async Task<QuizAttempts?> QuizAttemptPendingByUserId(long userId)
         {
             return await _dbContext.QuizAttempts.SingleOrDefaultAsync(d => d.UserId == userId && d.Status == Domain.Enums.QuizAttemptStatusEnum.PEDNING);

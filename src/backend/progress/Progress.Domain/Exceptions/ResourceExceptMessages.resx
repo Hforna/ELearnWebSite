@@ -123,4 +123,13 @@
   <data name="QUIZ_ATTEMPT_PENDING" xml:space="preserve">
     <value>A quiz attempt is pending</value>
   </data>
+  <data name="QUIZ_ATTEMPT_EXPIRED" xml:space="preserve">
+    <value>Quiz attempt is expired, start a new attempt</value>
+  </data>
+  <data name="QUIZ_ATTEMPT_NOT_EXISTS" xml:space="preserve">
+    <value>Quiz attempt doesn't exists</value>
+  </data>
+  <data name="USER_DOESNT_ANSWERED_ALL_QUESTIONS" xml:space="preserve">
+    <value>User need to answer all of the questions before send submit</value>
+  </data>
 </root>

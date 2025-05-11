@@ -32,6 +32,7 @@ namespace Progress.Application
         static void AddRepositores(IServiceCollection services)
         {
             services.AddScoped<IStartQuizAttempt, StartQuizAttempt>();
+            services.AddScoped<ISubmitQuizAttempt, SubmitQuizAttempt>();
         }
 
         static void AddSqids(IServiceCollection services, IConfiguration configuration)

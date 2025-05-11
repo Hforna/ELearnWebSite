@@ -6,6 +6,8 @@ using Progress.Domain.Token;
 using Progress.Api.Filters;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Progress.Infrastructure.RabbitMq;
+using Progress.Domain.Cache;
+using Progress.Api.Session;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,11 +25,17 @@ builder.Services.AddApplication(builder.Configuration);
 
 builder.Services.AddHostedService<UserDeletedSubscriber>();
 
+builder.Services.AddScoped<IAttemptAnswerSession, AttemptAnswersSession>();
+
 builder.Services.AddHttpContextAccessor();
+
+builder.Services.AddDistributedMemoryCache();
 
 builder.Services.AddSession(d =>
 {
     d.IdleTimeout = TimeSpan.FromDays(1);
+    d.Cookie.HttpOnly = true;
+    d.Cookie.IsEssential = true;
 });
 
 builder.Services.AddHttpClient("user.api", client =>
