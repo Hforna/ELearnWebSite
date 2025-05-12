@@ -18,6 +18,8 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddMvc(d => d.Filters.Add(typeof(ExceptionFilter)));
+
 builder.Services.AddScoped<ITokenReceptor, TokenReceptor>();
 
 builder.Services.AddInfrastructure(builder.Configuration);

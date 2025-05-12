@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Progress.Domain.Dtos
 {
-    public class ShortQuizResponse
+    public class ShortQuizAnswersResponse
     {
         public string QuizId { get; set; }
         public List<QuestionAnswerDto> AnswerDtos { get; set; }

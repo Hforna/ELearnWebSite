@@ -138,7 +138,7 @@ namespace Course.Infrastructure
 
         static void AddMessagingServices(IServiceCollection services)
         {
-            services.AddScoped<IUserSenderService, UserProducerService>();
+            services.AddScoped<IProducerService, ProducerService>();
             services.AddScoped<PaymentConsumerService>();
         }
 

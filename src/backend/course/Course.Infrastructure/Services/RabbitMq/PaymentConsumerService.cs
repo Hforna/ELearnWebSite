@@ -19,9 +19,9 @@ namespace Course.Infrastructure.Services.RabbitMq
         private readonly IUnitOfWork _uof;
         private readonly IUserService _userService;
         private readonly SqidsEncoder<long> _sqids;
-        private readonly IUserSenderService _userSender;
+        private readonly IProducerService _userSender;
 
-        public PaymentConsumerService(IUnitOfWork uof, IUserService userService, SqidsEncoder<long> sqids, IUserSenderService userSender)
+        public PaymentConsumerService(IUnitOfWork uof, IUserService userService, SqidsEncoder<long> sqids, IProducerService userSender)
         {
             _uof = uof;
             _userSender = userSender;

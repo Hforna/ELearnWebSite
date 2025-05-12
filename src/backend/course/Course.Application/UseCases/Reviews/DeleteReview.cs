@@ -19,10 +19,10 @@ namespace Course.Application.UseCases.Reviews
         private readonly IUnitOfWork _uof;
         private readonly IUserService _userService;
         private readonly SqidsEncoder<long> _sqids;
-        private readonly ISenderService _userSender;
+        private readonly IProducerService _userSender;
 
         public DeleteReview(IUnitOfWork uof, IUserService userService, 
-            SqidsEncoder<long> sqids, ISenderService userSender)
+            SqidsEncoder<long> sqids, IProducerService userSender)
         {
             _uof = uof;
             _userSender = userSender;

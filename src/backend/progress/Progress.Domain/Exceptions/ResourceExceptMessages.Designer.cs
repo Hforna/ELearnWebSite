@@ -22,21 +22,21 @@ namespace Progress.Domain.Exceptions {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class ResourceExceptMessages {
+    public class ResourceExceptMessages {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal ResourceExceptMessages() {
+        public ResourceExceptMessages() {
         }
         
         /// <summary>
         ///   Retorna a instância de ResourceManager armazenada em cache usada por essa classe.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Progress.Domain.Exceptions.ResourceExceptMessages", typeof(ResourceExceptMessages).Assembly);
@@ -51,7 +51,7 @@ namespace Progress.Domain.Exceptions {
         ///   pesquisas de recursos que usam essa classe de recurso de tipo de alta segurança.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -63,7 +63,7 @@ namespace Progress.Domain.Exceptions {
         /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a Quiz attempt is expired, start a new attempt.
         /// </summary>
-        internal static string QUIZ_ATTEMPT_EXPIRED {
+        public static string QUIZ_ATTEMPT_EXPIRED {
             get {
                 return ResourceManager.GetString("QUIZ_ATTEMPT_EXPIRED", resourceCulture);
             }
@@ -72,7 +72,7 @@ namespace Progress.Domain.Exceptions {
         /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a Quiz attempt doesn&apos;t exists.
         /// </summary>
-        internal static string QUIZ_ATTEMPT_NOT_EXISTS {
+        public static string QUIZ_ATTEMPT_NOT_EXISTS {
             get {
                 return ResourceManager.GetString("QUIZ_ATTEMPT_NOT_EXISTS", resourceCulture);
             }
@@ -81,7 +81,7 @@ namespace Progress.Domain.Exceptions {
         /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a A quiz attempt is pending.
         /// </summary>
-        internal static string QUIZ_ATTEMPT_PENDING {
+        public static string QUIZ_ATTEMPT_PENDING {
             get {
                 return ResourceManager.GetString("QUIZ_ATTEMPT_PENDING", resourceCulture);
             }
@@ -90,7 +90,7 @@ namespace Progress.Domain.Exceptions {
         /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a User need to answer all of the questions before send submit.
         /// </summary>
-        internal static string USER_DOESNT_ANSWERED_ALL_QUESTIONS {
+        public static string USER_DOESNT_ANSWERED_ALL_QUESTIONS {
             get {
                 return ResourceManager.GetString("USER_DOESNT_ANSWERED_ALL_QUESTIONS", resourceCulture);
             }
@@ -99,7 +99,7 @@ namespace Progress.Domain.Exceptions {
         /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a User doesn&apos;t got this course.
         /// </summary>
-        internal static string USER_DOESNT_GOT_COURSE {
+        public static string USER_DOESNT_GOT_COURSE {
             get {
                 return ResourceManager.GetString("USER_DOESNT_GOT_COURSE", resourceCulture);
             }
