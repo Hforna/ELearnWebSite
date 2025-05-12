@@ -48,6 +48,7 @@ namespace Progress.Infrastructure
         static void AddRabbitMq(IServiceCollection services, IConfiguration configuration)
         {
             services.AddSingleton<IUserDeletedConsumer, UserDeletedConsumer>();
+            services.AddSingleton<IUserBoughtCourseConsumer, UserBoughtConsumer>();
         }
 
         static void AddRedisCache(IServiceCollection services, IConfiguration configuration)

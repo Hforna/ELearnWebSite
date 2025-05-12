@@ -24,6 +24,7 @@ builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddApplication(builder.Configuration);
 
 builder.Services.AddHostedService<UserDeletedSubscriber>();
+builder.Services.AddHostedService<UserBoughtCourseSubscriber>();
 
 builder.Services.AddScoped<IAttemptAnswerSession, AttemptAnswersSession>();
 

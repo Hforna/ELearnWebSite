@@ -29,11 +29,11 @@ namespace Course.Application.UseCases.Course
         private readonly SqidsEncoder<long> _sqids;
         private readonly IStorageService _storageService;
         private readonly FileService _fileService;
-        private readonly IUserSenderService _userSenderService;
+        private readonly IProducerService _userSenderService;
 
         public CreateCourse(IUnitOfWork uof, IMapper mapper, 
             IUserService userService, SqidsEncoder<long> sqids, 
-            IStorageService storageService, FileService fileService, IUserSenderService userSenderService)
+            IStorageService storageService, FileService fileService, IProducerService userSenderService)
         {
             _uof = uof;
             _userSenderService = userSenderService;

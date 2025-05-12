@@ -25,10 +25,10 @@ namespace Course.Application.UseCases.Reviews
         private readonly IMapper _mapper;
         private readonly IUserService _userService;
         private readonly SqidsEncoder<long> _sqids;
-        private readonly IUserSenderService _userSenderService;
+        private readonly IProducerService _userSenderService;
 
         public CreateReview(IUnitOfWork uof, IMapper mapper, IUserService userService, 
-            SqidsEncoder<long> sqids, IUserSenderService userSenderService)
+            SqidsEncoder<long> sqids, IProducerService userSenderService)
         {
             _uof = uof;
             _userSenderService = userSenderService;

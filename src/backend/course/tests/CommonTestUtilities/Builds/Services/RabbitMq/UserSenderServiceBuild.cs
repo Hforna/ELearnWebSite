@@ -10,9 +10,9 @@ namespace CommonTestUtilities.Builds.Services.RabbitMq
 {
     public static class UserSenderServiceBuild
     {
-        public static IUserSenderService Build()
+        public static IProducerService Build()
         {
-            var mock = new Mock<IUserSenderService>();
+            var mock = new Mock<IProducerService>();
 
             return mock.Object;
         }
