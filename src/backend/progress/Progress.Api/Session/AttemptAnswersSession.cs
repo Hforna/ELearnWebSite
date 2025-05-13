@@ -12,7 +12,13 @@ namespace Progress.Api.Session
         public AttemptAnswersSession(ISession session)
         {
             _session = session;
-        } 
+        }
+
+        public void AddAnswers(ShortQuizAnswersResponse shortQuiz, Guid attempt)
+        {
+            var response = JsonSerializer.Serialize(shortQuiz);
+            _session.SetString($"{attempt}", response);
+        }
 
         public ShortQuizAnswersResponse GetAttemptQuestionAnswers(Guid attemptId)
         {

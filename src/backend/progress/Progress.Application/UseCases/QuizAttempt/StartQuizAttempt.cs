@@ -1,6 +1,9 @@
-﻿using Progress.Application.Responses;
+﻿using AutoMapper;
+using Progress.Application.Responses;
 using Progress.Application.UseCases.Interfaces;
+using Progress.Domain.Cache;
 using Progress.Domain.Consts;
+using Progress.Domain.Dtos;
 using Progress.Domain.Entities;
 using Progress.Domain.Exceptions;
 using Progress.Domain.Repositories;
@@ -21,12 +24,17 @@ namespace Progress.Application.UseCases.QuizAttempt
         private readonly ICourseRestService _courseRest;
         private readonly IUnitOfWork _uof;
         private readonly SqidsEncoder<long> _sqids;
+        private readonly IAttemptAnswerSession _attemptSession;
+        private readonly IMapper _mapper;
 
-        public StartQuizAttempt(IUserRestService userRest, ICourseRestService courseRest, IUnitOfWork uof, SqidsEncoder<long> sqids)
+        public StartQuizAttempt(IUserRestService userRest, ICourseRestService courseRest, IUnitOfWork uof, 
+            SqidsEncoder<long> sqids, IAttemptAnswerSession attemptAnswerSession, IMapper mapper)
         {
             _userRest = userRest;
             _courseRest = courseRest;
             _uof = uof;
+            _mapper = mapper;
+            _attemptSession = attemptAnswerSession;
             _sqids = sqids;
         }
 
@@ -59,6 +67,10 @@ namespace Progress.Application.UseCases.QuizAttempt
 
             await _uof.genericRepository.Add<QuizAttempts>(quizAttempt);
             await _uof.Commit();
+
+            var quizToSession = _mapper.Map<ShortQuizAnswersResponse>(quiz);
+
+            _attemptSession.AddAnswers(quizToSession, quizAttempt.Id);
 
             return new QuizAttemptResponse()
             {

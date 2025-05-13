@@ -10,5 +10,6 @@ namespace Progress.Domain.Cache
     public interface IAttemptAnswerSession
     {
         public ShortQuizAnswersResponse GetAttemptQuestionAnswers(Guid attemptId);
+        public void AddAnswers(ShortQuizAnswersResponse shortQuiz, Guid attemptId);
     }
 }
