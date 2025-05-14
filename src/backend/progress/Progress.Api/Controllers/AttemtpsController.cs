@@ -26,5 +26,13 @@ namespace Progress.Api.Controllers
 
             return Ok(result);
         }
+
+        [HttpGet("course/{courseId}/attempt/{attemptId}")]
+        public async Task<IActionResult> GetAttempt([FromRoute][ModelBinder(typeof(BinderId))]long courseId, [FromRoute]Guid attemptId, [FromServices]IGetUserAttempt useCase)
+        {
+            var result = await useCase.Execute(attemptId, courseId);
+
+            return Ok(result);
+        }
     }
 }

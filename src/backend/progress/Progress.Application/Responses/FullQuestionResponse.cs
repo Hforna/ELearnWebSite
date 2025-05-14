@@ -6,10 +6,9 @@ using System.Threading.Tasks;
 
 namespace Progress.Application.Responses
 {
-    public class QuestionAnswerResponse
+    public class FullQuestionResponse
     {
         public string QuestionId { get; set; }
-        public string Id { get; set; }
-        public bool isCorrect { get; set; }
+        public List<AnswersResponse> Answers { get; set; }
     }
 }

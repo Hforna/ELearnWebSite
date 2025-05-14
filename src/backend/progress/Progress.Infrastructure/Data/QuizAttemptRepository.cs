@@ -20,7 +20,7 @@ namespace Progress.Infrastructure.Data
 
         public async Task<QuizAttempts?> QuizAttemptByUserAndId(long userId, Guid quizAttempt)
         {
-            return await _dbContext.QuizAttempts.SingleOrDefaultAsync(d => d.UserId == userId && d.Id == quizAttempt);
+            return await _dbContext.QuizAttempts.Include(d => d.QuizResponses).SingleOrDefaultAsync(d => d.UserId == userId && d.Id == quizAttempt);
         }
 
         public async Task<QuizAttempts?> QuizAttemptPendingByUserId(long userId)

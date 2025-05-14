@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
+using Progress.Application.Responses;
 using Progress.Domain.Dtos;
+using Progress.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,6 +21,11 @@ namespace Progress.Application.services
             CreateMap<QuestionResponse, QuestionAnswerDto>()
                 .ForMember(d => d.QuestionId, f => f.MapFrom(d => d.id))
                 .ForMember(d => d.AnswerId, f => f.Condition(d => d.AnswerOptions.Where(d => d.isCorrect).Any()));
+
+            CreateMap<AnswerOptionsResponse, QuestionAnswerResponse>()
+                .ForMember(d => d.isCorrect, f => f.MapFrom(d => d.isCorrect))
+                .ForMember(d => d.QuestionId, f => f.MapFrom(d => d.questionId))
+                .ForMember(d => d.Id, f => f.MapFrom(d => d.id));
         }
     }
 }

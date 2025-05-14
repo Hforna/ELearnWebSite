@@ -33,6 +33,7 @@ namespace Progress.Application
         {
             services.AddScoped<IStartQuizAttempt, StartQuizAttempt>();
             services.AddScoped<ISubmitQuizAttempt, SubmitQuizAttempt>();
+            services.AddScoped<IGetUserAttempt, GetUserAttempt>();
         }
 
         static void AddSqids(IServiceCollection services, IConfiguration configuration)

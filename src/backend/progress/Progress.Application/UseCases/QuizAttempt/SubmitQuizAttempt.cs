@@ -69,7 +69,7 @@ namespace Progress.Application.UseCases.QuizAttempt
                     questionResponse.isCorrect = false;
                     userResponse.IsCorrect = false;
                 }
-                attempt.QuizResponses.Add(userResponse);
+                await _uof.genericRepository.Add<UserQuizResponse>(userResponse);
                 questionAnswersResponse.Add(questionResponse);
             }
 

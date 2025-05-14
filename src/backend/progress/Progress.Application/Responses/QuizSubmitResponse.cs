@@ -11,7 +11,6 @@ namespace Progress.Application.Responses
         public Guid AttemptId { get; set; }
         public string QuizId { get; set; }
         public bool Passed { get; set; }
-        public List<QuestionAnswerResponse> QuestionAnswers { get; set; }
         public float TotalPoints { get; set; }
     }
 }
