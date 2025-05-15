@@ -7,29 +7,33 @@ namespace Progress.Api.Session
 {
     public class AttemptAnswersSession : IAttemptAnswerSession
     {
-        private readonly ISession _session;
+        private readonly IHttpContextAccessor _httpContext;
 
-        public AttemptAnswersSession(ISession session)
+        public AttemptAnswersSession(IHttpContextAccessor httpContext)
         {
-            _session = session;
+            _httpContext = httpContext;
         }
 
         public void AddAnswers(ShortQuizAnswersResponse shortQuiz, Guid attempt)
         {
+            var session = _httpContext.HttpContext.Session;
+
             var response = JsonSerializer.Serialize(shortQuiz);
-            _session.SetString($"{attempt}", response);
+            session.SetString($"{attempt}", response);
         }
 
         public ShortQuizAnswersResponse GetAttemptQuestionAnswers(Guid attemptId)
         {
-            var attempt = _session.GetString($"{attemptId}");
+            var session = _httpContext.HttpContext.Session;
+
+            var attempt = session.GetString($"{attemptId}");
 
             if (string.IsNullOrEmpty(attempt))
                 throw new QuizAttemptException(ResourceExceptMessages.QUIZ_ATTEMPT_EXPIRED, System.Net.HttpStatusCode.NotFound);
 
             var deserialize = JsonSerializer.Deserialize<ShortQuizAnswersResponse>(attempt);
 
-            _session.Remove($"{attemptId}");
+            session.Remove($"{attemptId}");
 
             return deserialize!;
         }

@@ -10,5 +10,6 @@ namespace Progress.Application.Responses
     {
         public string QuestionId { get; set; }
         public string Id { get; set; }
+        public bool IsCorrect { get; set; }
     }
 }

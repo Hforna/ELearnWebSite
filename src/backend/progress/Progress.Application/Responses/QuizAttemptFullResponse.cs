@@ -13,7 +13,7 @@ namespace Progress.Application.Responses
         public string QuizId { get; set; }
         public DateTime AttemptedAt { get; set; }
         public decimal Score { get; set; }
-        public List<QuestionAnswerResponse> QuestionAnswers { get; set; }
+        public List<FullQuestionResponse> QuestionAnswers { get; set; }
         public bool Passed { get; set; }
     }
 }

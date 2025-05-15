@@ -47,7 +47,7 @@ namespace Progress.Application.UseCases.QuizAttempt
                 throw new QuizException(ResourceExceptMessages.QUIZ_ATTEMPT_NOT_EXISTS, System.Net.HttpStatusCode.NotFound);
 
             var response = _mapper.Map<QuizAttemptFullResponse>(attempt);
-            response.QuestionAnswers = _mapper.Map<List<QuestionAnswerResponse>>(quiz.Questions);
+            response.QuestionAnswers = _mapper.Map<List<FullQuestionResponse>>(quiz.Questions);
 
             return response;
         }

@@ -26,7 +26,7 @@ builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddApplication(builder.Configuration);
 
 builder.Services.AddHostedService<UserDeletedSubscriber>();
-builder.Services.AddHostedService<UserBoughtCourseSubscriber>();
+//builder.Services.AddHostedService<UserBoughtCourseSubscriber>();
 
 builder.Services.AddScoped<IAttemptAnswerSession, AttemptAnswersSession>();
 
@@ -72,14 +72,16 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseSession();
+
 app.UseMiddleware<CultureInfoMiddleware>();
 
 app.UseMiddleware<IdValidtorMiddleware>();
-
-app.UseSession();
 
 app.UseAuthorization();
 
 app.MapControllers();
 
 app.Run();
+
+public partial class Program { }

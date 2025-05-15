@@ -26,6 +26,10 @@ namespace Progress.Application.services
                 .ForMember(d => d.isCorrect, f => f.MapFrom(d => d.isCorrect))
                 .ForMember(d => d.QuestionId, f => f.MapFrom(d => d.questionId))
                 .ForMember(d => d.Id, f => f.MapFrom(d => d.id));
+
+            CreateMap<QuestionResponse, FullQuestionResponse>()
+                .ForMember(d => d.QuestionId, f => f.MapFrom(d => d.id))
+                .ForMember(d => d.Answers, f => f.MapFrom(d => d.AnswerOptions));
         }
     }
 }
