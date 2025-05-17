@@ -3,10 +3,12 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Progress.Domain.RabbitMq;
+using Progress.Domain.RabbitMq.Publisher;
 using Progress.Domain.Repositories;
 using Progress.Domain.Rest;
 using Progress.Infrastructure.Data;
 using Progress.Infrastructure.RabbitMq.ConsumerLogic;
+using Progress.Infrastructure.RabbitMq.Publish;
 using Progress.Infrastructure.Rest;
 using System;
 using System.Collections.Generic;
@@ -47,6 +49,8 @@ namespace Progress.Infrastructure
 
         static void AddRabbitMq(IServiceCollection services, IConfiguration configuration)
         {
+            services.AddScoped<IUserSubmitQuizPublisher, UserSubmitQuizPublisher>();
+
             services.AddSingleton<IUserDeletedConsumer, UserDeletedConsumer>();
             services.AddSingleton<IUserBoughtCourseConsumer, UserBoughtConsumer>();
         }

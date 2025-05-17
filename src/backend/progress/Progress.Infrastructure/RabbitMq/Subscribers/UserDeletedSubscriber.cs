@@ -10,7 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Progress.Infrastructure.RabbitMq
+namespace Progress.Infrastructure.RabbitMq.Subscribers
 {
     public class UserDeletedSubscriber : BackgroundService, IDisposable
     {
@@ -19,7 +19,7 @@ namespace Progress.Infrastructure.RabbitMq
         private IConnection _connection;
         private readonly IUserDeletedConsumer _userDeletedConsumer;
         private readonly ILogger<UserDeletedSubscriber> _logger;
-        
+
         public UserDeletedSubscriber(IConfiguration configuration, IUserDeletedConsumer userDeletedConsumer, ILogger<UserDeletedSubscriber> logger)
         {
             _configuration = configuration;

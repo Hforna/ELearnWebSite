@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Progress.Infrastructure.RabbitMq
+namespace Progress.Infrastructure.RabbitMq.Subscribers
 {
     public class UserBoughtCourseSubscriber : BackgroundService, IDisposable
     {
@@ -18,7 +18,7 @@ namespace Progress.Infrastructure.RabbitMq
         private IChannel _channel;
         private readonly IUserBoughtCourseConsumer _userBoughtCourse;
 
-        public UserBoughtCourseSubscriber(IConfiguration configuration, IConnection connection, 
+        public UserBoughtCourseSubscriber(IConfiguration configuration, IConnection connection,
             IChannel channel, IUserBoughtCourseConsumer userBoughtCourse)
         {
             _configuration = configuration;
@@ -56,7 +56,8 @@ namespace Progress.Infrastructure.RabbitMq
                     await _userBoughtCourse.Execute(message);
 
                     await _channel.BasicAckAsync(ea.DeliveryTag, false);
-                } catch(Exception ex)
+                }
+                catch (Exception ex)
                 {
                     await _channel.BasicNackAsync(ea.DeliveryTag, false, true);
                 }

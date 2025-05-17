@@ -5,6 +5,7 @@ using Progress.Application.UseCases.Interfaces;
 using Progress.Domain.Cache;
 using Progress.Domain.Entities;
 using Progress.Domain.Exceptions;
+using Progress.Domain.RabbitMq.Publisher;
 using Progress.Domain.Repositories;
 using Progress.Domain.Rest;
 using Sqids;
@@ -23,6 +24,18 @@ namespace Progress.Application.UseCases.QuizAttempt
         private readonly IMapper _mapper;
         private readonly IAttemptAnswerSession _attemptAnswer;
         private readonly IUnitOfWork _uof;
+        private readonly IUserSubmitQuizPublisher _userSubmitPublisher;
+
+        public SubmitQuizAttempt(IUserRestService userRest, SqidsEncoder<long> sqids, IMapper mapper,
+            IAttemptAnswerSession attemptAnswer, IUnitOfWork uof, IUserSubmitQuizPublisher userSubmitPublisher)
+        {
+            _userRest = userRest;
+            _sqids = sqids;
+            _mapper = mapper;
+            _attemptAnswer = attemptAnswer;
+            _uof = uof;
+            _userSubmitPublisher = userSubmitPublisher;
+        }
 
         public async Task<QuizSubmitResponse> Execute(SubmitQuizRequest request)
         {
@@ -80,6 +93,13 @@ namespace Progress.Application.UseCases.QuizAttempt
 
             _uof.genericRepository.Update<QuizAttempts>(attempt);
             await _uof.Commit();
+
+            await _userSubmitPublisher.SendMessage(new Domain.Dtos.UserSubmitDto()
+            {
+                AttemptId = attempt.Id,
+                QuizId = attempt.QuizId,
+                UserId = userId
+            });
 
             return new QuizSubmitResponse()
             {

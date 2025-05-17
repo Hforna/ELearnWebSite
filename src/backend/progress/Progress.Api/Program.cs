@@ -5,9 +5,9 @@ using Course.Api.Middlewares;
 using Progress.Domain.Token;
 using Progress.Api.Filters;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
-using Progress.Infrastructure.RabbitMq;
 using Progress.Domain.Cache;
 using Progress.Api.Session;
+using Progress.Infrastructure.RabbitMq.Subscribers;
 
 var builder = WebApplication.CreateBuilder(args);
 

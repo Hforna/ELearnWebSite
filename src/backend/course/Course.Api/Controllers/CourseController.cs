@@ -102,7 +102,7 @@ namespace Course.Api.Controllers
         [HttpGet("my-courses")]
         [ProducesResponseType(typeof(UserException), StatusCodes.Status400BadRequest)]
         [ProducesDefaultResponseType]
-        public async Task<IActionResult> CoursesThatUserBought([FromQuery]int page, [FromQuery]int quantity, [FromServices]ICourseThatUserBought useCase)
+        public async Task<IActionResult> CoursesThatUserBought([FromQuery] int page, [FromQuery] int quantity, [FromServices] ICourseThatUserBought useCase)
         {
             var result = await useCase.Execute(page, quantity);
 
