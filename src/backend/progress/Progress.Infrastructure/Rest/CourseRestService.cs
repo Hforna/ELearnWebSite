@@ -24,6 +24,21 @@ namespace Progress.Infrastructure.Rest
             _tokenReceptor = tokenReceptor;
         }
 
+        public async Task<int> CountCourseLessons(string courseId)
+        {
+            var client = _httpClient.CreateClient("course.api");
+
+            var request = await client.GetAsync($"api/course/{courseId}/count-lessons");
+
+            var response = await request.Content.ReadAsStringAsync();
+
+            if(request.IsSuccessStatusCode)
+            {
+                return JsonSerializer.Deserialize<int>(response);
+            }
+            throw new RestException(response, request.StatusCode);
+        }
+
         public async Task<QuizDto> GetQuiz(string quizId, string courseId)
         {
             var client = _httpClient.CreateClient("course.api");

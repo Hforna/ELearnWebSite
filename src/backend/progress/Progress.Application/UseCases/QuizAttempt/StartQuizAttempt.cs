@@ -51,10 +51,17 @@ namespace Progress.Application.UseCases.QuizAttempt
             if (pendingQuiz is not null)
                 throw new QuizException($"{ResourceExceptMessages.QUIZ_ATTEMPT_PENDING}: {pendingQuiz.Id}", System.Net.HttpStatusCode.Unauthorized);
 
-            var userGotCourse = await _courseRest.UserGotCourse(encodeCourseId);
+            try
+            {
+                var userGotCourse = await _courseRest.UserGotCourse(encodeCourseId);
 
-            if (!userGotCourse)
-                throw new CourseException(ResourceExceptMessages.USER_DOESNT_GOT_COURSE, System.Net.HttpStatusCode.Unauthorized);
+                if (!userGotCourse)
+                    throw new CourseException(ResourceExceptMessages.USER_DOESNT_GOT_COURSE, System.Net.HttpStatusCode.Unauthorized);
+            }
+            catch(RestException re)
+            {
+                throw new RestException(re.GetMessage(), re.GetStatusCode());
+            }
 
             var quiz = await _courseRest.GetQuiz(encodeQuizId, encodeCourseId);
 
@@ -63,6 +70,7 @@ namespace Progress.Application.UseCases.QuizAttempt
                 UserId = userId,
                 Status = Domain.Enums.QuizAttemptStatusEnum.PEDNING,
                 QuizId = quizId,
+                CourseId = courseId
             };
 
             await _uof.genericRepository.Add<QuizAttempts>(quizAttempt);
@@ -77,7 +85,7 @@ namespace Progress.Application.UseCases.QuizAttempt
                 ExpiresOn = DateTime.UtcNow.AddMinutes(QuizAttemtpsConsts.MinutesToExpire),
                 QuizId = encodeQuizId,
                 Quiz = quiz,
-                StartedAt = quizAttempt.AttemptedAt,
+                StartedAt = quizAttempt.StartedAt,
                 Id = quizAttempt.Id
             };
         }

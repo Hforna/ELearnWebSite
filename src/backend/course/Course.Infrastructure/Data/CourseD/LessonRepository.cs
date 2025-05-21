@@ -20,6 +20,12 @@ namespace Course.Infrastructure.Data.Course
             _dbContext.Lessons.Add(lesson);
         }
 
+        public async Task<int> CountTotalLessons(long courseId)
+        {
+            var modules = _dbContext.Modules.Where(d => d.CourseId == courseId);
+            return await _dbContext.Lessons.CountAsync(d => modules.Select(d=>d.Id).Contains(d.ModuleId));
+        }
+
         public void DeleteLesson(Lesson lesson)
         {
             _dbContext.Lessons.Remove(lesson);

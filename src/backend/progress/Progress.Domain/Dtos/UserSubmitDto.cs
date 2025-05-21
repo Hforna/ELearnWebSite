@@ -11,5 +11,6 @@ namespace Progress.Domain.Dtos
         public long UserId { get; set; }
         public Guid AttemptId { get; set; }
         public long QuizId { get; set; }
+        public long CourseId { get; set; }
     }
 }

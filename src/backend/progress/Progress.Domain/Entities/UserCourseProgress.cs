@@ -16,6 +16,7 @@ namespace Progress.Domain.Entities
         public long UserId { get; set; }
         public long CourseId { get; set; }
         public decimal CompletionPercentage { get; set; }
+        public int TotalLessonsCompleted { get; set; }
         public bool IsCompleted { get; set; }
         public DateTime LastAccess { get; set; }
     }

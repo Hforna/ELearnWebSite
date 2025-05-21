@@ -7,6 +7,7 @@ using Progress.Domain.RabbitMq.Publisher;
 using Progress.Domain.Repositories;
 using Progress.Domain.Rest;
 using Progress.Infrastructure.Data;
+using Progress.Infrastructure.RabbitMq.BusinessLogic;
 using Progress.Infrastructure.RabbitMq.ConsumerLogic;
 using Progress.Infrastructure.RabbitMq.Publish;
 using Progress.Infrastructure.Rest;
@@ -53,6 +54,7 @@ namespace Progress.Infrastructure
 
             services.AddSingleton<IUserDeletedConsumer, UserDeletedConsumer>();
             services.AddSingleton<IUserBoughtCourseConsumer, UserBoughtConsumer>();
+            services.AddSingleton<IUserSubmitQuizConsumer, UserSubmitQuizConsumer>();
         }
 
         static void AddRedisCache(IServiceCollection services, IConfiguration configuration)

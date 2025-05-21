@@ -38,6 +38,14 @@ namespace Course.Api.Controllers
             return Ok(result);
         }
 
+        [HttpGet("{id}/lessons-count")]
+        public async Task<IActionResult> GetCourseLessonsCount([FromRoute][ModelBinder(typeof(BinderId))]long id, [FromServices]ICourseLessonsCount useCase)
+        {
+            var result = await useCase.Execute(id);
+
+            return Ok(result);
+        }
+
         /// <summary>
         /// Get active courses for a specific teacher by their teacher ID.
         /// </summary>

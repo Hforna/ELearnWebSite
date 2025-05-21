@@ -94,12 +94,14 @@ namespace Progress.Application.UseCases.QuizAttempt
             _uof.genericRepository.Update<QuizAttempts>(attempt);
             await _uof.Commit();
 
-            await _userSubmitPublisher.SendMessage(new Domain.Dtos.UserSubmitDto()
-            {
-                AttemptId = attempt.Id,
-                QuizId = attempt.QuizId,
-                UserId = userId
-            });
+            if(!attempt.Passed)
+                await _userSubmitPublisher.SendMessage(new Domain.Dtos.UserSubmitDto()
+                {
+                    AttemptId = attempt.Id,
+                    QuizId = attempt.QuizId,
+                    UserId = userId,
+                    CourseId = attempt.CourseId
+                });
 
             return new QuizSubmitResponse()
             {

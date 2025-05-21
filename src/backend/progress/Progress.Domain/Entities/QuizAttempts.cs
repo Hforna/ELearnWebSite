@@ -16,10 +16,12 @@ namespace Progress.Domain.Entities
         public Guid Id { get; set; }
         public long UserId { get; set; }
         public long QuizId { get; set; }
+        public long CourseId { get; set; }
         public decimal Score { get; set; } = 0;
         public QuizAttemptStatusEnum Status { get; set; }
         public bool Passed { get; set; } = false;
-        public DateTime AttemptedAt { get; set; } = DateTime.UtcNow;
+        public DateTime StartedAt { get; set; } = DateTime.UtcNow;
+        public DateTime AttemptedAt { get; set; }
         [InverseProperty("Attempt")]
         public IList<UserQuizResponse> QuizResponses { get; set; }
     }

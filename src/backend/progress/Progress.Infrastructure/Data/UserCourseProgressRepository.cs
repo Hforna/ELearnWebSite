@@ -22,5 +22,10 @@ namespace Progress.Infrastructure.Data
         {
             return await _dbContext.UserCourseProgresses.Where(d => d.UserId == userId).ToListAsync();
         }
+
+        public async Task<UserCourseProgress?> GetUserCourseProgressByUserAndCourse(long userId, long courseId)
+        {
+            return await _dbContext.UserCourseProgresses.SingleOrDefaultAsync(d => d.UserId == userId && d.CourseId == courseId);
+        }
     }
 }

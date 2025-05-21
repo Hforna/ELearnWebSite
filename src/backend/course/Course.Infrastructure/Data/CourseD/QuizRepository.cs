@@ -39,6 +39,11 @@ namespace Course.Infrastructure.Data.CourseD
             return await _dbContext.AnswerOptions.Where(d => d.QuestionId == questionId && d.Active).ToListAsync();
         }
 
+        public async Task<int> CountQuizzes(long courseId)
+        {
+            return await _dbContext.Quizzes.CountAsync(d => d.CourseId == courseId);
+        }
+
         public void DeleteQuestion(QuestionEntity question)
         {
             _dbContext.Questions.Remove(question);

@@ -11,5 +11,6 @@ namespace Progress.Domain.Rest
     {
         public Task<bool> UserGotCourse(string courseId);
         public Task<QuizDto> GetQuiz(string quizId, string courseId);
+        public Task<int> CountCourseLessons(string courseId);
     }
 }
