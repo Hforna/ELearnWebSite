@@ -112,6 +112,14 @@ namespace Course.Api.Controllers
             return Ok(result);
         }
 
+        [HttpGet("{lessonId}/lessons-infos")]
+        public async Task<IActionResult> GetLessonShortInfos([FromRoute][ModelBinder(typeof(BinderId))]long lessonId, [FromServices]IGetLessonShortInfos useCase)
+        {
+            var result = await useCase.Execute(lessonId);
+
+            return Ok(result);
+        }
+
         /// <summary>
         /// Delete a lesson by id.
         /// delete lesson's video on azure storage service,

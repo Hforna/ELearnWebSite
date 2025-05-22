@@ -104,6 +104,11 @@ namespace Course.Application.Services.AutoMapper
                 .ForMember(d => d.ModuleId, f => f.MapFrom(d => _sqids.Encode(d.ModuleId)))
                 .ForMember(d => d.Id, f => f.MapFrom(d => _sqids.Encode(d.Id)));
 
+            CreateMap<Lesson, LessonShortInfosResponse>()
+                .ForMember(d => d.CourseId, f => f.MapFrom(d => _sqids.Encode(d.Module.CourseId)))
+                .ForMember(d => d.ModuleId, f => f.MapFrom(d => _sqids.Encode(d.ModuleId)))
+                .ForMember(d => d.Id, f => f.MapFrom(d => _sqids.Encode(d.Id)));
+
             CreateMap<QuestionEntity, QuestionResponse>()
                 .ForMember(d => d.Id, f => f.MapFrom(d => _sqids.Encode(d.Id)))
                 .ForMember(d => d.QuizId, f => f.MapFrom(d => _sqids.Encode(d.QuizId)));

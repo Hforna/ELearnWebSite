@@ -2,6 +2,8 @@
 using Microsoft.Extensions.DependencyInjection;
 using Progress.Application.services;
 using Progress.Application.UseCases.Interfaces;
+using Progress.Application.UseCases.Interfaces.Progress;
+using Progress.Application.UseCases.Progress;
 using Progress.Application.UseCases.QuizAttempt;
 using Sqids;
 using System;
@@ -34,6 +36,7 @@ namespace Progress.Application
             services.AddScoped<IStartQuizAttempt, StartQuizAttempt>();
             services.AddScoped<ISubmitQuizAttempt, SubmitQuizAttempt>();
             services.AddScoped<IGetUserAttempt, GetUserAttempt>();
+            services.AddScoped<ICompleteLesson, CompleteLesson>();
         }
 
         static void AddSqids(IServiceCollection services, IConfiguration configuration)

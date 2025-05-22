@@ -54,6 +54,24 @@ namespace Progress.Infrastructure.Rest
             throw new RestException(response, request.StatusCode);
         }
 
+        public async Task<LessonInfosDto> LessonInfos(long lessonId)
+        {
+            var client = _httpClient.CreateClient("course.api");
+
+            var request = await client.GetAsync($"api/lesson/{lessonId}/lessons-infos");
+
+            var response = await request.Content.ReadAsStringAsync();
+
+            if(request.IsSuccessStatusCode)
+            {
+                var deserialize = JsonSerializer.Deserialize<LessonInfosDto>(response, new JsonSerializerOptions()
+                {
+                    PropertyNameCaseInsensitive = true
+                });
+            }
+            throw new RestException(response, request.StatusCode);
+        }
+
         public async Task<bool> UserGotCourse(string courseId)
         {
             var client = _httpClient.CreateClient("course.api");

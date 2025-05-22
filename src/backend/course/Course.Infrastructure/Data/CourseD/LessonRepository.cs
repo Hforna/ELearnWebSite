@@ -38,7 +38,7 @@ namespace Course.Infrastructure.Data.Course
 
         public async Task<Lesson?> LessonById(long id)
         {
-            return await _dbContext.Lessons.SingleOrDefaultAsync(d => d.Id == id);
+            return await _dbContext.Lessons.Include(d => d.Module).SingleOrDefaultAsync(d => d.Id == id);
         }
 
         public async Task<List<Lesson>?> LessonByModuleId(long moduleId)
