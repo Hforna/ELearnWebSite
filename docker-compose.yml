@@ -38,6 +38,12 @@ services:
       context: .
       dockerfile: src/backend/progress/Progress.Api/Dockerfile
 
+  apigateway:
+    image: ${DOCKER_REGISTRY-}apigateway
+    build:
+      context: .
+      dockerfile: src/backend/apiGateway/ApiGateway/Dockerfile
+
 networks:
   backend:
     driver: bridge
@@ -47,6 +53,7 @@ volumes:
   mongoserver_data:
   redisserver_data:
   redisprogress_data:
+
 
 
 
