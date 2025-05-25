@@ -2,6 +2,7 @@
 using Progress.Application.Responses;
 using Progress.Domain.Dtos;
 using Progress.Domain.Entities;
+using Sqids;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +13,10 @@ namespace Progress.Application.services
 {
     public class AutoMapperConfiguration : Profile
     {
+        private readonly SqidsEncoder<long> _sqids;
+
+        public AutoMapperConfiguration(SqidsEncoder<long> sqids) => _sqids = sqids;
+
         public AutoMapperConfiguration()
         {
             CreateMap<QuizDto, ShortQuizAnswersResponse>()
@@ -30,6 +35,10 @@ namespace Progress.Application.services
             CreateMap<QuestionResponse, FullQuestionResponse>()
                 .ForMember(d => d.QuestionId, f => f.MapFrom(d => d.id))
                 .ForMember(d => d.Answers, f => f.MapFrom(d => d.AnswerOptions));
+
+            CreateMap<UserCourseProgress, UserCourseProgressResponse>()
+                .ForMember(d => d.CourseId, f => f.MapFrom(d => _sqids.Encode(d.CourseId)))
+                .ForMember(d => d.UserId, f => f.MapFrom(d => _sqids.Encode(d.UserId)));
         }
     }
 }

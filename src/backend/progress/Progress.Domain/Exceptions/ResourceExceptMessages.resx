@@ -132,4 +132,7 @@
   <data name="USER_DOESNT_ANSWERED_ALL_QUESTIONS" xml:space="preserve">
     <value>User need to answer all of the questions before send submit</value>
   </data>
+  <data name="USER_NOT_AUTHENTICATED" xml:space="preserve">
+    <value>User must be authenticated</value>
+  </data>
 </root>

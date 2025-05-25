@@ -104,5 +104,14 @@ namespace Progress.Domain.Exceptions {
                 return ResourceManager.GetString("USER_DOESNT_GOT_COURSE", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a User must be authenticated.
+        /// </summary>
+        public static string USER_NOT_AUTHENTICATED {
+            get {
+                return ResourceManager.GetString("USER_NOT_AUTHENTICATED", resourceCulture);
+            }
+        }
     }
 }

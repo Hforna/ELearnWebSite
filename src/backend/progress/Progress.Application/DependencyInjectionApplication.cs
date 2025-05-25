@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using AutoMapper;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Progress.Application.services;
 using Progress.Application.UseCases.Interfaces;
@@ -25,9 +26,12 @@ namespace Progress.Application
 
         static void ConfigureAutoMapper(IServiceCollection services)
         {
-            services.AddAutoMapper(d =>
+            services.AddScoped(mapper =>
             {
-                d.AddProfile(new AutoMapperConfiguration());
+                var sqids = mapper.GetRequiredService<SqidsEncoder<long>>();
+                var config = new MapperConfiguration(d => d.AddProfile(new AutoMapperConfiguration(sqids)));
+
+                return config.CreateMapper();
             });
         }
 
@@ -37,6 +41,7 @@ namespace Progress.Application
             services.AddScoped<ISubmitQuizAttempt, SubmitQuizAttempt>();
             services.AddScoped<IGetUserAttempt, GetUserAttempt>();
             services.AddScoped<ICompleteLesson, CompleteLesson>();
+            services.AddScoped<ICourseProgress, CourseProgress>();
         }
 
         static void AddSqids(IServiceCollection services, IConfiguration configuration)

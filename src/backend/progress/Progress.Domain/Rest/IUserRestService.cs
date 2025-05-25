@@ -10,5 +10,6 @@ namespace Progress.Domain.Rest
     public interface IUserRestService
     {
         public Task<UserInfosDto> GetUserInfos();
+        public Task<bool> IsUserLogged();
     }
 }
