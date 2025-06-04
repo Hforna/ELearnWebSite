@@ -4,7 +4,8 @@
 [![MongoDB](https://img.shields.io/badge/MongoDB-7.0+-green.svg)](https://www.mongodb.com/)
 [![Azure](https://img.shields.io/badge/Azure_Storage-%230078D4.svg?logo=microsoft-azure)](https://azure.microsoft.com/)
 
-A modern online learning platform built with **ASP.NET Core** that empowers instructors to create courses and students to learn seamlessly. Supports video content, payments, certifications, and real-time features.
+A modern online learning platform built with **ASP.NET Core** and ddd using microservicesthat empowers instructors to create courses and students to learn seamlessly. Supports video content, payments, certifications, and real-time features. 
+
 
 ---
 
