@@ -127,6 +127,11 @@ var tokenValidationParams = new TokenValidationParameters
     ClockSkew = TimeSpan.Zero
 };
 
+builder.Services.AddCors(cfg =>
+{
+    cfg.AddPolicy("InternalServices", p => p.WithOrigins("user.api", "course.api", "progress.api"));
+});
+
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;

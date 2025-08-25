@@ -41,6 +41,9 @@ namespace Course.Application.UseCases.Courses
         public async Task<CoursesResponse> Execute()
         {
             var cacheCourses = await _courseCache.GetMostPopularCourses();
+            if (cacheCourses is null)
+                return new CoursesResponse();
+
             cacheCourses = cacheCourses.Take(10).ToDictionary(k => k.Key, v => v.Value);
             
             var courses = await _uof.courseRead.CourseByIds(cacheCourses.Keys.ToList());

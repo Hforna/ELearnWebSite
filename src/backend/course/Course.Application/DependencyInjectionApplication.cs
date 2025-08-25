@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Course.Application.InternalServices;
 using Course.Application.Services;
 using Course.Application.Services.AutoMapper;
 using Course.Application.UseCases.Course;
@@ -84,6 +85,8 @@ namespace Course.Application
             services.AddScoped<IUserGotCourse, UserGotCourse>();
             services.AddScoped<ICourseLessonsCount, CourseLessonsCount>();
             services.AddScoped<IGetLessonShortInfos, GetLessonShortInfos>();
+
+            services.AddScoped<ICourseInternalService, CourseInternalService>();
 
             services.AddSingleton(new FileService());
         }
