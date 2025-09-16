@@ -15,5 +15,6 @@ namespace Payment.Domain.Repositories
         public Task<OrderItem?> LastCourseOrderItem(long courseId);
         public IPagedList<Order> GetOrdersNotActive(int page, int quantity, long userId);
         public Task<List<Order>?> GetOrdersByUserId(long userId);
+        public Task<OrderItem?> GetCourseAndUserOrderItem(long userId, long courseId);
     }
 }

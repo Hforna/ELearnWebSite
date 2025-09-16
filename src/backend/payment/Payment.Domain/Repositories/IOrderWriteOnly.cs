@@ -15,5 +15,6 @@ namespace Payment.Domain.Repositories
         public void UpdateOrderItem(OrderItem orderItem);
         public void UpdateOrderItemRange(List<OrderItem> orderItems);
         public void DeleteOrderRange(List<Order> orders);
+        public void DeleteOrderItem(OrderItem orderItem);
     }
 }

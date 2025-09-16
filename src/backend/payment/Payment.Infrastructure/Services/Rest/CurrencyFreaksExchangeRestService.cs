@@ -34,7 +34,8 @@ namespace Payment.Infrastructure.Services.Rest
             }
             var currencysOnString = string.Join(",", currencysAccepted).Trim();
 
-            var request = await client.GetAsync($"https://api.currencyfreaks.com/v2.0/rates/latest?base={currency.ToString().ToLower()}&symbols={currencysOnString}&apikey={_apiKey}");
+            var request = await client
+                .GetAsync($"https://api.currencyfreaks.com/v2.0/rates/latest?base={currency.ToString().ToLower()}&symbols={currencysOnString}&apikey={_apiKey}");
 
             var response = await request.Content.ReadAsStringAsync();
 

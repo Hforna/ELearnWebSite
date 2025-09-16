@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Course.Application.Extensions;
 using Course.Application.Services;
 using Course.Application.Services.Validators.Course;
 using Course.Application.UseCases.Repositories.Course;
@@ -30,12 +31,17 @@ namespace Course.Application.UseCases.Course
         private readonly IStorageService _storageService;
         private readonly FileService _fileService;
         private readonly IProducerService _userSenderService;
+        private readonly ILocationService _locationService;
+        private readonly ICurrencyExchangeService _currencyExchange;
 
         public CreateCourse(IUnitOfWork uof, IMapper mapper, 
             IUserService userService, SqidsEncoder<long> sqids, 
-            IStorageService storageService, FileService fileService, IProducerService userSenderService)
+            IStorageService storageService, FileService fileService, 
+            IProducerService userSenderService, ILocationService location, ICurrencyExchangeService currencyExchange)
         {
             _uof = uof;
+            _locationService = location;
+            _currencyExchange = currencyExchange;
             _userSenderService = userSenderService;
             _fileService = fileService;
             _mapper = mapper;
@@ -53,7 +59,12 @@ namespace Course.Application.UseCases.Course
             if (userInfos is null)
                 throw new UserException(ResourceExceptMessages.USER_INFOS_DOESNT_EXISTS);
 
+            var userCurrency = await UserCurrencyAsEnumExtension.GetCurrency(_locationService);
+            var userCurrencyRates = await _currencyExchange.GetCurrencyRates(userCurrency);
+            var calcUserCurrToDefault = userCurrencyRates.BRL * request.Price;
+
             var course = _mapper.Map<CourseEntity>(request);
+            course.Price = calcUserCurrToDefault;
             course.TeacherId = _sqids.Decode(userInfos.id).Single();
             course.Active = false;
 

@@ -168,4 +168,7 @@
   <data name="USER_DOESNT_HAVE_THE_COURSE" xml:space="preserve">
     <value>User doesn't have this course</value>
   </data>
+  <data name="COURSE_IS_NOT_IN_ORDER" xml:space="preserve">
+    <value>Course found isn't on user order</value>
+  </data>
 </root>

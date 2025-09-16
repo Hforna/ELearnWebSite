@@ -31,7 +31,7 @@ namespace Payment.Api.Controllers
             return Ok(result);
         }
 
-        [HttpPost("create-bank-account")]
+        [HttpPost]
         public async Task<IActionResult> CreateUserBankAccount([FromBody]CreateBankAccountRequest request)
         {
             var result = await _balanceService.CreateBankAccount(request);

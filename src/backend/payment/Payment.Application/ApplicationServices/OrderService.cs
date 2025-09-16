@@ -146,7 +146,6 @@ namespace Payment.Application.Services
 
         public async Task<OrderResponse> GetUserOrder()
         {
-
             var userCurrencyAsEnum = await UserCurrencyAsEnumExtension.GetCurrency(_locationRest);
 
             var currencyExchange = await _currencyExchange.GetCurrencyRates(userCurrencyAsEnum);
@@ -171,7 +170,7 @@ namespace Payment.Application.Services
                 response.OrderItems = order.OrderItems.Select(orderItem =>
                 {
                     var response = _mapper.Map<OrderItemResponse>(orderItem);
-                    response.Price *= (decimal)rate!;
+                    response.Price *= rate;
 
                     return response;
                 }).ToList();
@@ -201,18 +200,41 @@ namespace Payment.Application.Services
             return response;
         }
 
-        decimal? GetCurrencyRate(CurrencyEnum currency, RateExchangeDto rateExchange)
+        public async Task RemoveCourseFromOrder(long courseId)
+        {
+            var user = await _userRest.GetUserInfos();
+            var userId = _sqids.Decode(user.id).Single();
+
+            var userCurrency = await UserCurrencyAsEnumExtension.GetCurrency(_locationRest);
+            var currencyRates = await _currencyExchange.GetCurrencyRates(userCurrency);
+
+            var order = await _uow.orderRead.OrderByUserId(userId) 
+                ?? throw new OrderException(ResourceExceptMessages.ORDERS_DONT_EXISTS);
+
+            var courseOrderItem = await _uow.orderRead.GetCourseAndUserOrderItem(userId, courseId)
+                ?? throw new OrderException(ResourceExceptMessages.COURSE_IS_NOT_IN_ORDER);
+
+            var course = await _courseRest.GetCourse(_sqids.Encode(courseId));
+
+            order.TotalPrice -= (decimal)course!.price;
+
+            _uow.orderWrite.DeleteOrderItem(courseOrderItem);
+            _uow.orderWrite.UpdateOrder(order);
+            await _uow.Commit();
+        }
+
+        decimal GetCurrencyRate(CurrencyEnum currency, RateExchangeDto rateExchange)
         {
             switch(currency)
             {
                 case CurrencyEnum.USD:
-                    return (decimal)rateExchange.USD;
+                    return rateExchange.USD;
                 case CurrencyEnum.EUR:
-                    return (decimal)rateExchange.EUR;
+                    return rateExchange.EUR;
                 case CurrencyEnum.BRL:
-                    return (decimal)rateExchange.BRL;
+                    return rateExchange.BRL;
                 default:
-                    return null;
+                    return 0;
             }
         }
     }

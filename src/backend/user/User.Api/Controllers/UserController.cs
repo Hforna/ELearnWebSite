@@ -73,7 +73,6 @@ namespace User.Api.Controllers
 
             user.SecurityStamp = Guid.NewGuid().ToString();
             user.PasswordHash = _cryptography.GenerateCryptography(request.Password);
-            user.EmailConfirmed = false;
             user.Active = false;
             user.UserIdentifier = Guid.NewGuid();
 

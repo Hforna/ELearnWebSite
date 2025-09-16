@@ -4,6 +4,7 @@ using Payment.Domain.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 using System.Text;
 using System.Threading.Tasks;
 using X.PagedList;
@@ -27,9 +28,20 @@ namespace Payment.Infrastructure.DataContext
             await _dbContext.OrderItems.AddAsync(orderItem);
         }
 
+        public void DeleteOrderItem(OrderItem orderItem)
+        {
+            _dbContext.OrderItems.Remove(orderItem);
+        }
+
         public void DeleteOrderRange(List<Order> orders)
         {
             _dbContext.Orders.RemoveRange(orders);
+        }
+
+        public async Task<OrderItem?> GetCourseAndUserOrderItem(long userId, long courseId)
+        {
+            return await _dbContext.OrderItems
+                .SingleOrDefaultAsync(d => d.CourseId == courseId && d.Order.UserId == userId);
         }
 
         public async Task<List<Order>?> GetOrdersByUserId(long userId)

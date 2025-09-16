@@ -74,9 +74,10 @@ namespace Course.Application.UseCases.Course
             var response = _mapper.Map<CourseResponse>(course);
 
             var userCurrency = await _locationService.GetCurrencyByUserLocation();
+            var userCurrencyAsEnum = (CurrencyEnum)Enum.Parse(typeof(CurrencyEnum), userCurrency.Code);
+
             var ratesByCourseCurrency = await _exchangeService.GetCurrencyRates(course.CurrencyType);
 
-            var userCurrencyAsEnum = (CurrencyEnum)Enum.Parse(typeof(CurrencyEnum), userCurrency.Code);
             double convertPrice = course.Price;
 
             switch(userCurrencyAsEnum)

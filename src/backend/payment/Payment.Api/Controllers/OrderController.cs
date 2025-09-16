@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Payment.Api.Attributes;
+using Payment.Api.Binders;
 using Payment.Application.ApplicationServices.Interfaces;
 using Payment.Application.Requests;
 using Payment.Domain.Exceptions;
@@ -28,6 +29,14 @@ namespace Payment.Api.Controllers
             var result = await _orderService.AddCourseToOrder(request);
 
             return Created(string.Empty, result);
+        }
+
+        [HttpDelete("{courseId}")]
+        public async Task<IActionResult> RemoveCourseFromOrder([FromRoute][ModelBinder(typeof(BinderId))]long courseId)
+        {
+            await _orderService.RemoveCourseFromOrder(courseId);
+
+            return NoContent();
         }
 
         /// <summary>

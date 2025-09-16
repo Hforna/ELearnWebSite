@@ -10,10 +10,10 @@ namespace Payment.Domain.DTOs
     public sealed record RateExchangeDto
     {
         [JsonPropertyName("brl")]
-        public double BRL { get; set; }
+        public decimal BRL { get; set; }
         [JsonPropertyName("usd")]
-        public double USD { get; set; }
+        public decimal USD { get; set; }
         [JsonPropertyName("eur")]
-        public double EUR { get; set; }
+        public decimal EUR { get; set; }
     }
 }

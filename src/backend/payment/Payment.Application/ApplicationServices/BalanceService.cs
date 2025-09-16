@@ -1,11 +1,13 @@
 ﻿using AutoMapper;
 using FluentValidation.Internal;
+using Microsoft.Extensions.Logging;
 using Payment.Application.ApplicationServices.Interfaces;
 using Payment.Application.Extensions;
 using Payment.Application.Requests;
 using Payment.Application.Responses.Balance;
 using Payment.Application.Services;
 using Payment.Domain.Cons;
+using Payment.Domain.DTOs;
 using Payment.Domain.Entities;
 using Payment.Domain.Enums;
 using Payment.Domain.Exceptions;
@@ -30,14 +32,16 @@ namespace Payment.Application.ApplicationServices
         private readonly ICurrencyExchangeService _exchangeService;
         private readonly SqidsEncoder<long> _sqids;
         private readonly IPaymentGatewayService _paymentService;
+        private readonly ILogger<BalanceService> _logger;
 
 
         public BalanceService(IMapper mapper, IUnitOfWork uof, IUserRestService userRest, 
             ILocationRestService locationRest, ICurrencyExchangeService exchangeService, 
-            SqidsEncoder<long> sqids, IPaymentGatewayService paymentGateway)
+            SqidsEncoder<long> sqids, IPaymentGatewayService paymentGateway, ILogger<BalanceService> logger)
         {
             _mapper = mapper;
             _uof = uof;
+            _logger = logger;
             _paymentService = paymentGateway;
             _userRest = userRest;
             _locationRest = locationRest;
@@ -89,18 +93,18 @@ namespace Payment.Application.ApplicationServices
             switch(userCurrency)
             {
                 case Domain.Enums.CurrencyEnum.BRL:
-                    rate = (decimal)currencyRates.BRL;
+                    rate = currencyRates.BRL;
                     break;
                 case Domain.Enums.CurrencyEnum.EUR:
-                    rate = (decimal)currencyRates.EUR;
+                    rate = currencyRates.EUR;
                     break;
                 case Domain.Enums.CurrencyEnum.USD:
-                    rate = (decimal)currencyRates.USD;
+                    rate = currencyRates.USD;
                     break;
             }
 
             response.Currency = userCurrency;
-            response.BlockedBalance = blockedBalanceAmount is not null ? (decimal)blockedBalanceAmount * rate : null;
+            response.BlockedBalance = blockedBalanceAmount is not null ? blockedBalanceAmount * rate : null;
             response.AvaliableBalance *= rate;
 
             return response;
@@ -129,7 +133,7 @@ namespace Payment.Application.ApplicationServices
             var userCurrency = await _locationRest.GetCurrencyByUserLocation();
             var currencyAsEnum = Enum.TryParse(typeof(CurrencyEnum), userCurrency.Code, out var result) ? (CurrencyEnum)result : DefaultCurrency.Currency;
 
-            var rates = 0.0;
+            decimal rates = 0;
             var currencyRates = await _exchangeService.GetCurrencyRates(userBalance.Currency);
 
             switch (currencyAsEnum)
@@ -145,7 +149,7 @@ namespace Payment.Application.ApplicationServices
                     break;
             }
 
-            decimal amount = Math.Round((decimal)request.Amount * (decimal)rates, 2);
+            decimal amount = Math.Round(request.Amount * rates, 2);
 
             if (amount > userBalance.AvaliableBalance)
                 throw new BalanceException(ResourceExceptMessages.INVALID_AMOUNT_IN_BALANCE, System.Net.HttpStatusCode.Unauthorized);
@@ -161,27 +165,26 @@ namespace Payment.Application.ApplicationServices
                 Amount = amount
             };
 
-            if (transfer.Status == "failed")
+            switch(transfer.Status)
             {
-                payout.Active = false;
-                payout.TransactionStatus = TransactionStatusEnum.Canceled;
-                await _uof.payoutWrite.Add(payout);
-                await _uof.Commit();
+                case StripeCashOutDto.Failed:
+                    payout.Active = false;
+                    payout.TransactionStatus = TransactionStatusEnum.Canceled;
+                    await _uof.payoutWrite.Add(payout);
+                    await _uof.Commit();
 
-                throw new BalanceException(ResourceExceptMessages.PAYOUT_FAILED, System.Net.HttpStatusCode.InternalServerError);
+                    _logger.LogError($"It was not possible to process user cashout from balance: {userBalance.Id}");
+
+                    throw new BalanceException(ResourceExceptMessages.PAYOUT_FAILED, System.Net.HttpStatusCode.InternalServerError);
+                case StripeCashOutDto.Pending:
+                    payout.TransactionStatus = TransactionStatusEnum.Pending;
+                    break;
+                case StripeCashOutDto.Accepted:
+                    payout.TransactionStatus = TransactionStatusEnum.Approved;
+                    break;
             }
 
-            if(transfer.Status == "pending")
-            {
-                payout.TransactionStatus = TransactionStatusEnum.Pending;
-                userBalance.AvaliableBalance -= amount;
-            }
-
-            if (transfer.Status == "succeeded")
-            {
-                payout.TransactionStatus = TransactionStatusEnum.Approved;
-                userBalance.AvaliableBalance -= amount;
-            }
+            userBalance.AvaliableBalance -= amount;
             _uof.balanceWrite.Update(userBalance);
             await _uof.payoutWrite.Add(payout);
 

@@ -24,7 +24,7 @@ namespace Payment.Infrastructure.Services.Rest
         public async Task<CourseDto?> GetCourse(string courseId)
         {
             var client = _httpClient.CreateClient("course.api");
-            var response = await client.GetAsync($"api/course/{courseId}");
+            var response = await client.GetAsync($"internal/courses/{courseId}");
 
             if(response.IsSuccessStatusCode)
             {

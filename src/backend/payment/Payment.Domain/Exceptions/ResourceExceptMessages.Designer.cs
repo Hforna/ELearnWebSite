@@ -79,6 +79,15 @@ namespace Payment.Domain.Exceptions {
         }
         
         /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Course found isn&apos;t on user order.
+        /// </summary>
+        public static string COURSE_IS_NOT_IN_ORDER {
+            get {
+                return ResourceManager.GetString("COURSE_IS_NOT_IN_ORDER", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a Course not found.
         /// </summary>
         public static string COURSE_NOT_FOUND {

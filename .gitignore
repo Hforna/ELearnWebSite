@@ -12,3 +12,4 @@ sqlserver_data/
 .sonarqube
 
 .fake
+/Rules.txt

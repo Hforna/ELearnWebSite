@@ -11,6 +11,7 @@ namespace Payment.Application.ApplicationServices.Interfaces
     public interface IOrderService
     {
         public Task<OrderItemResponse> AddCourseToOrder(AddCourseToOrderRequest request);
+        public Task RemoveCourseFromOrder(long courseId);
         public Task<OrderResponse> GetUserOrder();
         public Task<OrderHistoryResponse> GetOrderHistory(int page, int quantity);
     }
