@@ -6,6 +6,9 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{BE01E71B-9E9F-40D8-B821-1FABF2A1B3D6}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "backend", "backend", "{543A61F5-69A3-46D9-BC6D-A008847BD97F}"
+	ProjectSection(SolutionItems) = preProject
+		Rules.txt = Rules.txt
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "user", "user", "{4921AA7F-5EC8-4004-913D-118519812110}"
 EndProject
@@ -114,7 +117,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IntegrationTests", "src\bac
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "apiGateway", "apiGateway", "{E4B44333-CFDC-44D5-B710-D64A0CC8AD43}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApiGateway", "src\backend\apiGateway\ApiGateway\ApiGateway.csproj", "{5E1314C3-44E6-4A97-A78C-D742A61B74FB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApiGateway", "src\backend\apiGateway\ApiGateway\ApiGateway.csproj", "{5E1314C3-44E6-4A97-A78C-D742A61B74FB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

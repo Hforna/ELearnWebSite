@@ -49,6 +49,7 @@ namespace Progress.Infrastructure.RabbitMq.Subscribers
                 var message = Encoding.UTF8.GetString(body.ToArray());
                 await _userSubmitConsumer.Execute(message);
             };
+            await _channel.BasicConsumeAsync("user-submit", false, consumer);
         }
 
         public override void Dispose()
@@ -58,6 +59,7 @@ namespace Progress.Infrastructure.RabbitMq.Subscribers
             _connection.CloseAsync();
             _connection.Dispose();
             base.Dispose();
+            GC.SuppressFinalize(this);
         }
     }
 }

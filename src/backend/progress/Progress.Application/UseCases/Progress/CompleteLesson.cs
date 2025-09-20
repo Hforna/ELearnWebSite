@@ -33,7 +33,8 @@ namespace Progress.Application.UseCases.Progress
             var userId = _sqids.Decode(user.id).Single();
 
             var lessonInfos = await _courseRest.LessonInfos(lessonId);
-            var id = _sqids.Decode(lessonInfos.Id).Single();
+
+            var lessonIdDeco = _sqids.Decode(lessonInfos.Id).Single();
             var courseId = _sqids.Decode(lessonInfos.CourseId).Single();
             var moduleId = _sqids.Decode(lessonInfos.ModuleId).Single();
 
@@ -42,15 +43,28 @@ namespace Progress.Application.UseCases.Progress
             if (!userGotCourse)
                 throw new CourseException(ResourceExceptMessages.USER_DOESNT_GOT_COURSE, System.Net.HttpStatusCode.Unauthorized);
 
+            var countLessons = await _courseRest.CountCourseLessons(lessonInfos.CourseId);
+
             var lessonProgress = new UserLessonProgress()
             {
                 CourseId = courseId,
-                LessonId = id,
+                LessonId = lessonIdDeco,
                 IsCompleted = true,
                 LastUpdate = DateTime.UtcNow,
                 UserId = userId
             };
 
+            var courseProgress = await _uof.userCourseProgressRead.GetUserCourseProgressByUserAndCourse(userId, courseId);
+            courseProgress.TotalLessonsCompleted++;
+            courseProgress.CompletionPercentage = courseProgress.TotalLessonsCompleted * 100 / countLessons;
+
+            if(courseProgress.TotalLessonsCompleted == countLessons)
+            {
+                lessonProgress.IsCompleted = true;
+                
+            }
+
+            _uof.genericRepository.Update<UserCourseProgress>(courseProgress);
             await _uof.genericRepository.Add<UserLessonProgress>(lessonProgress);
             await _uof.Commit();
         }

@@ -15,11 +15,6 @@ services:
     depends_on:
      - sqlserver
      - rabbitmq
- 
-  apigateway:
-    networks:
-     - backend
-    restart: always
    
   sqlserver:
     container_name: sqlserver
@@ -132,3 +127,6 @@ services:
     volumes:
       - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
       - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
+    networks:
+      - backend
+    restart: always

@@ -69,7 +69,10 @@ namespace Progress.Infrastructure.RabbitMq.Subscribers
 
         public override void Dispose()
         {
-            _channel?.CloseAsync();
+            _channel.CloseAsync();
+            _channel.Dispose();
+            _connection.CloseAsync();
+            _connection.Dispose();
             base.Dispose();
             GC.SuppressFinalize(this);
         }
