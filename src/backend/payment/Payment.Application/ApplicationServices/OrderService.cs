@@ -55,7 +55,7 @@ namespace Payment.Application.Services
             var courseId = _sqids.Decode(course.id).Single();
 
             var currencyExchange = await _currencyExchange.GetCurrencyRates(course.currencyType);
-            var userCurrencyAsEnum = await UserCurrencyAsEnumExtension.GetCurrency(_locationRest);
+            var userCurrencyAsEnum = await CurrencyExtensions.GetCurrency(_locationRest);
             var priceResponse = (double)GetCurrencyRate(userCurrencyAsEnum, currencyExchange)! * course.price;
 
             var response = new OrderItemResponse();
@@ -113,7 +113,7 @@ namespace Payment.Application.Services
             if (orderHistory is null)
                 throw new OrderException(ResourceExceptMessages.ORDERS_DONT_EXISTS, System.Net.HttpStatusCode.NotFound);
 
-            var userCurrency = await UserCurrencyAsEnumExtension.GetCurrency(_locationRest);
+            var userCurrency = await CurrencyExtensions.GetCurrency(_locationRest);
             var currencyExchange = await _currencyExchange.GetCurrencyRates(userCurrency);
 
             var transactions = await _uow.transactionRead.TransactionsByOrderIds(orderHistory.Select(d => d.Id).ToList());
@@ -146,7 +146,7 @@ namespace Payment.Application.Services
 
         public async Task<OrderResponse> GetUserOrder()
         {
-            var userCurrencyAsEnum = await UserCurrencyAsEnumExtension.GetCurrency(_locationRest);
+            var userCurrencyAsEnum = await CurrencyExtensions.GetCurrency(_locationRest);
 
             var currencyExchange = await _currencyExchange.GetCurrencyRates(userCurrencyAsEnum);
 
@@ -205,7 +205,7 @@ namespace Payment.Application.Services
             var user = await _userRest.GetUserInfos();
             var userId = _sqids.Decode(user.id).Single();
 
-            var userCurrency = await UserCurrencyAsEnumExtension.GetCurrency(_locationRest);
+            var userCurrency = await CurrencyExtensions.GetCurrency(_locationRest);
             var currencyRates = await _currencyExchange.GetCurrencyRates(userCurrency);
 
             var order = await _uow.orderRead.OrderByUserId(userId) 

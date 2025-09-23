@@ -85,23 +85,8 @@ namespace Payment.Application.ApplicationServices
             var response = _mapper.Map<BalanceResponse>(balance);
             var blockedBalanceAmount = await _uof.balanceRead.GetBlockedBalanceAmount(balance.Id);
 
-            var userCurrency = await UserCurrencyAsEnumExtension.GetCurrency(_locationRest);
-            var currencyRates = await _exchangeService.GetCurrencyRates(balance.Currency);
-
-            decimal rate = 0;
-
-            switch(userCurrency)
-            {
-                case Domain.Enums.CurrencyEnum.BRL:
-                    rate = currencyRates.BRL;
-                    break;
-                case Domain.Enums.CurrencyEnum.EUR:
-                    rate = currencyRates.EUR;
-                    break;
-                case Domain.Enums.CurrencyEnum.USD:
-                    rate = currencyRates.USD;
-                    break;
-            }
+            var userCurrency = await CurrencyExtensions.GetCurrency(_locationRest);
+            decimal rate = await CalcCurrencyRates(balance.Currency, userCurrency);
 
             response.Currency = userCurrency;
             response.BlockedBalance = blockedBalanceAmount is not null ? blockedBalanceAmount * rate : null;
@@ -132,30 +117,15 @@ namespace Payment.Application.ApplicationServices
 
             var userCurrency = await _locationRest.GetCurrencyByUserLocation();
             var currencyAsEnum = Enum.TryParse(typeof(CurrencyEnum), userCurrency.Code, out var result) ? (CurrencyEnum)result : DefaultCurrency.Currency;
+            decimal rate = await CalcCurrencyRates(userBalance.Currency, currencyAsEnum);
 
-            decimal rates = 0;
-            var currencyRates = await _exchangeService.GetCurrencyRates(userBalance.Currency);
-
-            switch (currencyAsEnum)
-            {
-                case CurrencyEnum.USD:
-                    rates = currencyRates.USD;
-                    break;
-                case CurrencyEnum.EUR:
-                    rates = currencyRates.EUR;
-                    break;
-                case CurrencyEnum.BRL:
-                    rates = currencyRates.BRL;
-                    break;
-            }
-
-            decimal amount = Math.Round(request.Amount * rates, 2);
+            decimal amount = Math.Round(request.Amount * rate, 2);
 
             if (amount > userBalance.AvaliableBalance)
                 throw new BalanceException(ResourceExceptMessages.INVALID_AMOUNT_IN_BALANCE, System.Net.HttpStatusCode.Unauthorized);
 
-            var transfer = await _paymentService.CashoutAsTedMethod(request.Amount, userId, userCurrency.Name, currencyAsEnum, 
-                bankAccount.AccountNumber, bankAccount.AgencyNumber, bankAccount.TypeAccount, 
+            var transfer = await _paymentService.CashoutAsTedMethod(request.Amount, userId, userCurrency.Name, currencyAsEnum,
+                bankAccount.AccountNumber, bankAccount.AgencyNumber, bankAccount.TypeAccount,
                 bankAccount.TaxId, bankAccount.FirstName, bankAccount.LastName, bankAccount.Email);
 
             var payout = new Payout()
@@ -165,7 +135,7 @@ namespace Payment.Application.ApplicationServices
                 Amount = amount
             };
 
-            switch(transfer.Status)
+            switch (transfer.Status)
             {
                 case StripeCashOutDto.Failed:
                     payout.Active = false;
@@ -199,6 +169,27 @@ namespace Payment.Application.ApplicationServices
                 BankAccountId = bankAccount.Id,
                 Status = payout.TransactionStatus
             };
+        }
+        private async Task<decimal> CalcCurrencyRates(CurrencyEnum currentSource, CurrencyEnum currencyTarget)
+        {
+            decimal rates = 0;
+
+            var currencyRates = await _exchangeService.GetCurrencyRates(currentSource);
+
+            switch (currencyTarget)
+            {
+                case CurrencyEnum.USD:
+                    rates = currencyRates.USD;
+                    break;
+                case CurrencyEnum.EUR:
+                    rates = currencyRates.EUR;
+                    break;
+                case CurrencyEnum.BRL:
+                    rates = currencyRates.BRL;
+                    break;
+            }
+
+            return rates;
         }
     }
 }
