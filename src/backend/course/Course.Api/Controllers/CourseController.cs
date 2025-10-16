@@ -56,7 +56,7 @@ namespace Course.Api.Controllers
         /// <returns>A paginated list of active courses for the specified teacher.</returns>
         /// <response code="200">Returns the paginated list of active courses.</response>
         /// <response code="404">If no courses are found for the given teacher or if the teacher does not exist.</response>
-        [HttpGet("teacher-courses/{teacherId}")]
+        [HttpGet("teachers/{teacherId}")]
         [ProducesDefaultResponseType]
         [ProducesResponseType(typeof(CourseException), StatusCodes.Status404NotFound)] 
         public async Task<IActionResult> TeacherCourses([FromRoute][ModelBinder(typeof(BinderId))]long teacherId, [FromQuery]int page, 
@@ -127,13 +127,15 @@ namespace Course.Api.Controllers
         /// or 204 (No Content) if no courses are found.
         /// </returns>
         [HttpGet("ten-courses-visited-week")]
-        [ProducesDefaultResponseType()]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> GetMostPopularWeekCourses([FromServices] IGetTenMostPopularWeekCourses useCase)
         {
             var result = await useCase.Execute();
 
-            if (result.courses.Any() == false)
+            if (result is null || result.courses.Any() == false)
                 return NoContent();
+
             return Ok(result);
         }
 

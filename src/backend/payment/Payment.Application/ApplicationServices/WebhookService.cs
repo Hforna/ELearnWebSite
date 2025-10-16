@@ -135,7 +135,7 @@ namespace Payment.Application.ApplicationServices
                         break;
                 }
 
-                teacherBalance.AvaliableBalance -= (decimal)course.price;
+                teacherBalance.AvaliableBalance -= course.price;
                 
                 _uof.balanceWrite.Update(teacherBalance);
                 await _uof.Commit();

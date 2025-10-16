@@ -30,7 +30,7 @@ namespace Payment.Infrastructure.Services.Rest
             var client = _httpClient.CreateClient("user.api");
             client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _token);
 
-            var response = await client.GetAsync("api/user/user-infos");
+            var response = await client.GetAsync("api/user/");
 
             if(response.IsSuccessStatusCode)
             {

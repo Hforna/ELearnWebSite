@@ -56,7 +56,7 @@ namespace Payment.Application.Services
 
             var currencyExchange = await _currencyExchange.GetCurrencyRates(course.currencyType);
             var userCurrencyAsEnum = await CurrencyExtensions.GetCurrency(_locationRest);
-            var priceResponse = (double)GetCurrencyRate(userCurrencyAsEnum, currencyExchange)! * course.price;
+            var priceResponse = GetCurrencyRate(userCurrencyAsEnum, currencyExchange)! * course.price;
 
             var response = new OrderItemResponse();
 

@@ -135,7 +135,7 @@ namespace Payment.Infrastructure
 
             StripeConfiguration.ApiKey = stripeApiKey;
 
-            services.AddScoped<IPaymentGatewayService, StripePaymentAdapter>();
+            services.AddScoped<IPaymentGatewayService, StripePayment>();
         }
 
         static void AddRestService(IServiceCollection services, IConfiguration configuration)

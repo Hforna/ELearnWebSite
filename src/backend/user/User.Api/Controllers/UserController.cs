@@ -275,7 +275,7 @@ namespace User.Api.Controllers
             return Ok();
         }
 
-        [HttpGet("user-infos/{id}")]
+        [HttpGet("{id}")]
         public async Task<IActionResult> UserInfosById([FromRoute] string id)
         {
             var userId = _sqids.Decode(id).Single();
@@ -290,7 +290,7 @@ namespace User.Api.Controllers
         }
 
         [AuthenticationUser]
-        [HttpGet("user-infos")]
+        [HttpGet]
         public async Task<IActionResult> UserInfos()
         {
             var user = await _tokenService.UserByToken(_tokenReceptor.GetToken());

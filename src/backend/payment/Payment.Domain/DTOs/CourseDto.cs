@@ -17,6 +17,6 @@ namespace Payment.Domain.DTOs
         public string title { get; set; }
         public CurrencyEnum currencyType { get; set; }
         public string description { get; set; }
-        public double price { get; set; }
+        public decimal price { get; set; }
     }
 }
