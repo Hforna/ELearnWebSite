@@ -44,3 +44,4 @@ jobs:
             -Dsonar.projectKey=elearn-project-git
             -Dsonar.organization=HFORNA
             -Dsonar.projectName=ELearnWebSite
+            -Dsonar.scanner.scanAll=false
