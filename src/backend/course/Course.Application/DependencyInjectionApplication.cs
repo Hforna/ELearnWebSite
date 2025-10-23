@@ -36,7 +36,7 @@ namespace Course.Application
         {
             AddSqids(services, configuration);
             ConfigureAutoMapper(services);
-            AddRepositories(services);
+            AddServices(services);
             AddEmailSerice(services, configuration);
         }
 
@@ -48,15 +48,12 @@ namespace Course.Application
             services.AddSingleton(d => new SqidsEncoder<long>(new SqidsOptions() { Alphabet = alphabet, MinLength = minLength}));
         }
 
-        private static void AddRepositories(IServiceCollection services)
+        private static void AddServices(IServiceCollection services)
         {
-            services.AddScoped<ICreateCourse, CreateCourse>();
+            services.AddScoped<ICourseService, CourseService>();
+
             services.AddScoped<ICreateModule, CreateModule>();
-            services.AddScoped<IGetCourses, GetCourses>();
-            services.AddScoped<IGetCourse, GetCourse>();
-            services.AddScoped<IDeleteCourse, DeleteCourse>();
             services.AddScoped<IDeleteModule, DeleteModule>();
-            services.AddScoped<IUpdateCourse, UpdateCourse>();
             services.AddScoped<ICreateLesson, CreateLesson>();
             services.AddScoped<IGetModules, GetModules>();
             services.AddScoped<IGetLessons, GetLessons>();
@@ -65,12 +62,9 @@ namespace Course.Application
             services.AddScoped<IUpdateModule, UpdateModule>();
             services.AddScoped<IDeleteLesson, DeleteLesson>();
             services.AddScoped<IUpdateLesson, UpdateLesson>();
-            services.AddScoped<IGetTenMostPopularWeekCourses, GetTenMostPopularWeekCourses>();
             services.AddScoped<IGetCourseEnrollments, GetCourseEnrollments>();
             services.AddScoped<ICreateReview, CreateReview>();
             services.AddScoped<IDeleteReview, DeleteReview>();
-            services.AddScoped<ITeacherCourses, TeacherCourses>();
-            services.AddScoped<ICourseThatUserBought, CoursesThatUserBought>();
             services.AddScoped<IAddItemToWishList, AddItemToWishList>();
             services.AddScoped<IRemoveCourseFromWishList, RemoveCourseFromWishList>();
             services.AddScoped<IAnswerReview, AnswerReview>();
@@ -82,8 +76,6 @@ namespace Course.Application
             services.AddScoped<ICreateQuestion, CreateQuestion>();
             services.AddScoped<IDeleteQuestion, DeleteQuestion>();
             services.AddScoped<IDeleteQuiz, DeleteQuiz>();
-            services.AddScoped<IUserGotCourse, UserGotCourse>();
-            services.AddScoped<ICourseLessonsCount, CourseLessonsCount>();
             services.AddScoped<IGetLessonShortInfos, GetLessonShortInfos>();
 
             services.AddScoped<ICourseInternalService, CourseInternalService>();
