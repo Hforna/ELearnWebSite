@@ -9,11 +9,8 @@ namespace Course.Exception
 {
     public abstract class BaseException : SystemException
     {
-
         public abstract List<string> Errors { get; set; }
-        public abstract HttpStatusCode StatusCode { get; set; } 
 
-        public abstract HttpStatusCode GetStatusCode();
-        public abstract string GetMessage();
+        public List<string> GetMessage() => Errors;
     }
 }
