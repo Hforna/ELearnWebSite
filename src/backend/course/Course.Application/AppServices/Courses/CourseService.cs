@@ -3,12 +3,12 @@ using Course.Application.Extensions;
 using Course.Application.Services;
 using Course.Application.Services.Validators.Course;
 using Course.Application.Services.Validators.Quiz;
-using Course.Communication.Enums;
 using Course.Communication.Requests;
 using Course.Communication.Responses;
 using Course.Domain.Cache;
 using Course.Domain.DTOs;
 using Course.Domain.Entitites;
+using Course.Domain.Enums;
 using Course.Domain.Repositories;
 using Course.Domain.Services.Azure;
 using Course.Domain.Services.RabbitMq;
@@ -136,12 +136,12 @@ namespace Course.Application.UseCases.Courses
             if (userInfos is null)
                 throw new NotAuthenticatedException(ResourceExceptMessages.USER_INFOS_DOESNT_EXISTS);
 
-            var userCurrency = await UserCurrencyAsEnumExtension.GetCurrency(_locationService);
-            var userCurrencyRates = await _currencyExchange.GetCurrencyRates(userCurrency);
-            var calcUserCurrToDefault = userCurrencyRates.BRL * request.Price;
+            var userCurrencyAsEnum = await UserCurrencyAsEnumExtension.GetCurrency(_locationService);
 
             var course = _mapper.Map<CourseEntity>(request);
-            course.Price = calcUserCurrToDefault;
+
+            var convertPrice = await ConvertPrice(userCurrencyAsEnum, course.CurrencyType, request.Price);
+            course.Price = convertPrice;
             course.TeacherId = _sqids.Decode(userInfos.id).Single();
             course.Active = false;
 
@@ -169,6 +169,7 @@ namespace Course.Application.UseCases.Courses
             await _producerService.SendCourseCreated(message);
 
             var response = _mapper.Map<CourseShortResponse>(course);
+            response.Price = request.Price;
             response.CourseId = _sqids.Encode(course.Id);
             response.TeacherId = _sqids.Encode(course.TeacherId);
 
@@ -206,8 +207,6 @@ namespace Course.Application.UseCases.Courses
         {
             var course = await _uof.courseRead.CourseById(id);
 
-            var getCourseTest = await _courseCache.GetMostPopularCourses();
-
             if (course is null)
                 throw new NotFoundException(ResourceExceptMessages.COURSE_DOESNT_EXISTS);
 
@@ -227,25 +226,9 @@ namespace Course.Application.UseCases.Courses
 
             var response = _mapper.Map<CourseResponse>(course);
 
-            var userCurrency = await _locationService.GetCurrencyByUserLocation();
-            var userCurrencyAsEnum = (CurrencyEnum)Enum.Parse(typeof(CurrencyEnum), userCurrency.Code);
+            var userCurrencyAsEnum = await UserCurrencyAsEnumExtension.GetCurrency(_locationService);
+            var convertPrice = await ConvertPrice(course.CurrencyType, userCurrencyAsEnum, course.Price);
 
-            var ratesByCourseCurrency = await _currencyExchange.GetCurrencyRates(course.CurrencyType);
-
-            double convertPrice = course.Price;
-
-            switch (userCurrencyAsEnum)
-            {
-                case CurrencyEnum.BRL:
-                    convertPrice = course.Price * ratesByCourseCurrency.BRL;
-                    break;
-                case CurrencyEnum.USD:
-                    convertPrice = course.Price * ratesByCourseCurrency.USD;
-                    break;
-                case CurrencyEnum.EUR:
-                    convertPrice = course.Price * ratesByCourseCurrency.EUR;
-                    break;
-            }
             response.Price = Math.Round(convertPrice, 2, MidpointRounding.AwayFromZero);
 
             response.AddLink("modules", _linkService.GenerateResourceLink("GetModules", new
@@ -288,28 +271,15 @@ namespace Course.Application.UseCases.Courses
 
             var courses = _uof.courseRead.GetCoursesPagination(page, filterDto, reccomendedCourses, itemsQuantity);
 
-            var userCurrency = await _locationService.GetCurrencyByUserLocation();
-            var userCurrencyAsEnum = Enum.Parse(typeof(CurrencyEnum), userCurrency.Code);
+            var userCurrencyAsEnum = await UserCurrencyAsEnumExtension.GetCurrency(_locationService);
 
             var coursesToResponse = courses.Select(async course =>
             {
                 var response = _mapper.Map<CourseShortResponse>(course);
                 //response.ThumbnailUrl = await _storageService.GetCourseImage(course.courseIdentifier, course.Thumbnail);
-                var ratesByCourseCurrency = await _currencyExchange.GetCurrencyRates(course.CurrencyType);
                 var convertPrice = course.Price;
-
-                switch (userCurrencyAsEnum)
-                {
-                    case CurrencyEnum.BRL:
-                        convertPrice = course.Price * ratesByCourseCurrency.BRL;
-                        break;
-                    case CurrencyEnum.USD:
-                        convertPrice = course.Price * ratesByCourseCurrency.USD;
-                        break;
-                    case CurrencyEnum.EUR:
-                        convertPrice = course.Price * ratesByCourseCurrency.EUR;
-                        break;
-                }
+                if (userCurrencyAsEnum != course.CurrencyType)
+                    convertPrice = await ConvertPrice(course.CurrencyType, userCurrencyAsEnum, course.Price);
                 response.Price = Math.Round(convertPrice, 2, MidpointRounding.AwayFromZero);
 
                 return response;
@@ -340,28 +310,16 @@ namespace Course.Application.UseCases.Courses
 
             var courses = await _uof.courseRead.CourseByIds(cacheCourses.Keys.ToList());
 
-            var userCurrency = await _locationService.GetCurrencyByUserLocation();
-            var userCurrencyAsEnum = Enum.Parse(typeof(CurrencyEnum), userCurrency.Code);
+            var userCurrencyAsEnum = await UserCurrencyAsEnumExtension.GetCurrency(_locationService);
 
             var courseTasks = courses.Select(async course =>
             {
                 var response = _mapper.Map<CourseShortResponse>(course);
                 response.ThumbnailUrl = await _storageService.GetCourseImage(course.courseIdentifier, course.Thumbnail);
-                var courseRates = await _currencyExchange.GetCurrencyRates(course.CurrencyType);
                 var convertPrice = course.Price;
-
-                switch (userCurrencyAsEnum)
-                {
-                    case CurrencyEnum.BRL:
-                        convertPrice = course.Price * courseRates.BRL;
-                        break;
-                    case CurrencyEnum.USD:
-                        convertPrice = course.Price * courseRates.USD;
-                        break;
-                    case CurrencyEnum.EUR:
-                        convertPrice = course.Price * courseRates.EUR;
-                        break;
-                }
+                if (userCurrencyAsEnum != course.CurrencyType)
+                    convertPrice = await ConvertPrice(course.CurrencyType, userCurrencyAsEnum, course.Price);
+               
                 response.Price = Math.Round(convertPrice, 2, MidpointRounding.AwayFromZero);
 
                 return response;
@@ -379,28 +337,17 @@ namespace Course.Application.UseCases.Courses
             if (courses is null)
                 throw new NotFoundException(ResourceExceptMessages.TEACHER_DOESNT_HAVE_COURSES);
 
-            var userCurrency = await _locationService.GetCurrencyByUserLocation();
-            var userCurrencyAsEnum = Enum.Parse(typeof(CurrencyEnum), userCurrency.Code);
+            var userCurrencyAsEnum = await UserCurrencyAsEnumExtension.GetCurrency(_locationService);
 
             var coursesResponse = courses.Select(async course =>
             {
                 var response = _mapper.Map<CourseShortResponse>(course);
                 response.ThumbnailUrl = await _storageService.GetCourseImage(course.courseIdentifier, course.Thumbnail);
-                var courseRates = await _currencyExchange.GetCurrencyRates(course.CurrencyType);
                 var convertPrice = course.Price;
 
-                switch (userCurrencyAsEnum)
-                {
-                    case CurrencyEnum.BRL:
-                        convertPrice = course.Price * courseRates.BRL;
-                        break;
-                    case CurrencyEnum.USD:
-                        convertPrice = course.Price * courseRates.USD;
-                        break;
-                    case CurrencyEnum.EUR:
-                        convertPrice = course.Price * courseRates.EUR;
-                        break;
-                }
+                if (course.CurrencyType != userCurrencyAsEnum)
+                    convertPrice = await ConvertPrice(course.CurrencyType, userCurrencyAsEnum, course.Price);
+
                 response.Price = Math.Round(convertPrice, 2, MidpointRounding.AwayFromZero);
 
                 return response;
@@ -448,7 +395,7 @@ namespace Course.Application.UseCases.Courses
             }
 
             var response = _mapper.Map<CourseShortResponse>(course);
-            response.ThumbnailUrl = string.IsNullOrEmpty(course.Thumbnail) ?
+            response.ThumbnailUrl = string.IsNullOrEmpty(course.Thumbnail) == false ?
                 await _storageService.GetCourseImage(course.courseIdentifier, course.Thumbnail)
                 : "";
 
@@ -487,5 +434,19 @@ namespace Course.Application.UseCases.Courses
                 throw new RequestException(errorMessages);
             }
         }
+
+        private async Task<double> ConvertPrice(Domain.Enums.CurrencyEnum sourceCurrency, CurrencyEnum targetCurrency, double price)
+        {
+            var rates = await _currencyExchange.GetCurrencyRates(sourceCurrency);
+
+            return targetCurrency switch
+            {
+                CurrencyEnum.BRL => price * rates.BRL,
+                CurrencyEnum.USD => price * rates.USD,
+                CurrencyEnum.EUR => price * rates.EUR,
+                _ => price
+            };
+        }
+
     }
 }
