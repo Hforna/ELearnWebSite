@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
+using Course.Application.AppServices.Courses;
 using Course.Application.InternalServices;
 using Course.Application.Services;
 using Course.Application.Services.AutoMapper;
-using Course.Application.UseCases.Course;
 using Course.Application.UseCases.Courses;
 using Course.Application.UseCases.Enrollments;
 using Course.Application.UseCases.Lessons;
@@ -51,32 +51,10 @@ namespace Course.Application
         private static void AddServices(IServiceCollection services)
         {
             services.AddScoped<ICourseService, CourseService>();
-
-            services.AddScoped<ICreateModule, CreateModule>();
-            services.AddScoped<IDeleteModule, DeleteModule>();
-            services.AddScoped<ICreateLesson, CreateLesson>();
-            services.AddScoped<IGetModules, GetModules>();
-            services.AddScoped<IGetLessons, GetLessons>();
-            services.AddScoped<IGetLesson, GetLesson>();
-            services.AddScoped<IChangeModulePosition, ChangeModulePosition>();
-            services.AddScoped<IUpdateModule, UpdateModule>();
-            services.AddScoped<IDeleteLesson, DeleteLesson>();
-            services.AddScoped<IUpdateLesson, UpdateLesson>();
-            services.AddScoped<IGetCourseEnrollments, GetCourseEnrollments>();
-            services.AddScoped<ICreateReview, CreateReview>();
-            services.AddScoped<IDeleteReview, DeleteReview>();
-            services.AddScoped<IAddItemToWishList, AddItemToWishList>();
-            services.AddScoped<IRemoveCourseFromWishList, RemoveCourseFromWishList>();
-            services.AddScoped<IAnswerReview, AnswerReview>();
-            services.AddScoped<IGetReviews, GetReviews>();
-            services.AddScoped<IGetReview, GetReview>();
-            services.AddScoped<IGetUserWishList, GetUserWishList>();
-            services.AddScoped<ICreateQuiz, CreateQuiz>();
-            services.AddScoped<IGetQuizById, GetQuizById>();
-            services.AddScoped<ICreateQuestion, CreateQuestion>();
-            services.AddScoped<IDeleteQuestion, DeleteQuestion>();
-            services.AddScoped<IDeleteQuiz, DeleteQuiz>();
-            services.AddScoped<IGetLessonShortInfos, GetLessonShortInfos>();
+            services.AddScoped<IEnrollmentService, EnrollmentService>();
+            services.AddScoped<IWishListService, WishListService>();
+            services.AddScoped<IReviewService, ReviewService>();
+            
 
             services.AddScoped<ICourseInternalService, CourseInternalService>();
 

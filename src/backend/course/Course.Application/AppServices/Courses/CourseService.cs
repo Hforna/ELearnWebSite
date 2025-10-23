@@ -417,9 +417,7 @@ namespace Course.Application.UseCases.Courses
 
             var userGotCourse = await _uof.enrollmentRead.UserGotCourse(course.Id, userId);
 
-            if (!userGotCourse)
-                return false;
-            return true;
+            return userGotCourse;
         }
 
 
