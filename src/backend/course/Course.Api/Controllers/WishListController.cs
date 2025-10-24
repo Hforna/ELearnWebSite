@@ -1,50 +1,77 @@
-﻿using Course.Api.Attributes;
-using Course.Api.Binders;
-using Course.Application.UseCases.Repositories.WishLists;
+﻿using Course.Api.Binders;
+using Course.Application.AppServices;
+using Course.Application.Services;
+using Course.Communication.Responses;
+using Course.Exception;
+using MassTransit;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Course.Api.Controllers
 {
     [Route("api/wish-list")]
-    public class WishListController : ProjectBaseController
+    [ApiController]
+    public class WishListController : ControllerBase
     {
+        private readonly IWishListService _wishListService;
+
+        public WishListController(IWishListService wishListService)
+        {
+            _wishListService = wishListService;
+        }
+
         /// <summary>
-        /// Add a course to user wish list, if user is not autheticated the wish list will be saved on cache
+        /// Add a course to user wish list.
+        /// If user is not authenticated, the wish list will be saved in cache.
         /// </summary>
-        /// <param name="courseId">course id of course that user wanna add on wish list</param>
-        /// <returns>return wishlist id and course id</returns>
+        /// <param name="courseId">Course ID to add to wish list</param>
+        /// <returns>Returns wishlist ID and course ID</returns>
         [HttpGet("add/{courseId}")]
-        public async Task<IActionResult> AddCourseToUserWishList([FromRoute][ModelBinder(typeof(BinderId))]long courseId, [FromServices] IAddItemToWishList useCase)
+        [ProducesResponseType(typeof(WishListResponse), StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesDefaultResponseType]
+        public async Task<IActionResult> AddCourseToUserWishList(
+            [FromRoute][ModelBinder(typeof(BinderId))] long courseId)
         {
             var sessionId = HttpContext.Session.Id;
-            var result = await useCase.Execute(courseId, sessionId);
-
+            var result = await _wishListService.AddItemToWishList(courseId, sessionId);
             return Created(string.Empty, result);
         }
 
+        /// <summary>
+        /// Get the user's wish list.
+        /// If user is not authenticated, retrieves wish list from cache.
+        /// </summary>
+        /// <returns>Returns the user's wish list with courses</returns>
         [HttpGet]
-        public async Task<IActionResult> GetUserWishList([FromServices]IGetUserWishList useCase)
+        [ProducesResponseType(typeof(WishListResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesDefaultResponseType]
+        public async Task<IActionResult> GetUserWishList()
         {
             var sessionId = HttpContext.Session.Id;
-            var result = await useCase.Execute(sessionId);
+            var result = await _wishListService.GetUserWishList(sessionId);
 
             if (result.Courses is null || result.Courses.Any() == false)
                 return NoContent();
+
             return Ok(result);
         }
 
-
         /// <summary>
-        /// Delete a course from user wish list, if user isn't logged it will be deleted on cache
+        /// Delete a course from user wish list.
+        /// If user isn't logged in, it will be deleted from cache.
         /// </summary>
-        /// <param name="courseId">course id that user want remove from wish list</param>
+        /// <param name="courseId">Course ID to remove from wish list</param>
         [HttpDelete("{courseId}")]
-        public async Task<IActionResult> RemoveCourseFromUserWishList([FromRoute][ModelBinder(typeof(BinderId))]long courseId, [FromServices]IRemoveCourseFromWishList useCase)
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesDefaultResponseType]
+        public async Task<IActionResult> RemoveCourseFromUserWishList(
+            [FromRoute][ModelBinder(typeof(BinderId))] long courseId)
         {
             var sessionId = HttpContext.Session.Id;
-            await useCase.Execute(courseId, sessionId);
-
+            await _wishListService.RemoveCourseFromWishList(courseId, sessionId);
             return NoContent();
         }
     }

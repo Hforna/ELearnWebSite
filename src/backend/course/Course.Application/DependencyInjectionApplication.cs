@@ -1,22 +1,8 @@
 ﻿using AutoMapper;
-using Course.Application.AppServices.Courses;
+using Course.Application.AppServices;
 using Course.Application.InternalServices;
 using Course.Application.Services;
 using Course.Application.Services.AutoMapper;
-using Course.Application.UseCases.Courses;
-using Course.Application.UseCases.Enrollments;
-using Course.Application.UseCases.Lessons;
-using Course.Application.UseCases.Modules;
-using Course.Application.UseCases.Quizzes;
-using Course.Application.UseCases.Repositories.Course;
-using Course.Application.UseCases.Repositories.Enrollments;
-using Course.Application.UseCases.Repositories.Lessons;
-using Course.Application.UseCases.Repositories.Modules;
-using Course.Application.UseCases.Repositories.Quizzes;
-using Course.Application.UseCases.Repositories.Reviews;
-using Course.Application.UseCases.Repositories.WishLists;
-using Course.Application.UseCases.Reviews;
-using Course.Application.UseCases.WishLists;
 using Course.Domain.Repositories;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -54,6 +40,9 @@ namespace Course.Application
             services.AddScoped<IEnrollmentService, EnrollmentService>();
             services.AddScoped<IWishListService, WishListService>();
             services.AddScoped<IReviewService, ReviewService>();
+            services.AddScoped<IModuleService, ModuleService>();
+            services.AddScoped<IQuizService, QuizService>();
+            services.AddScoped<ILessonService, LessonService>();
             
 
             services.AddScoped<ICourseInternalService, CourseInternalService>();

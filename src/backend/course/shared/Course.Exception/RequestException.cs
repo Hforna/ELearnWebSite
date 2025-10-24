@@ -10,7 +10,7 @@ namespace Course.Exception
     {
         public override List<string> Errors { get; set; } = [];
 
-        public RequestException(string error) => Errors.Add(error);
-        public RequestException(List<string> errors) => Errors = errors;
+        public RequestException(string error) : base(error) => Errors.Add(error);
+        public RequestException(List<string> errors) : base(string.Empty) => Errors = errors;
     }
 }

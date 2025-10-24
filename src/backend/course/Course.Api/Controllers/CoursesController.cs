@@ -1,49 +1,61 @@
 ﻿using Course.Api.Attributes;
 using Course.Api.Binders;
-using Course.Application.UseCases.Course;
-using Course.Application.UseCases.Modules;
-using Course.Application.UseCases.Repositories.Course;
+using Course.Application.AppServices;
+using Course.Application.Services;
 using Course.Communication.Requests;
 using Course.Communication.Responses;
-using Course.Domain.Repositories;
 using Course.Exception;
+using MassTransit;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
-using System.Runtime.CompilerServices;
 
 namespace Course.Api.Controllers
 {
     [Route("api/[controller]")]
-    public class CourseController : ProjectBaseController
+    [ApiController]
+    public class CoursesController : ControllerBase
     {
+        private readonly ICourseService _courseService;
+
+        public CoursesController(ICourseService courseService)
+        {
+            _courseService = courseService;
+        }
+
+        /// <summary>
+        /// Creates a new course (Teacher only)
+        /// </summary>
         [Authorize(Policy = "TeacherOnly")]
         [EnableRateLimiting("createCourseLimiter")]
         [HttpPost]
         [ProducesResponseType(typeof(CourseShortResponse), StatusCodes.Status201Created)]
-        public async Task<IActionResult> CreateCourse([FromServices] ICreateCourse useCase, [FromForm] CreateCourseRequest request)
+        public async Task<IActionResult> CreateCourse([FromForm] CreateCourseRequest request)
         {
-            var result = await useCase.Execute(request);
-
+            var result = await _courseService.CreateCourse(request);
             return Created(string.Empty, result);
         }
 
+        /// <summary>
+        /// Check if user has access to a specific course
+        /// </summary>
         [HttpPost("user-got-course")]
         [AuthenticationUser]
-        [ProducesResponseType(typeof(CourseException), StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> UserGotCourse([FromBody]GetCourseRequest request, [FromServices]IUserGotCourse useCase)
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> UserGotCourse([FromBody] GetCourseRequest request)
         {
-            var result = await useCase.Execute(request);
-
+            var result = await _courseService.UserGotCourse(request);
             return Ok(result);
         }
 
+        /// <summary>
+        /// Get the total number of lessons in a course
+        /// </summary>
         [HttpGet("{id}/lessons-count")]
-        public async Task<IActionResult> GetCourseLessonsCount([FromRoute][ModelBinder(typeof(BinderId))]long id, [FromServices]ICourseLessonsCount useCase)
+        public async Task<IActionResult> GetCourseLessonsCount([FromRoute][ModelBinder(typeof(BinderId))] long id)
         {
-            var result = await useCase.Execute(id);
-
+            var result = await _courseService.CourseLessonsCount(id);
             return Ok(result);
         }
 
@@ -58,28 +70,31 @@ namespace Course.Api.Controllers
         /// <response code="404">If no courses are found for the given teacher or if the teacher does not exist.</response>
         [HttpGet("teachers/{teacherId}")]
         [ProducesDefaultResponseType]
-        [ProducesResponseType(typeof(CourseException), StatusCodes.Status404NotFound)] 
-        public async Task<IActionResult> TeacherCourses([FromRoute][ModelBinder(typeof(BinderId))]long teacherId, [FromQuery]int page, 
-            [FromQuery]int quantity, [FromServices]ITeacherCourses useCase)
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> TeacherCourses(
+            [FromRoute][ModelBinder(typeof(BinderId))] long teacherId,
+            [FromQuery] int page,
+            [FromQuery] int quantity)
         {
-            var result = await useCase.Execute(page, quantity, teacherId);
-
-            return Ok(result);
-        }
-
-        [Authorize(Policy = "TeacherOnly")]
-        [HttpPut]
-        [Route("{id}")]
-        public async Task<IActionResult> UpdateCourse([FromServices]UpdateCourse useCase, 
-            [FromForm]UpdateCourseRequest request, [FromRoute][ModelBinder(typeof(BinderId))]long id)
-        {
-            var result = await useCase.Execute(id, request);
-
+            var result = await _courseService.TeacherCourses(page, quantity, teacherId);
             return Ok(result);
         }
 
         /// <summary>
-        /// get courses using pagination by user's filter,
+        /// Update an existing course (Teacher only)
+        /// </summary>
+        [Authorize(Policy = "TeacherOnly")]
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateCourse(
+            [FromForm] UpdateCourseRequest request,
+            [FromRoute][ModelBinder(typeof(BinderId))] long id)
+        {
+            var result = await _courseService.UpdateCourse(id, request);
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// Get courses using pagination by user's filter,
         /// return the items quantity that was on query
         /// </summary>
         /// <param name="page">The page of courses</param>
@@ -90,15 +105,15 @@ namespace Course.Api.Controllers
         /// course language: enum that user can choose their languages choices
         /// price: user can choose the range of price
         /// </param>
-        /// <param name="useCase"></param>
         /// <returns>return courses and information about pagination</returns>
         [HttpPost("filter")]
         [ProducesResponseType(typeof(CoursesPaginationResponse), StatusCodes.Status200OK)]
-        public async Task<IActionResult> FilterCourses([FromQuery] int page, [FromQuery] int quantity, [FromBody] GetCoursesRequest request,
-            [FromServices] IGetCourses useCase)
+        public async Task<IActionResult> FilterCourses(
+            [FromQuery] int page,
+            [FromQuery] int quantity,
+            [FromBody] GetCoursesRequest request)
         {
-            var result = await useCase.Execute(request, page, quantity);
-
+            var result = await _courseService.GetCourses(request, page, quantity);
             return Ok(result);
         }
 
@@ -109,17 +124,16 @@ namespace Course.Api.Controllers
         /// <param name="quantity">quantity of courses for api take</param>
         /// <returns>return the courses that user is registered and infos about page</returns>
         [HttpGet("my-courses")]
-        [ProducesResponseType(typeof(UserException), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(NotFoundException), StatusCodes.Status400BadRequest)]
         [ProducesDefaultResponseType]
-        public async Task<IActionResult> CoursesThatUserBought([FromQuery] int page, [FromQuery] int quantity, [FromServices] ICourseThatUserBought useCase)
+        public async Task<IActionResult> CoursesThatUserBought([FromQuery] int page, [FromQuery] int quantity)
         {
-            var result = await useCase.Execute(page, quantity);
-
+            var result = await _courseService.CoursesUserBought(page, quantity);
             return Ok(result);
         }
 
         /// <summary>
-        /// Returns the five most visited courses of the week.
+        /// Returns the ten most visited courses of the week.
         /// Get most popular courses using cache
         /// </summary>
         /// <returns>
@@ -129,9 +143,9 @@ namespace Course.Api.Controllers
         [HttpGet("ten-courses-visited-week")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        public async Task<IActionResult> GetMostPopularWeekCourses([FromServices] IGetTenMostPopularWeekCourses useCase)
+        public async Task<IActionResult> GetMostPopularWeekCourses()
         {
-            var result = await useCase.Execute();
+            var result = await _courseService.GetTenMostPopularWeekCourses();
 
             if (result is null || result.courses.Any() == false)
                 return NoContent();
@@ -139,25 +153,26 @@ namespace Course.Api.Controllers
             return Ok(result);
         }
 
-
+        /// <summary>
+        /// Get a specific course by ID
+        /// </summary>
         [HttpGet("{id}")]
-        [ProducesResponseType(typeof(CourseResponse), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(CourseException), StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> GetCourse([FromRoute][ModelBinder(typeof(BinderId))]long id, [FromServices]IGetCourse useCase)
+        public async Task<IActionResult> GetCourse([FromRoute][ModelBinder(typeof(BinderId))] long id)
         {
-            var result = await useCase.Execute(id);
-
+            var result = await _courseService.GetCourse(id);
             return Ok(result);
         }
 
+        /// <summary>
+        /// Delete a course (Teacher only)
+        /// </summary>
         [Authorize(Policy = "TeacherOnly")]
         [HttpDelete("{id}", Name = "DeleteCourse")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesDefaultResponseType]
-        public async Task<IActionResult> DeleteCourse([FromRoute][ModelBinder(typeof(BinderId))]long id, [FromServices]IDeleteCourse useCase)
+        public async Task<IActionResult> DeleteCourse([FromRoute][ModelBinder(typeof(BinderId))] long id)
         {
-            await useCase.Execute(id);
-
+            await _courseService.DeleteCourse(id);
             return NoContent();
         }
     }

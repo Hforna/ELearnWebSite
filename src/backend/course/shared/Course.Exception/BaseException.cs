@@ -11,6 +11,13 @@ namespace Course.Exception
     {
         public abstract List<string> Errors { get; set; }
 
+        public BaseException(List<string> errors) : base(string.Empty)
+        {
+            Errors = errors;
+        }
+
+        public BaseException(string error) : base(error) => Errors = new List<string>() { error };
+
         public List<string> GetMessage() => Errors;
     }
 }

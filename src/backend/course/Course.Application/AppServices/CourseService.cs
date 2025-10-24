@@ -25,7 +25,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Course.Application.UseCases.Courses
+namespace Course.Application.AppServices
 {
     public interface ICourseService
     {

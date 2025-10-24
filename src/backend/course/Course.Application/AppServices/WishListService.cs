@@ -12,7 +12,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Course.Application.AppServices.Courses
+namespace Course.Application.AppServices
 {
     public interface IWishListService
     {

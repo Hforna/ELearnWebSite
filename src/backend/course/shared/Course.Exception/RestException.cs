@@ -11,7 +11,7 @@ namespace Course.Exception
     {
         public override List<string> Errors { get; set; } = [];
 
-        public RestException(string error) => Errors.Add(error);
-        public RestException(List<string> errors) => Errors = errors;
+        public RestException(string error) : base(error) => Errors.Add(error);
+        public RestException(List<string> errors) : base(string.Empty) => Errors = errors;
     }
 }

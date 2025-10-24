@@ -51,7 +51,7 @@ namespace Course.Application.InternalServices
         public async Task<CourseResponse> CourseInternalServiceById(long id)
         {
             var course = await _uof.courseRead.CourseById(id, true) 
-                ?? throw new CourseException(ResourceExceptMessages.COURSE_DOESNT_EXISTS, System.Net.HttpStatusCode.NotFound);
+                ?? throw new NotFoundException(ResourceExceptMessages.COURSE_NOT_IN_WISH_LIST);
 
             var response = _mapper.Map<CourseResponse>(course);
             response.AddLink("modules", _linkService.GenerateResourceLink("GetModules", new
