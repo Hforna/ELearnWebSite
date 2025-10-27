@@ -2,6 +2,7 @@
 using Azure.Storage.Sas;
 using Course.Domain.Services.Azure;
 using Course.Exception;
+using Microsoft.Extensions.FileProviders;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,7 +24,7 @@ namespace Course.Infrastructure.Services.Azure
             var container = _blobClient.GetBlobContainerClient(courseIdentifier.ToString());
 
             if (await container.ExistsAsync())
-                throw new CourseException(ResourceExceptMessages.INVALID_COURSE_CONTAINER);
+                throw new NotFoundException(ResourceExceptMessages.INVALID_COURSE_CONTAINER);
 
             var blob = container.GetBlobClient(image);
             await blob.DeleteIfExistsAsync();
@@ -46,7 +47,7 @@ namespace Course.Infrastructure.Services.Azure
             var container = _blobClient.GetBlobContainerClient(courseIdentifier.ToString());
 
             if (await container.ExistsAsync())
-                throw new CourseException(ResourceExceptMessages.INVALID_COURSE_CONTAINER);
+                throw new NotFoundException(ResourceExceptMessages.INVALID_COURSE_CONTAINER);
 
             await container.DeleteBlobIfExistsAsync(videoId);
         }

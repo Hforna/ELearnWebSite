@@ -39,7 +39,7 @@ namespace Course.Infrastructure.Services.Rest
                 var infos = currencyToken.ToObject<CurrencyByLocationDto>();
                 return infos;
             }
-            throw new RestException(response, System.Net.HttpStatusCode.InternalServerError);
+            throw new RestException(response);
         }
     }
 }

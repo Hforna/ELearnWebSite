@@ -65,7 +65,7 @@ namespace Course.Api.Middlewares
                 }
             }catch (RestException rex)
             {
-                throw new RestException(rex.GetMessage(), rex.GetStatusCode());
+                throw new RestException(rex.GetMessage());
             }
 
             await next(context);
@@ -101,7 +101,7 @@ namespace Course.Api.Middlewares
                 var decodeId = sqids.Decode(id.Value).SingleOrDefault(defaultValue: 0);
 
                 if (decodeId == 0)
-                    throw new RestException(ResourceExceptMessages.INVALID_FORMAT_ID + id.Key, System.Net.HttpStatusCode.BadRequest);
+                    throw new RestException(ResourceExceptMessages.INVALID_FORMAT_ID + id.Key);
             }
         }
     }

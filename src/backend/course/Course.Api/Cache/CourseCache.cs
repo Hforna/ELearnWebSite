@@ -29,7 +29,7 @@ namespace Course.Api.Cache
                 deserializeList = JsonSerializer.Deserialize<List<long>>(wishList);
 
                 if (deserializeList.Contains(courseId))
-                    throw new WishListException(ResourceExceptMessages.COURSE_IN_WISH_LIST);
+                    throw new UnauthorizedException(ResourceExceptMessages.COURSE_IN_WISH_LIST);
             }
             deserializeList.Add(courseId);
 

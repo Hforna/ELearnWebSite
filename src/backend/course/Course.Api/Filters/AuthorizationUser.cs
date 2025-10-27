@@ -15,7 +15,7 @@ namespace Course.Api.Filters
             var isUserlogged = await _userService.IsUserLogged();
 
             if (!isUserlogged)
-                throw new UserException(ResourceExceptMessages.USER_NOT_LOGGED);
+                throw new NotAuthenticatedException(ResourceExceptMessages.USER_NOT_LOGGED);
         }
     }
 }

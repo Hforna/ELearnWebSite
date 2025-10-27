@@ -43,7 +43,7 @@ namespace Course.Infrastructure.Services.Rest
 
                 return rates.ToObject<RateExchangeDto>();
             }
-            throw new RestException(response, System.Net.HttpStatusCode.InternalServerError);
+            throw new RestException(response);
         }
     }
 }

@@ -34,7 +34,7 @@ namespace Course.Api.Sessions
             var course = await _uof.courseRead.CourseById(courseId);
 
             if (course is null)
-                throw new CourseException(ResourceExceptMessages.COURSE_DOESNT_EXISTS);
+                throw new NotFoundException(ResourceExceptMessages.COURSE_DOESNT_EXISTS);
 
             var session = _httpContext.HttpContext!.Session;
             string serializeList;

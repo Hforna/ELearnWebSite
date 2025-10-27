@@ -65,8 +65,6 @@ builder.Services.AddSwaggerGen(options =>
 });
 builder.Services.AddRouting(d => d.LowercaseUrls = true);
 
-builder.Services.AddMvc(d => d.Filters.Add(typeof(FilterException)));
-
 var pathFFmpeg = $@"{builder.Configuration.GetValue<string>("app:ffmpegPath")}";
 FFmpeg.SetExecutablesPath(pathFFmpeg);
 
@@ -193,6 +191,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseSession();
+
+app.UseMiddleware<GlobalExceptionHandler>();
 
 app.UseMiddleware<CultureMiddleware>();
 
