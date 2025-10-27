@@ -30,7 +30,7 @@ namespace Payment.Infrastructure.Services.Rest
             var client = _httpClient.CreateClient("user.api");
             client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _token);
 
-            var response = await client.GetAsync("api/user/");
+            var response = await client.GetAsync("api/users/");
 
             if(response.IsSuccessStatusCode)
             {
@@ -47,7 +47,7 @@ namespace Payment.Infrastructure.Services.Rest
         {
             var client = _httpClient.CreateClient("user.api");
 
-            var request = await client.GetAsync($"api/profile/{userId}");
+            var request = await client.GetAsync($"api/profiles/{userId}");
 
             var response = await request.Content.ReadAsStringAsync();
 

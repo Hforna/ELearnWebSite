@@ -17,7 +17,7 @@ namespace User.Api.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [AuthenticationUser]
-    public class ProfileController : ControllerBase
+    public class ProfilesController : ControllerBase
     {
         private readonly ITokenService _tokenService;
         private readonly ITokenReceptor _tokenReceptor;
@@ -25,7 +25,7 @@ namespace User.Api.Controllers
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _uof;
 
-        public ProfileController(ITokenService tokenService, ITokenReceptor tokenReceptor, 
+        public ProfilesController(ITokenService tokenService, ITokenReceptor tokenReceptor, 
             ImageService imageService, IMapper mapper, IUnitOfWork uof)
         {
             _tokenService = tokenService;

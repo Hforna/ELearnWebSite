@@ -28,7 +28,7 @@ namespace Progress.Infrastructure.Rest
         {
             var client = _httpClient.CreateClient("course.api");
 
-            var request = await client.GetAsync($"api/course/{courseId}/count-lessons");
+            var request = await client.GetAsync($"api/courses/{courseId}/count-lessons");
 
             var response = await request.Content.ReadAsStringAsync();
 
@@ -44,7 +44,7 @@ namespace Progress.Infrastructure.Rest
             var client = _httpClient.CreateClient("course.api");
             client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _tokenReceptor.GetToken());
 
-            var request = await client.GetAsync($"api/quiz/{courseId}/{quizId}");
+            var request = await client.GetAsync($"api/quizzes/{courseId}/{quizId}");
             var response = await request.Content.ReadAsStringAsync();
 
             if(request.IsSuccessStatusCode)
@@ -58,7 +58,7 @@ namespace Progress.Infrastructure.Rest
         {
             var client = _httpClient.CreateClient("course.api");
 
-            var request = await client.GetAsync($"api/lesson/{lessonId}/lessons-infos");
+            var request = await client.GetAsync($"api/lessons/{lessonId}/lessons-infos");
 
             var response = await request.Content.ReadAsStringAsync();
 
@@ -79,7 +79,7 @@ namespace Progress.Infrastructure.Rest
 
             var jsonContent = JsonSerializer.Serialize(new { courseId = courseId, });
             var stringContent = new StringContent(jsonContent, Encoding.UTF8, "application/json");
-            var request = await client.PostAsync("api/course/user-got-course", stringContent);
+            var request = await client.PostAsync("api/courses/user-got-course", stringContent);
 
             var response = await request.Content.ReadAsStringAsync();
 

@@ -123,7 +123,7 @@ namespace Course.Api.Controllers
         /// <param name="page">The page of courses that user bought</param>
         /// <param name="quantity">quantity of courses for api take</param>
         /// <returns>return the courses that user is registered and infos about page</returns>
-        [HttpGet("my-courses")]
+        [HttpGet("my")]
         [ProducesResponseType(typeof(NotFoundException), StatusCodes.Status400BadRequest)]
         [ProducesDefaultResponseType]
         public async Task<IActionResult> CoursesThatUserBought([FromQuery] int page, [FromQuery] int quantity)

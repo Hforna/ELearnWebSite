@@ -29,7 +29,7 @@ namespace Progress.Infrastructure.Rest
             var client = _httpContext.CreateClient("user.api");
             client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _tokenReceptor.GetToken());
 
-            var request = await client.GetAsync("api/user/user-infos");
+            var request = await client.GetAsync("api/users/");
 
             var response = await request.Content.ReadAsStringAsync();
 

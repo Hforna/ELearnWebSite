@@ -18,7 +18,7 @@ namespace Course.Api.Filters
             var token = httpContext.Request.Headers.Authorization.ToString();
 
             if (string.IsNullOrEmpty(token))
-                throw new BadHttpRequestException("No token");
+                return "";
 
             return token["Bearer ".Length..].Trim();
         }

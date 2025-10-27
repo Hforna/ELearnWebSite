@@ -30,7 +30,7 @@ namespace Course.Infrastructure.Services.Rest
             var client = _httpClient.CreateClient("user.api");
             client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _token);
 
-            var response = await client.GetAsync("api/user/user-infos");
+            var response = await client.GetAsync("api/users/");
 
             if(response.IsSuccessStatusCode)
             {
@@ -47,7 +47,7 @@ namespace Course.Infrastructure.Services.Rest
         {
             var client = _httpClient.CreateClient("user.api");
 
-            var response = await client.GetAsync($"api/user/user-infos/{id}");
+            var response = await client.GetAsync($"api/user/{id}");
             var userResponse = await response.Content.ReadAsStringAsync();
 
             if (response.IsSuccessStatusCode)
