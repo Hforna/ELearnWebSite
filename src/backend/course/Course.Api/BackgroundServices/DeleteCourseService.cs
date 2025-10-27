@@ -1,5 +1,4 @@
 ﻿using Azure.Messaging.ServiceBus;
-using Course.Application.UseCases.Repositories.Course;
 using Course.Domain.Repositories;
 using Course.Domain.Services.Azure;
 using Course.Infrastructure.Services.Azure;
