@@ -2,6 +2,7 @@
 using Course.Api.Binders;
 using Course.Application.AppServices;
 using Course.Application.Services;
+using Course.Communication.Enums;
 using Course.Communication.Requests;
 using Course.Communication.Responses;
 using Course.Exception;
@@ -10,6 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
+using Org.BouncyCastle.Asn1.Cms;
 
 namespace Course.Api.Controllers
 {
@@ -37,6 +39,15 @@ namespace Course.Api.Controllers
             return Created(string.Empty, result);
         }
 
+        [HttpPut("{courseId}/publish")]
+        [AuthenticationUser]
+        public async Task<IActionResult> PublishCourse([FromRoute][ModelBinder(typeof(BinderId))]long courseId)
+        {
+            await _courseService.PublishCourse(courseId);
+
+            return NoContent();
+        }
+
         /// <summary>
         /// Check if user has access to a specific course
         /// </summary>
@@ -52,7 +63,7 @@ namespace Course.Api.Controllers
         /// <summary>
         /// Get the total number of lessons in a course
         /// </summary>
-        [HttpGet("{id}/lessons-count")]
+        [HttpGet("{id}/count")]
         public async Task<IActionResult> GetCourseLessonsCount([FromRoute][ModelBinder(typeof(BinderId))] long id)
         {
             var result = await _courseService.CourseLessonsCount(id);
@@ -99,20 +110,21 @@ namespace Course.Api.Controllers
         /// </summary>
         /// <param name="page">The page of courses</param>
         /// <param name="quantity">quantity of courses for api take</param>
-        /// <param name="request">The request contains fields for user filter by course attributes like:
-        /// ratings: enum that user can choose a rating with 5 as max note
-        /// text: user can search by key words or course titles
-        /// course language: enum that user can choose their languages choices
-        /// price: user can choose the range of price
-        /// </param>
         /// <returns>return courses and information about pagination</returns>
-        [HttpPost("filter")]
+        [HttpGet("filter")]
         [ProducesResponseType(typeof(CoursesPaginationResponse), StatusCodes.Status200OK)]
         public async Task<IActionResult> FilterCourses(
             [FromQuery] int page,
             [FromQuery] int quantity,
-            [FromBody] GetCoursesRequest request)
+            [FromQuery]PriceEnum? priceEnum, [FromQuery]string? text, [FromQuery]List<CourseRatingEnum>? courseRating, [FromQuery]List<LanguagesEnum>? languages)
         {
+            var request = new GetCoursesRequest()
+            {
+                Price = priceEnum,
+                Text = text,
+                Ratings = courseRating,
+                Languages = languages
+            };
             var result = await _courseService.GetCourses(request, page, quantity);
             return Ok(result);
         }
@@ -123,7 +135,7 @@ namespace Course.Api.Controllers
         /// <param name="page">The page of courses that user bought</param>
         /// <param name="quantity">quantity of courses for api take</param>
         /// <returns>return the courses that user is registered and infos about page</returns>
-        [HttpGet("my")]
+        [HttpGet("mine")]
         [ProducesResponseType(typeof(NotFoundException), StatusCodes.Status400BadRequest)]
         [ProducesDefaultResponseType]
         public async Task<IActionResult> CoursesThatUserBought([FromQuery] int page, [FromQuery] int quantity)
@@ -140,7 +152,7 @@ namespace Course.Api.Controllers
         /// Returns a 200 (OK) status with the list of the most popular courses of the week,  
         /// or 204 (No Content) if no courses are found.
         /// </returns>
-        [HttpGet("ten-courses-visited-week")]
+        [HttpGet("most-visited-week")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> GetMostPopularWeekCourses()

@@ -39,8 +39,9 @@ namespace Course.Application.AppServices
         public Task<CoursesPaginationResponse> TeacherCourses(int page, int quantity, long teacherId);
         public Task<CourseShortResponse> UpdateCourse(long id, UpdateCourseRequest request);
         public Task<bool> UserGotCourse(GetCourseRequest request);
+        public Task PublishCourse(long courseId);
     }
-
+;
     public class CourseService : ICourseService
     {
         private readonly IUnitOfWork _uof;
@@ -143,7 +144,8 @@ namespace Course.Application.AppServices
             var convertPrice = await ConvertPrice(userCurrencyAsEnum, course.CurrencyType, request.Price);
             course.Price = convertPrice;
             course.TeacherId = _sqids.Decode(userInfos.id).Single();
-            course.Active = false;
+            course.Active = true;
+            course.IsPublish = false;
 
             if (request.ThumbnailImage is not null)
             {
@@ -420,6 +422,24 @@ namespace Course.Application.AppServices
             return userGotCourse;
         }
 
+        public async Task PublishCourse(long courseId)
+        {
+            var course = await _uof.courseRead.CourseById(courseId)
+                ?? throw new NotFoundException(ResourceExceptMessages.COURSE_DOESNT_EXISTS);
+
+            var user = await _userService.GetUserInfos();
+            var userId = _sqids.Decode(user.id).Single();
+
+            if (userId != course.TeacherId)
+                throw new UnauthorizedException(ResourceExceptMessages.COURSE_NOT_OF_USER);
+
+            course.IsPublish = true;
+            _uof.courseWrite.UpdateCourse(course);
+            await _uof.Commit();
+
+            await _emailService.SendEmail(user.userName, user.email, "Your course has been published", $"Hi {user.userName} your course: {course.Title} has been published");
+        }
+
 
         void Validate<V, R>(R request) where V : AbstractValidator<R>
         {
@@ -445,6 +465,5 @@ namespace Course.Application.AppServices
                 _ => price
             };
         }
-
     }
 }

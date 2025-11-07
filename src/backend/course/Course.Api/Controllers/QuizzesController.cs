@@ -34,7 +34,7 @@ namespace Course.Api.Controllers
         /// - moduleId: ID of the module
         /// - passingScore: Minimum score user needs to pass the module and get certificate</param>
         /// <returns>Returns the created quiz</returns>
-        [HttpPost("create-quiz")]
+        [HttpPost]
         [Authorize(Policy = "TeacherOnly")]
         [ProducesResponseType(typeof(QuizResponse), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -54,18 +54,17 @@ namespace Course.Api.Controllers
         /// <param name="courseId">Course ID as a string</param>
         /// <param name="includeQuestions">Set to true to include the questions from the quiz</param>
         /// <returns>Returns quiz details with optional questions</returns>
-        [HttpGet("{courseId}/{quizId}")]
+        [HttpGet("{quizId}")]
         [AuthenticationUser]
         [EnableRateLimiting("getQuizLimiter")]
         [ProducesResponseType(typeof(QuizResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetQuiz(
-            [FromRoute][ModelBinder(typeof(BinderId))] long courseId,
             [FromRoute][ModelBinder(typeof(BinderId))] long quizId,
             [FromQuery] bool includeQuestions)
         {
-            var result = await _quizService.GetQuizByIdAsync(courseId, quizId, includeQuestions);
+            var result = await _quizService.GetQuizByIdAsync(quizId, includeQuestions);
             return Ok(result);
         }
 
@@ -74,17 +73,16 @@ namespace Course.Api.Controllers
         /// </summary>
         /// <param name="courseId">Course ID that contains the quiz</param>
         /// <param name="quizId">ID of quiz to delete</param>
-        [HttpDelete("{courseId}/{quizId}")]
+        [HttpDelete("{quizId}")]
         [Authorize(Policy = "TeacherOnly")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> DeleteQuiz(
-            [FromRoute][ModelBinder(typeof(BinderId))] long courseId,
             [FromRoute][ModelBinder(typeof(BinderId))] long quizId)
         {
-            await _quizService.DeleteQuizAsync(courseId, quizId);
+            await _quizService.DeleteQuizAsync(quizId);
             return NoContent();
         }
 
@@ -93,15 +91,15 @@ namespace Course.Api.Controllers
         /// </summary>
         /// <param name="request">Question creation request containing quiz ID, question text, and answer options</param>
         /// <returns>Returns the created question with answer options</returns>
-        [HttpPost("add-question")]
+        [HttpPost("{quizId}/questions")]
         [Authorize(Policy = "TeacherOnly")]
         [ProducesResponseType(typeof(QuestionResponse), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> AddQuestionToQuiz([FromBody] CreateQuestionRequest request)
+        public async Task<IActionResult> AddQuestionToQuiz([FromBody] CreateQuestionRequest request, [FromRoute][ModelBinder(typeof(BinderId))]long quizId)
         {
-            var result = await _quizService.CreateQuestionAsync(request);
+            var result = await _quizService.CreateQuestionAsync(request, quizId);
             return Created(string.Empty, result);
         }
 

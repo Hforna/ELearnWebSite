@@ -10,7 +10,6 @@ namespace Course.Communication.Requests
 {
     public class CreateQuestionRequest
     {
-        public string QuizId { get; set; }
         public string QuestionText { get; set; }
         public decimal Points { get; set; }
         public QuizTypeEnum QuizType { get; set; }

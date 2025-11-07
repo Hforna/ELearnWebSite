@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Course.Api.Controllers
 {
-    [Route("api/course/{courseId}/module/{moduleId}/[controller]")]
+    [Route("api/courses/{courseId}/[controller]")]
     [ApiController]
     public class LessonsController : ControllerBase
     {
@@ -88,7 +88,7 @@ namespace Course.Api.Controllers
         /// </summary>
         /// <param name="lessonId">Lesson ID</param>
         /// <returns>Return basic lesson information</returns>
-        [HttpGet("{lessonId}/lessons-infos")]
+        [HttpGet("{lessonId}/infos")]
         [ProducesDefaultResponseType]
         public async Task<IActionResult> GetLessonShortInfos(
             [FromRoute][ModelBinder(typeof(BinderId))] long lessonId)

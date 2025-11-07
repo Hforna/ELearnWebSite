@@ -26,7 +26,7 @@ namespace Course.Api.Controllers
         /// </summary>
         /// <param name="courseId">Course ID to add to wish list</param>
         /// <returns>Returns wishlist ID and course ID</returns>
-        [HttpGet("add/{courseId}")]
+        [HttpPost("{courseId}")]
         [ProducesResponseType(typeof(WishListResponse), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesDefaultResponseType]

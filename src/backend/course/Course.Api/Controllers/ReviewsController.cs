@@ -77,7 +77,7 @@ namespace Course.Api.Controllers
         /// </summary>
         /// <param name="courseId">The course ID to get reviews for</param>
         /// <returns>Returns a list of the course's reviews</returns>
-        [HttpGet("reviews/{courseId}")]
+        [HttpGet("{courseId}/reviews")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

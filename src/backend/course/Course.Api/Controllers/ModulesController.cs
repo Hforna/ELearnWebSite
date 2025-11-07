@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Course.Api.Controllers
 {
-    [Route("api/course/{courseId}/[controller]")]
+    [Route("api/courses/{courseId}/[controller]")]
     [ApiController]
     public class ModulesController : ControllerBase
     {
@@ -86,7 +86,7 @@ namespace Course.Api.Controllers
         /// <param name="courseId">The id of the course containing the module.</param>
         /// <param name="id">The id of the module to be repositioned.</param>
         /// <returns>Returns the updated list of modules within the course, including the course Id.</returns>
-        [HttpPut("{id}/position/{position}")]
+        [HttpPut("{id}/positions/{position}")]
         [Authorize(Policy = "TeacherOnly")]
         [ProducesResponseType(typeof(ModulesResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]

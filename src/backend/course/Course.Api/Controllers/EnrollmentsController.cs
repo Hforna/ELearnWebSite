@@ -27,7 +27,7 @@ namespace Course.Api.Controllers
         /// <param name="courseId">The course ID</param>
         /// <returns>Returns a list of enrollments and info about pagination</returns>
         [Authorize(Policy = "TeacherOnly")]
-        [HttpGet("course/{courseId}")]
+        [HttpGet("courses/{courseId}")]
         [ProducesResponseType(typeof(NotFoundException), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(NotFoundException), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -38,9 +38,6 @@ namespace Course.Api.Controllers
             [FromRoute][ModelBinder(typeof(BinderId))] long courseId)
         {
             var result = await _enrollmentService.GetCourseEnrollments(courseId, page, quantity);
-
-            if (!result.Enrollments.Any())
-                return NoContent();
 
             return Ok(result);
         }

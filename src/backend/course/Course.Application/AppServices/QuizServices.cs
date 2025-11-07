@@ -18,11 +18,11 @@ namespace Course.Application.AppServices
     {
         Task<QuizResponse> CreateQuizAsync(CreateQuizRequest request);
 
-        Task<QuestionResponse> CreateQuestionAsync(CreateQuestionRequest request);
+        Task<QuestionResponse> CreateQuestionAsync(CreateQuestionRequest request, long quizId);
 
-        Task<QuizResponse> GetQuizByIdAsync(long courseId, long quizId, bool includeQuestions);
+        Task<QuizResponse> GetQuizByIdAsync(long quizId, bool includeQuestions);
 
-        Task DeleteQuizAsync(long courseId, long quizId);
+        Task DeleteQuizAsync(long quizId);
 
         Task DeleteQuestionAsync(long quizId, long questionId);
     }
@@ -87,13 +87,12 @@ namespace Course.Application.AppServices
             return _mapper.Map<QuizResponse>(quiz);
         }
 
-        public async Task<QuestionResponse> CreateQuestionAsync(CreateQuestionRequest request)
+        public async Task<QuestionResponse> CreateQuestionAsync(CreateQuestionRequest request, long quizId)
         {
             ValidateCreateQuestion(request);
 
             var user = await _userService.GetUserInfos();
             var userId = _sqids.Decode(user.id).Single();
-            var quizId = _sqids.Decode(request.QuizId).Single();
 
             var quiz = await _uof.quizRead.QuizById(quizId);
             if (quiz is null)
@@ -120,21 +119,19 @@ namespace Course.Application.AppServices
             return response;
         }
 
-        public async Task<QuizResponse> GetQuizByIdAsync(long courseId, long quizId, bool includeQuestions)
+        public async Task<QuizResponse> GetQuizByIdAsync(long quizId, bool includeQuestions)
         {
             var user = await _userService.GetUserInfos();
             var userId = _sqids.Decode(user.id).Single();
 
-            var course = await _uof.courseRead.CourseById(courseId);
-            if (course is null)
-                throw new NotFoundException(ResourceExceptMessages.COURSE_NOT_IN_WISH_LIST);
-
-            var userGotCourse = await _uof.enrollmentRead.UserGotCourse(courseId, userId);
-            if (!userGotCourse)
-                throw new NotFoundException(ResourceExceptMessages.COURSE_NOT_IN_WISH_LIST);
-
             var quiz = await _uof.quizRead.QuizById(quizId);
             if (quiz is null)
+                throw new NotFoundException(ResourceExceptMessages.COURSE_NOT_IN_WISH_LIST);
+
+            var course = quiz.Course;
+
+            var userGotCourse = await _uof.enrollmentRead.UserGotCourse(course.Id, userId);
+            if (!userGotCourse)
                 throw new NotFoundException(ResourceExceptMessages.COURSE_NOT_IN_WISH_LIST);
 
             var response = _mapper.Map<QuizResponse>(quiz);
@@ -160,20 +157,17 @@ namespace Course.Application.AppServices
             return response;
         }
 
-        public async Task DeleteQuizAsync(long courseId, long quizId)
+        public async Task DeleteQuizAsync(long quizId)
         {
             var user = await _userService.GetUserInfos();
             var userId = _sqids.Decode(user.id).Single();
 
-            var course = await _uof.courseRead.CourseById(courseId);
-            if (course is null)
-                throw new NotFoundException(ResourceExceptMessages.COURSE_NOT_IN_WISH_LIST);
-
-            if (course.TeacherId != userId)
-                throw new NotFoundException(ResourceExceptMessages.COURSE_NOT_IN_WISH_LIST);
-
             var quiz = await _uof.quizRead.QuizById(quizId);
             if (quiz is null)
+                throw new NotFoundException(ResourceExceptMessages.COURSE_NOT_IN_WISH_LIST);
+
+            var course = quiz.Course;
+            if (course.TeacherId != userId)
                 throw new NotFoundException(ResourceExceptMessages.COURSE_NOT_IN_WISH_LIST);
 
             _uof.quizWrite.DeleteQuiz(quiz);
