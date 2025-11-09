@@ -38,7 +38,7 @@ namespace Course.Application.AppServices
         public Task<CoursesResponse> GetTenMostPopularWeekCourses();
         public Task<CoursesPaginationResponse> TeacherCourses(int page, int quantity, long teacherId);
         public Task<CourseShortResponse> UpdateCourse(long id, UpdateCourseRequest request);
-        public Task<bool> UserGotCourse(GetCourseRequest request);
+        public Task<bool> UserGotCourse(long courseId);
         public Task PublishCourse(long courseId);
     }
 ;
@@ -407,12 +407,12 @@ namespace Course.Application.AppServices
             return response;
         }
 
-        public async Task<bool> UserGotCourse(GetCourseRequest request)
+        public async Task<bool> UserGotCourse(long courseId)
         {
             var user = await _userService.GetUserInfos();
             var userId = _sqids.Decode(user.id).Single();
 
-            var course = await _uof.courseRead.CourseById(_sqids.Decode(request.courseId).Single());
+            var course = await _uof.courseRead.CourseById(courseId);
 
             if (course is null)
                 throw new NotFoundException(ResourceExceptMessages.COURSE_DOESNT_EXISTS);

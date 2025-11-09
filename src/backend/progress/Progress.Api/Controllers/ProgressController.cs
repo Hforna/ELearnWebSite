@@ -20,7 +20,7 @@ namespace Progress.Api.Controllers
         }
 
         
-        [HttpGet("course/{courseId}")]
+        [HttpGet("courses/{courseId}")]
         public async Task<IActionResult> GetUserProgressOnCourse([FromRoute][ModelBinder(typeof(BinderId))]long courseId, [FromServices]ICourseProgress useCase)
         {
             var result = await useCase.Execute(courseId);

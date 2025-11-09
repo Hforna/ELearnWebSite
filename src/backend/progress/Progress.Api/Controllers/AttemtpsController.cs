@@ -12,7 +12,7 @@ namespace Progress.Api.Controllers
     [UserAuthenticated]
     public class AttemtpsController : ControllerBase
     {
-        [HttpGet("course/{courseId}/quiz/{quizId}/start")]
+        [HttpGet("courses/{courseId}/quizzes/{quizId}/start")]
         public async Task<IActionResult> StartQuizAttempt([FromRoute][ModelBinder(typeof(BinderId))]long courseId, 
             [FromRoute][ModelBinder(typeof(BinderId))] long quizId, [FromServices]IStartQuizAttempt useCase)
         {
@@ -29,7 +29,7 @@ namespace Progress.Api.Controllers
             return Ok(result);
         }
 
-        [HttpGet("course/{courseId}/attempt/{attemptId}")]
+        [HttpGet("courses/{courseId}/attempt/{attemptId}")]
         public async Task<IActionResult> GetAttempt([FromRoute][ModelBinder(typeof(BinderId))]long courseId, [FromRoute]Guid attemptId, [FromServices]IGetUserAttempt useCase)
         {
             var result = await useCase.Execute(attemptId, courseId);

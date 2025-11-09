@@ -7,6 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="RabbitMq\Extensions\**" />
+    <EmbeddedResource Remove="RabbitMq\Extensions\**" />
+    <None Remove="RabbitMq\Extensions\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="MassTransit" Version="8.4.0" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.3.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.4" />
@@ -32,10 +38,6 @@
 
   <ItemGroup>
   	<ProjectReference Include="..\Progress.Domain\Progress.Domain.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="RabbitMq\Extensions\" />
   </ItemGroup>
 	
 </Project>

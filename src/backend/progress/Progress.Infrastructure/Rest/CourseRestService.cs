@@ -58,7 +58,7 @@ namespace Progress.Infrastructure.Rest
         {
             var client = _httpClient.CreateClient("course.api");
 
-            var request = await client.GetAsync($"api/lessons/{lessonId}/lessons-infos");
+            var request = await client.GetAsync($"api/lessons/{lessonId}/infos");
 
             var response = await request.Content.ReadAsStringAsync();
 

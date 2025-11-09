@@ -51,12 +51,12 @@ namespace Course.Api.Controllers
         /// <summary>
         /// Check if user has access to a specific course
         /// </summary>
-        [HttpPost("user-got-course")]
+        [HttpGet("{courseId}/user-got")]
         [AuthenticationUser]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> UserGotCourse([FromBody] GetCourseRequest request)
+        public async Task<IActionResult> UserGotCourse([FromRoute][ModelBinder(typeof(BinderId))]long courseId)
         {
-            var result = await _courseService.UserGotCourse(request);
+            var result = await _courseService.UserGotCourse(courseId);
             return Ok(result);
         }
 

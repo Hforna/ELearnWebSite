@@ -53,7 +53,7 @@ namespace Payment.Api.Controllers
             return Ok(result);
         }
 
-        [HttpGet("order-history")]
+        [HttpGet("history")]
         [AuthenticationUser]
         [ProducesResponseType(typeof(OrderException), StatusCodes.Status404NotFound)]
         public async Task<IActionResult> OrderHistory([FromQuery]int page, [FromQuery]int quantity)

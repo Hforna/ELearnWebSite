@@ -11,6 +11,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Cache\**" />
+    <Content Remove="Cache\**" />
+    <EmbeddedResource Remove="Cache\**" />
+    <None Remove="Cache\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.21.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="Sqids" Version="3.1.0" />
@@ -21,10 +28,6 @@
   	<ProjectReference Include="..\Progress.Application\Progress.Application.csproj" />
   	<ProjectReference Include="..\Progress.Domain\Progress.Domain.csproj" />
   	<ProjectReference Include="..\Progress.Infrastructure\Progress.Infrastructure.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Cache\" />
   </ItemGroup>
 
 </Project>
