@@ -22,7 +22,7 @@ builder.Services.AddMvc(d => d.Filters.Add(typeof(ExceptionFilter)));
 
 builder.Services.AddScoped<ITokenReceptor, TokenReceptor>();
 
-builder.Services.AddInfrastructure(builder.Configuration);
+await builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddApplication(builder.Configuration);
 
 builder.Services.AddHostedService<UserDeletedSubscriber>();

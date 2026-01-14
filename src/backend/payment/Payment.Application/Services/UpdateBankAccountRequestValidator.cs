@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Payment.Application.Services
 {
-    public class CreateBankAccountRequestValidator : AbstractValidator<CreateBankAccountRequest>
+    public class CreateBankAccountRequestValidator : AbstractValidator<UpdateBankAccountRequest>
     {
         public CreateBankAccountRequestValidator()
         {

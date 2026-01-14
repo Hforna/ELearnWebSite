@@ -14,29 +14,20 @@ namespace Progress.Infrastructure.RabbitMq.Subscribers
 {
     public class UserDeletedSubscriber : BackgroundService, IDisposable
     {
-        private readonly IConfiguration _configuration;
         private IChannel _channel;
         private IConnection _connection;
         private readonly IUserDeletedConsumer _userDeletedConsumer;
         private readonly ILogger<UserDeletedSubscriber> _logger;
 
-        public UserDeletedSubscriber(IConfiguration configuration, IUserDeletedConsumer userDeletedConsumer, ILogger<UserDeletedSubscriber> logger)
+        public UserDeletedSubscriber(IConnection connection, IUserDeletedConsumer userDeletedConsumer, ILogger<UserDeletedSubscriber> logger)
         {
-            _configuration = configuration;
+            _connection = connection;
             _userDeletedConsumer = userDeletedConsumer;
             _logger = logger;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            _connection = await new ConnectionFactory()
-            {
-                Port = _configuration.GetValue<int>("services:rabbitMq:port"),
-                HostName = _configuration.GetValue<string>("services:rabbitMq:hostName")!,
-                UserName = _configuration.GetValue<string>("services:rabbitMq:username"),
-                Password = _configuration.GetValue<string>("services:rabbitMq:password"),
-            }.CreateConnectionAsync();
-
             _channel = await _connection.CreateChannelAsync();
 
             await _channel.ExchangeDeclareAsync("user_exchange", "direct", true);

@@ -13,27 +13,18 @@ namespace Progress.Infrastructure.RabbitMq.Subscribers
 {
     public class UserSubmitQuizSubscriber : BackgroundService, IDisposable
     {
-        private IConfiguration _configuration;
         private IChannel _channel;
         private IConnection _connection;
         private readonly IUserSubmitQuizConsumer _userSubmitConsumer;
 
-        public UserSubmitQuizSubscriber(IConfiguration configuration, IUserSubmitQuizConsumer userSubmitQuiz)
+        public UserSubmitQuizSubscriber(IConnection connection, IUserSubmitQuizConsumer userSubmitQuiz)
         {
-            _configuration = configuration;
             _userSubmitConsumer = userSubmitQuiz;
+            _connection = connection;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            _connection = await new ConnectionFactory()
-            {
-                Port = _configuration.GetValue<int>("services:rabbitMq:port"),
-                HostName = _configuration.GetValue<string>("services:rabbitMq:hostName")!,
-                UserName = _configuration.GetValue<string>("services:rabbitMq:username"),
-                Password = _configuration.GetValue<string>("services:rabbitMq:password"),
-            }.CreateConnectionAsync();
-
             _channel = await _connection.CreateChannelAsync();
 
             await _channel.ExchangeDeclareAsync("user_submit_exchange", "direct", true);

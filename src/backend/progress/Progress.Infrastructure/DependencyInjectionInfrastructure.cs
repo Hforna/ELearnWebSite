@@ -16,15 +16,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using RabbitMQ.Client;
 
 namespace Progress.Infrastructure
 {
     public static class DependencyInjectionInfrastructure
     {
-        public static void AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
+        public static async Task AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
         {
             AddDbContext(services, configuration);
-            AddRabbitMq(services, configuration);
+            await AddRabbitMq(services, configuration);
             AddRestService(services);
             AddRedisCache(services, configuration);
             AddRepositories(services);
@@ -48,8 +49,17 @@ namespace Progress.Infrastructure
             services.AddScoped<IUserLessonProgressWriteOnly, UserLessonProgressRepository>();
         }
 
-        static void AddRabbitMq(IServiceCollection services, IConfiguration configuration)
+        static async Task AddRabbitMq(IServiceCollection services, IConfiguration configuration)
         {
+            var connection = await new ConnectionFactory()
+            {
+                Port = configuration.GetValue<int>("services:rabbitMq:port"),
+                HostName = configuration.GetValue<string>("services:rabbitMq:hostName")!,
+                UserName = configuration.GetValue<string>("services:rabbitMq:username"),
+                Password = configuration.GetValue<string>("services:rabbitMq:password"),
+            }.CreateConnectionAsync();
+            services.AddSingleton<IConnection>(connection);
+            
             services.AddScoped<IUserSubmitQuizPublisher, UserSubmitQuizPublisher>();
 
             services.AddSingleton<IUserDeletedConsumer, UserDeletedConsumer>();

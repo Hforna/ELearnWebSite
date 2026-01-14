@@ -13,15 +13,13 @@ namespace Progress.Infrastructure.RabbitMq.Subscribers
 {
     public class UserBoughtCourseSubscriber : BackgroundService, IDisposable
     {
-        private readonly IConfiguration _configuration;
-        private IConnection _connection;
+        private readonly IConnection _connection;
         private IChannel _channel;
         private readonly IUserBoughtCourseConsumer _userBoughtCourse;
 
-        public UserBoughtCourseSubscriber(IConfiguration configuration, IConnection connection,
+        public UserBoughtCourseSubscriber(IConnection connection,
             IChannel channel, IUserBoughtCourseConsumer userBoughtCourse)
         {
-            _configuration = configuration;
             _connection = connection;
             _channel = channel;
             _userBoughtCourse = userBoughtCourse;
@@ -29,14 +27,6 @@ namespace Progress.Infrastructure.RabbitMq.Subscribers
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            _connection = await new ConnectionFactory()
-            {
-                Port = _configuration.GetValue<int>("services:rabbitMq:port"),
-                HostName = _configuration.GetValue<string>("services:rabbitMq:hostName")!,
-                UserName = _configuration.GetValue<string>("services:rabbitMq:username"),
-                Password = _configuration.GetValue<string>("services:rabbitMq:password"),
-            }.CreateConnectionAsync();
-
             _channel = await _connection.CreateChannelAsync();
 
             await _channel.ExchangeDeclareAsync("payment_exchange", "direct");
