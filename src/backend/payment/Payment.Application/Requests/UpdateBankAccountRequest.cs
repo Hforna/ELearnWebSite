@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Payment.Application.Requests
 {
-    public class CreateBankAccountRequest
+    public class UpdateBankAccountRequest
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }

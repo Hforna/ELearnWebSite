@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 
 namespace Payment.Application.Services
 {
-    public class CreateBankAccountRequestValidator : AbstractValidator<UpdateBankAccountRequest>
+    public class UpdateBankAccountRequestValidator : AbstractValidator<UpdateBankAccountRequest>
     {
-        public CreateBankAccountRequestValidator()
+        public UpdateBankAccountRequestValidator()
         {
             RuleFor(d => d.Email).EmailAddress().WithMessage(ResourceExceptMessages.EMAIL_FORMAT_INVALID);
             RuleFor(d => d.FirstName.Length).LessThanOrEqualTo(30).WithMessage(ResourceExceptMessages.INVALID_FIRST_NAME);

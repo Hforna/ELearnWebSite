@@ -33,14 +33,17 @@ namespace Payment.Application.ApplicationServices
         private readonly SqidsEncoder<long> _sqids;
         private readonly IPaymentGatewayService _paymentService;
         private readonly ILogger<BalanceService> _logger;
+        private readonly PayoutPolicy  _payoutPolicy;
 
 
         public BalanceService(IMapper mapper, IUnitOfWork uof, IUserRestService userRest, 
             ILocationRestService locationRest, ICurrencyExchangeService exchangeService, 
-            SqidsEncoder<long> sqids, IPaymentGatewayService paymentGateway, ILogger<BalanceService> logger)
+            SqidsEncoder<long> sqids, IPaymentGatewayService paymentGateway, 
+            ILogger<BalanceService> logger, PayoutPolicy payoutPolicy)
         {
             _mapper = mapper;
             _uof = uof;
+            _payoutPolicy = payoutPolicy;
             _logger = logger;
             _paymentService = paymentGateway;
             _userRest = userRest;
@@ -49,9 +52,9 @@ namespace Payment.Application.ApplicationServices
             _sqids = sqids;
         }
 
-        public async Task<BankAccountResponse> CreateBankAccount(CreateBankAccountRequest request)
+        public async Task<BankAccountResponse> UpdateBankAccount(UpdateBankAccountRequest request)
         {
-            var validator = new CreateBankAccountRequestValidator();
+            var validator = new UpdateBankAccountRequestValidator();
             var result = validator.Validate(request);
 
             if(!result.IsValid)
@@ -110,9 +113,9 @@ namespace Payment.Application.ApplicationServices
             if (bankAccount is null)
                 throw new BalanceException(ResourceExceptMessages.USER_BANK_NOT_EXISTS, System.Net.HttpStatusCode.NotFound);
 
-            var recentPayouts = await _uof.payoutRead.PayoutRecentsByUserAndTime(userId, DateTime.UtcNow);
+            var recentPayouts = await _uof.payoutRead.GetLastUserPayout(userId);
 
-            if (recentPayouts is not null)
+            if (recentPayouts is not null && !_payoutPolicy.CanRequestPayout(recentPayouts.RequestedAt))
                 throw new BalanceException(ResourceExceptMessages.PAYOUT_MADE_FEW_TIMES_AGO, System.Net.HttpStatusCode.Unauthorized);
 
             var userCurrency = await _locationRest.GetCurrencyByUserLocation();

@@ -29,7 +29,7 @@ namespace Payment.Application.Services
 
         void RequestToEntity()
         {
-            CreateMap<CreateBankAccountRequest, UserBankAccount>()
+            CreateMap<UpdateBankAccountRequest, UserBankAccount>()
                 .ForMember(d => d.TeacherId, f => f.Ignore());
         }
 

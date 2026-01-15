@@ -91,7 +91,7 @@ namespace Payment.Application.Services
 
                 await _uow.orderWrite.AddOrderItem(orderItem);
                 await _uow.Commit();
-            } catch(RestException re)
+            } catch(RequestException re)
             {
                 _orderSession.AddOrderToSession(courseId);
 
@@ -174,7 +174,7 @@ namespace Payment.Application.Services
 
                     return response;
                 }).ToList();
-            } catch(RestException re)
+            } catch(RequestException re)
             {
                 var sessionOrder = _orderSession.GetSessionOrder();
 
