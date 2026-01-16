@@ -10,6 +10,7 @@ using User.Api.Models.Repositories;
 using User.Api.Services.Email;
 using User.Api.Services.Security.Cryptography;
 using User.Api.Services.Security.Token;
+using User.Api.Excpetions;
 
 namespace User.Api.Controllers
 {
@@ -84,7 +85,7 @@ namespace User.Api.Controllers
             var user = await _uof.userReadOnly.UserByEmail(dto.email);
 
             if (user is null)
-                return NotFound("User doesn't exists");
+                return Unauthorized("E-mail or password invalid");
 
             if (!user.TwoFactorEnabled)
                 return Unauthorized("User 2fa isn't enabled");
@@ -94,6 +95,9 @@ namespace User.Api.Controllers
             if ((twofaMethod == "email" && !user.TwoFactorEmailEnabled) 
                 || (twofaMethod == "phone" && !user.TwoFactorPhoneEnabled))
                 return Unauthorized("2fa method not authorized for this user");
+
+            if (!_bcrypt.IsKeyValid(dto.password, user.PasswordHash!))
+                return Unauthorized("E-mail or password invalid");
 
             if(twofaMethod == "email")
             {
@@ -193,7 +197,7 @@ namespace User.Api.Controllers
         [HttpGet("is-user-logged")]
         public async Task<IActionResult> IsUserLogged()
         {
-            var token = _httpContext.HttpContext.Request.Headers.Authorization.ToString();
+            var token = HttpContext.Request.Headers.Authorization.ToString();
 
             if (token is null)
                 return Ok(false);

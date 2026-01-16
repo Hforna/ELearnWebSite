@@ -77,8 +77,8 @@ namespace User.Api.Controllers
             return Ok(response);
         }
 
-        [HttpGet("teacher-profiles")]
-        public async Task<IActionResult> GetTeacherProfiles([FromQuery]int page, [FromQuery]int quantity)
+        [HttpGet("teachers")]
+        public async Task<IActionResult> GetTeachers([FromQuery]int page, [FromQuery]int quantity)
         {
             var profiles = await _uof.profileReadOnly.GetUserProfiles(page, quantity);
 

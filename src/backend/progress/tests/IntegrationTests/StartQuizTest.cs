@@ -24,7 +24,7 @@ namespace IntegrationTests
             });
 
             var client = await _app.GetClientWithToken();
-            var request = await client.GetAsync($"api/attempt/course/{sqids.Encode(4)}/quiz/{sqids.Encode(5)}/start");
+            var request = await client.GetAsync($"api/attempt/courses/{sqids.Encode(4)}/quizzes/{sqids.Encode(5)}/start");
 
             var response = request.Content.ReadAsStreamAsync();
 
